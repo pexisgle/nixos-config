@@ -12,6 +12,6 @@
     enable32Bit = true;
   };
 
-  # Keep explicit driver selection to avoid pulling NVIDIA stack on laptop.
+  
   services.xserver.videoDrivers = [ "amdgpu" ];
 }

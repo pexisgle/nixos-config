@@ -3,7 +3,7 @@
 {
   nixpkgs.config.allowUnfree = true;
 
-  # Use the systemd-boot EFI boot loader.
+  
   boot.loader.systemd-boot.enable = lib.mkForce false;
   boot.loader.efi.canTouchEfiVariables = true;
 
@@ -14,7 +14,7 @@
   };
 
 
-  # Use latest kernel.
+  
   boot.kernelPackages = pkgs.linuxPackages_latest;
 
   boot.loader.timeout = 5;
@@ -86,7 +86,7 @@
   nix.gc = {
     automatic = true;
     dates = "weekly";
-    options = "--delete-older-than 7d"; # 7日より前の世代を自動削除
+    options = "--delete-older-than 7d"; 
   };
   
   system.stateVersion = "25.11";

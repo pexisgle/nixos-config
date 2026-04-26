@@ -39,24 +39,6 @@
     videos = "$HOME/Videos";
   };
 
-  gtk = {
-    enable = true;
-    gtk3.extraConfig = {
-      gtk-application-prefer-dark-theme = 1;
-    };
-    gtk4.extraConfig = {
-      gtk-application-prefer-dark-theme = 1;
-    };
-  };
-
-  xdg.configFile."kdeglobals".text = ''
-    [General]
-    ColorScheme=BreezeDark
-
-    [KDE]
-    LookAndFeelPackage=org.kde.breezedark.desktop
-  '';
-
   programs.zsh = {
     enable = true;
 
@@ -67,7 +49,7 @@
     oh-my-zsh = {
       enable = true;
       plugins = [
-        "git"         # also requires `programs.git.enable = true;`
+        "git"         
       ];
       theme = "robbyrussell";
     };
@@ -85,8 +67,8 @@
 
   programs.direnv = {
     enable = true;
-    enableZshIntegration = true; # zsh用のフックを有効化
-    nix-direnv.enable = true;    # 高速化のための nix-direnv を有効化
+    enableZshIntegration = true; 
+    nix-direnv.enable = true;    
   };
 
  programs.dank-material-shell = {
@@ -101,7 +83,7 @@
      isLightMode = false;
    };
    niri = {
-     # Keep DMS include-based keybinds only to avoid duplicated keybind sources.
+     
      enableKeybinds = false;
      enableSpawn = true;
      includes = {

@@ -18,7 +18,7 @@
 			inputs.nixpkgs.follows = "nixpkgs";
 		};
 		lanzaboote = {
-      url = "github:nix-community/lanzaboote"; # バージョンは最新を確認してください
+      url = "github:nix-community/lanzaboote"; 
       inputs.nixpkgs.follows = "nixpkgs";
     };
 	};
