@@ -21,6 +21,10 @@
 
 	outputs = { nixpkgs, home-manager, ... }@inputs:
 		let
+			githubDesktopPlusOverlay = final: prev: {
+				github-desktop-plus = final.callPackage ./pkgs/github-desktop-plus.nix {};
+			};
+
 			mkHost = { hostName, homeModule }:
 				nixpkgs.lib.nixosSystem {
 					system = "x86_64-linux";
@@ -28,6 +32,9 @@
 						inherit inputs hostName;
 					};
 					modules = [
+						{
+							nixpkgs.overlays = [ githubDesktopPlusOverlay ];
+						}
 						./modules/common.nix
 						(./hosts + "/${hostName}/configuration.nix")
 						home-manager.nixosModules.home-manager

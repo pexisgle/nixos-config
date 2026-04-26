@@ -24,57 +24,11 @@
     kitty
     xwayland-satellite
     nixd
+    gh
+    github-desktop-plus
     floorp-bin
-    (appimageTools.wrapType2 rec {
-      pname = "github-desktop-plus";
-      version = "3.5.9.0";
-      src = fetchurl {
-        url = "https://github.com/pol-rivero/github-desktop-plus/releases/download/v${version}/GitHubDesktopPlus-v${version}-linux-x86_64.AppImage";
-        hash = "sha256-AmhF6m1k2wucu4QvGJP2542fxajNYExk9w9kqNKH2XU=";
-      };
-    })
   ];
 
-  xdg = {
-  enable = true;
-  
-  # デスクトップエントリの設定
-  desktopEntries.github-desktop-plus = {
-    name = "GitHub Desktop Plus";
-    genericName = "Git Client";
-    exec = "github-desktop-plus %U";
-    icon = "github-desktop-plus";
-    terminal = false;
-    type = "Application";
-    categories = [ "Development" "RevisionControl" "Utility" ];
-    mimeType = [ "x-scheme-handler/x-github-desktop-auth" ];
-  };
-
-  # MIMEタイプの紐付けを明示
-  mimeApps = {
-    enable = true;
-    defaultApplications = {
-      "x-scheme-handler/x-github-desktop-auth" = [ "github-desktop-plus.desktop" ];
-    };
-  };
-};
-
-  home.file."Desktop/GitHub Desktop Plus.desktop" = {
-    text = ''
-      [Desktop Entry]
-      Version=1.0
-      Type=Application
-      Name=GitHub Desktop Plus
-      GenericName=Git Client
-      Comment=Advanced GitHub Desktop fork for Linux
-      Exec=github-desktop-plus %U
-      Icon=github-desktop-plus
-      Terminal=false
-      MimeType=x-scheme-handler/x-github-desktop-auth;
-      Categories=Development;RevisionControl;Utility;
-    '';
-    executable = true;
-  };
 
   programs.home-manager.enable = true;
 
