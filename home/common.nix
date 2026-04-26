@@ -27,6 +27,7 @@
     gh
     github-desktop-plus
     floorp-bin
+    vesktop
   ];
 
 
