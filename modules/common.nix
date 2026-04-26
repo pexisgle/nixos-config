@@ -1,0 +1,60 @@
+{ pkgs, ... }:
+
+{
+  nixpkgs.config.allowUnfree = true;
+
+  # Use the systemd-boot EFI boot loader.
+  boot.loader.systemd-boot.enable = true;
+  boot.loader.efi.canTouchEfiVariables = true;
+
+  # Use latest kernel.
+  boot.kernelPackages = pkgs.linuxPackages_latest;
+
+  networking.networkmanager.enable = true;
+  time.timeZone = "Asia/Tokyo";
+
+  services.desktopManager.plasma6.enable = true;
+  services.displayManager.plasma-login-manager.enable = true;
+  programs.niri.enable = true;
+
+  i18n.inputMethod = {
+    type = "fcitx5";
+    enable = true;
+    fcitx5.waylandFrontend = true;
+    fcitx5.addons = with pkgs; [
+      fcitx5-mozc
+      fcitx5-gtk
+    ];
+  };
+
+  fonts.packages = with pkgs; [
+    noto-fonts-cjk-sans
+    noto-fonts-cjk-serif
+    nerd-fonts.fira-code
+    nerd-fonts.hack
+    nerd-fonts.caskaydia-cove
+    nerd-fonts.jetbrains-mono
+    nerd-fonts.symbols-only
+  ];
+
+  users.users.pexisgle = {
+    description = "pexisgle";
+    isNormalUser = true;
+    extraGroups = [ "wheel" "video" "networkmanager" ];
+    packages = with pkgs; [
+      tree
+    ];
+  };
+
+  environment.systemPackages = with pkgs; [
+    vim
+    wget
+    git
+    kdePackages.fcitx5-configtool
+  ];
+
+  services.gnome.gnome-keyring.enable = true;
+
+  nix.settings.experimental-features = [ "nix-command" "flakes" ];
+  system.stateVersion = "25.11";
+}
