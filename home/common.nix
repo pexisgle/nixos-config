@@ -11,14 +11,6 @@
   home.homeDirectory = "/home/pexisgle";
   home.stateVersion = "25.11";
 
-  home.sessionVariables = {
-    XMODIFIERS = "@im=fcitx";
-    GTK_IM_MODULE = "fcitx";
-    QT_IM_MODULE = "fcitx";
-    SDL_IM_MODULE = "fcitx";
-    GLFW_IM_MODULE = "ibus";
-  };
-
   home.packages = with pkgs; [
     gcr
     kitty
@@ -32,6 +24,22 @@
 
 
   programs.home-manager.enable = true;
+  programs.zsh = {
+    enable = true;
+
+    enableCompletion = true;
+    autosuggestion.enable = true;
+    syntaxHighlighting.enable = true;
+
+    oh-my-zsh = {
+      enable = true;
+      plugins = [
+        "git"         # also requires `programs.git.enable = true;`
+      ];
+      theme = "robbyrussell";
+    };
+
+  };
 
   programs.vscode = {
     enable = true;
@@ -40,6 +48,12 @@
       yzhang.markdown-all-in-one
       jnoortheen.nix-ide
     ];
+  };
+
+  programs.direnv = {
+    enable = true;
+    enableZshIntegration = true; # zsh用のフックを有効化
+    nix-direnv.enable = true;    # 高速化のための nix-direnv を有効化
   };
 
   programs.dank-material-shell = {

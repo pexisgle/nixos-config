@@ -17,9 +17,13 @@
 			url = "github:sodiboo/niri-flake";
 			inputs.nixpkgs.follows = "nixpkgs";
 		};
+		lanzaboote = {
+      url = "github:nix-community/lanzaboote"; # バージョンは最新を確認してください
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 	};
 
-	outputs = { nixpkgs, home-manager, ... }@inputs:
+	outputs = { nixpkgs, home-manager, lanzaboote, ... }@inputs:
 		let
 			githubDesktopPlusOverlay = final: prev: {
 				github-desktop-plus = final.callPackage ./pkgs/github-desktop-plus.nix {};
@@ -46,6 +50,7 @@
 								inherit inputs hostName;
 							};
 						}
+						lanzaboote.nixosModules.lanzaboote
 					];
 				};
 		in {

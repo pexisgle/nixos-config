@@ -1,14 +1,23 @@
-{ pkgs, ... }:
+{ pkgs, lib, ... }:
 
 {
   nixpkgs.config.allowUnfree = true;
 
   # Use the systemd-boot EFI boot loader.
-  boot.loader.systemd-boot.enable = true;
+  boot.loader.systemd-boot.enable = lib.mkForce false;
   boot.loader.efi.canTouchEfiVariables = true;
+
+  boot.lanzaboote = {
+    enable = true;
+    pkiBundle = "/var/lib/sbctl";
+    configurationLimit = 5;
+  };
+
 
   # Use latest kernel.
   boot.kernelPackages = pkgs.linuxPackages_latest;
+
+  boot.loader.timeout = 5;
 
   networking.networkmanager.enable = true;
   time.timeZone = "Asia/Tokyo";
@@ -37,16 +46,20 @@
     nerd-fonts.symbols-only
   ];
 
+  programs.zsh.enable = true;
+
   users.users.pexisgle = {
     description = "pexisgle";
     isNormalUser = true;
     extraGroups = [ "wheel" "video" "networkmanager" ];
+    shell = pkgs.zsh;
     packages = with pkgs; [
       tree
     ];
   };
 
   environment.systemPackages = with pkgs; [
+    sbctl
     vim
     wget
     git
@@ -56,5 +69,12 @@
   services.gnome.gnome-keyring.enable = true;
 
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
+
+  nix.gc = {
+    automatic = true;
+    dates = "weekly";
+    options = "--delete-older-than 7d"; # 7日より前の世代を自動削除
+  };
+  
   system.stateVersion = "25.11";
 }
