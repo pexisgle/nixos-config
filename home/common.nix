@@ -24,6 +24,39 @@
 
 
   programs.home-manager.enable = true;
+
+  xdg.userDirs = {
+    enable = true;
+    createDirectories = true;
+    setSessionVariables = true;
+    desktop = "$HOME/Desktop";
+    documents = "$HOME/Documents";
+    download = "$HOME/Downloads";
+    music = "$HOME/Music";
+    pictures = "$HOME/Pictures";
+    publicShare = "$HOME/Public";
+    templates = "$HOME/Templates";
+    videos = "$HOME/Videos";
+  };
+
+  gtk = {
+    enable = true;
+    gtk3.extraConfig = {
+      gtk-application-prefer-dark-theme = 1;
+    };
+    gtk4.extraConfig = {
+      gtk-application-prefer-dark-theme = 1;
+    };
+  };
+
+  xdg.configFile."kdeglobals".text = ''
+    [General]
+    ColorScheme=BreezeDark
+
+    [KDE]
+    LookAndFeelPackage=org.kde.breezedark.desktop
+  '';
+
   programs.zsh = {
     enable = true;
 
@@ -56,27 +89,34 @@
     nix-direnv.enable = true;    # 高速化のための nix-direnv を有効化
   };
 
-  programs.dank-material-shell = {
-    enable = true;
-    enableSystemMonitoring = true;
-    dgop.package = inputs.dgop.packages.${pkgs.stdenv.hostPlatform.system}.default;
-    niri = {
-      # Keep DMS include-based keybinds only to avoid duplicated keybind sources.
-      enableKeybinds = false;
-      enableSpawn = true;
-      includes = {
-        override = true;
-        originalFileName = "hm";
-        filesToInclude = [
-          "alttab"
-          "binds"
-          "colors"
-          "cursor"
-          "layout"
-          "outputs"
-          "windowrules"
-        ];
-      };
-    };
-  };
+ programs.dank-material-shell = {
+   enable = true;
+   enableSystemMonitoring = true;
+   dgop.package = inputs.dgop.packages.${pkgs.stdenv.hostPlatform.system}.default;
+   settings = {
+     syncModeWithPortal = true;
+     terminalsAlwaysDark = true;
+   };
+   session = {
+     isLightMode = false;
+   };
+   niri = {
+     # Keep DMS include-based keybinds only to avoid duplicated keybind sources.
+     enableKeybinds = false;
+     enableSpawn = true;
+     includes = {
+       override = true;
+       originalFileName = "hm";
+       filesToInclude = [
+         "alttab"
+         "binds"
+         "colors"
+         "cursor"
+         "layout"
+         "outputs"
+         "windowrules"
+       ];
+     };
+   };
+ };
 }
