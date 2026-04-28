@@ -22,6 +22,7 @@
     vesktop
     slack
     notion-app-enhanced
+    vlc
   ];
 
 
