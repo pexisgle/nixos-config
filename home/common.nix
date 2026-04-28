@@ -20,6 +20,8 @@
     github-desktop-plus
     floorp-bin
     vesktop
+    slack
+    notion-app-enhanced
   ];
 
 
@@ -70,6 +72,16 @@
     enableZshIntegration = true; 
     nix-direnv.enable = true;    
   };
+
+    programs.niri.settings = {
+      input = {
+        keyboard = {
+          xkb = {
+            layout = "jp";
+          };
+        };
+      };
+    };
 
  programs.dank-material-shell = {
    enable = true;
