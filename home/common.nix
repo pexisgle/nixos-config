@@ -23,6 +23,7 @@
     slack
     notion-app-enhanced
     vlc
+    antigravity
   ];
 
 
