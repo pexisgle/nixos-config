@@ -78,6 +78,9 @@
     git
     kdePackages.fcitx5-configtool
     vulkan-tools
+    wineWowPackages.staging
+    winetricks
+    lutris
   ];
 
   services.gnome.gnome-keyring.enable = true;
