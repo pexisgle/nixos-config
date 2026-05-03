@@ -24,6 +24,7 @@
     notion-app-enhanced
     vlc
     antigravity
+    zed-editor
   ];
 
 
