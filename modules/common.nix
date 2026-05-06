@@ -78,6 +78,7 @@
     git
     kdePackages.fcitx5-configtool
     vulkan-tools
+    nil
   ];
 
   services.gnome.gnome-keyring.enable = true;

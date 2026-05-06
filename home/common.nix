@@ -19,12 +19,14 @@
     gh
     github-desktop-plus
     floorp-bin
+    google-chrome
     vesktop
     slack
     notion-app-enhanced
     vlc
     antigravity
-    zed-editor
+    opencode
+    zed-editor-fhs
   ];
 
 
@@ -76,15 +78,18 @@
     nix-direnv.enable = true;    
   };
 
-    programs.niri.settings = {
-      input = {
-        keyboard = {
-          xkb = {
-            layout = "jp";
-          };
+  programs.niri.settings = {
+    input = {
+      keyboard = {
+        xkb = {
+          layout = "jp";
         };
       };
     };
+    "spawn-at-startup" = [
+      { argv = [ "vesktop" ]; }
+    ];
+  };
 
  programs.dank-material-shell = {
    enable = true;
@@ -98,7 +103,6 @@
      isLightMode = false;
    };
    niri = {
-     
      enableKeybinds = false;
      enableSpawn = true;
      includes = {
