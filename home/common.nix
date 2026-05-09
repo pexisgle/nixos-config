@@ -25,6 +25,7 @@
     notion-app-enhanced
     vlc
     antigravity
+    affinity-v3
     opencode
     zed-editor-fhs
   ];
