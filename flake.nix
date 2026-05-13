@@ -5,7 +5,6 @@
 		nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
 		home-manager.url = "github:nix-community/home-manager";
 		home-manager.inputs.nixpkgs.follows = "nixpkgs";
-		affinity-nix.url = "github:mrshmllow/affinity-nix";
 		dms = {
 			url = "github:AvengeMedia/DankMaterialShell/stable";
 			inputs.nixpkgs.follows = "nixpkgs";
@@ -38,10 +37,7 @@
 					};
 					modules = [
 						{
-							nixpkgs.overlays = [
-								githubDesktopPlusOverlay
-								inputs.affinity-nix.overlays.default
-							];
+							nixpkgs.overlays = [ githubDesktopPlusOverlay ];
 						}
 						./modules/common.nix
 						(./hosts + "/${hostName}/configuration.nix")

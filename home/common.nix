@@ -1,4 +1,4 @@
-{ config, pkgs, inputs, ... }:
+{ pkgs, inputs, ... }:
 
 {
   imports = [
@@ -25,7 +25,6 @@
     notion-app-enhanced
     vlc
     antigravity
-    affinity-v3
     opencode
     zed-editor-fhs
   ];
