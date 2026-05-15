@@ -13,13 +13,14 @@
     configurationLimit = 5;
   };
 
-
-  
   boot.kernelPackages = pkgs.linuxPackages_latest;
 
   boot.loader.timeout = 5;
 
   networking.networkmanager.enable = true;
+  hardware.bluetooth.enable = true;
+  hardware.bluetooth.powerOnBoot = true;
+  services.blueman.enable = true;
   time.timeZone = "Asia/Tokyo";
 
   i18n.defaultLocale = "ja_JP.UTF-8";
@@ -79,11 +80,15 @@
     kdePackages.fcitx5-configtool
     vulkan-tools
     nil
+    dbus
+    pavucontrol
   ];
 
   services.gnome.gnome-keyring.enable = true;
   
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
+
+  nix.settings.trusted-users = [ "root" "@wheel" ];
 
   nix.gc = {
     automatic = true;

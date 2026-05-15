@@ -28,6 +28,7 @@
     opencode
     zed-editor-fhs
     devenv
+    secretspec
   ];
 
 
@@ -62,6 +63,9 @@
       theme = "robbyrussell";
     };
 
+    initContent = ''
+      eval "$(devenv hook zsh)"
+    '';
   };
 
   programs.vscode = {
