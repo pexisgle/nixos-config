@@ -27,6 +27,7 @@
     antigravity
     opencode
     zed-editor-fhs
+    devenv
   ];
 
 
