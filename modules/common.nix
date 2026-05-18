@@ -22,6 +22,7 @@
   hardware.bluetooth.powerOnBoot = true;
   services.blueman.enable = true;
   time.timeZone = "Asia/Tokyo";
+  time.hardwareClockInLocalTime = true;
 
   i18n.defaultLocale = "ja_JP.UTF-8";
   i18n.extraLocaleSettings = {
