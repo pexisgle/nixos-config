@@ -28,6 +28,7 @@
     opencode
     zed-editor-fhs
     devenv
+    mise
     secretspec
   ];
 
