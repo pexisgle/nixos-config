@@ -25,8 +25,23 @@
 
 	outputs = { nixpkgs, home-manager, lanzaboote, ... }@inputs:
 		let
-			githubDesktopPlusOverlay = final: prev: {
+			customPackagesOverlay = final: prev: {
 				github-desktop-plus = final.callPackage ./pkgs/github-desktop-plus.nix {};
+				antigravity = final.callPackage ./pkgs/antigravity.nix {};
+				antigravity-cli = final.callPackage ./pkgs/antigravity-cli.nix {};
+                                antigravity-ide = prev.antigravity.overrideAttrs (old: {
+                                        pname = "antigravity-ide";
+                                        postFixup = (old.postFixup or "") + ''
+                                                mv $out/bin/antigravity $out/bin/antigravity-ide || true
+                                                if [ -d $out/share/applications ]; then
+                                                        for f in $out/share/applications/*.desktop; do
+                                                                sed -i 's/Exec=antigravity/Exec=antigravity-ide/g' $f
+                                                                sed -i 's/Name=Antigravity/Name=Antigravity IDE/g' $f
+                                                                mv $f $out/share/applications/antigravity-ide.desktop || true
+                                                        done
+                                                fi
+                                        '';
+                                });
 			};
 
 			mkHost = { hostName, homeModule }:
@@ -37,7 +52,7 @@
 					};
 					modules = [
 						{
-							nixpkgs.overlays = [ githubDesktopPlusOverlay ];
+							nixpkgs.overlays = [ customPackagesOverlay ];
 						}
 						./modules/common.nix
 						(./hosts + "/${hostName}/configuration.nix")
