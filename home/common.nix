@@ -28,6 +28,7 @@
     antigravity-ide
     antigravity-cli
     opencode
+    opencode-desktop
     zed-editor-fhs
     devenv
     mise

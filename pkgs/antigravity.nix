@@ -11,25 +11,25 @@
 }:
 
 let
-  version = "2.0.1";
-  buildId = "6566078776737792";
+  version = "2.0.6";
+  buildId = "5413878570549248";
 
   sources = {
     x86_64-linux = {
       url = "https://storage.googleapis.com/antigravity-public/antigravity-hub/${version}-${buildId}/linux-x64/Antigravity.tar.gz";
-      sha256 = "1az9h1ridka89198isgg7gg1fv6cd7d7iwj1g4sd5dk1d7sy29q7";
+      sha256 = "1iacwi4zpkdcp75hn0irrf4a7zaf1zafmc8f0ckprc29a59h87md";
     };
     aarch64-linux = {
       url = "https://storage.googleapis.com/antigravity-public/antigravity-hub/${version}-${buildId}/linux-arm/Antigravity.tar.gz";
-      sha256 = "16sx2zb7rap9q2s75lh76l5wp2rl5zdbfi8hlrlz6m59vp4nrxas";
+      sha256 = "1aa55zdqi1hskrrqv2ndljkkxj769m8kp1a5p1rar0h5cm3pzz02";
     };
     x86_64-darwin = {
       url = "https://storage.googleapis.com/antigravity-public/antigravity-hub/${version}-${buildId}/darwin-x64/Antigravity.dmg";
-      sha256 = "0ys5glxa2gnbjn678ihbd8pb1n8cvkm54c9c2ayncsxmk050cjyx";
+      sha256 = "1w20vvfbxa0v1k59cja38gr6sxrqgamxzrlvnkcd9p76hv5f3xf6";
     };
     aarch64-darwin = {
       url = "https://storage.googleapis.com/antigravity-public/antigravity-hub/${version}-${buildId}/darwin-arm/Antigravity.dmg";
-      sha256 = "1lp3n6pik4hswj5daxdvc9wjlivw01bfmwr53jkh01jm2dkz2y18";
+      sha256 = "17bax30xjmw3rc4pznxsjxym5rqr6dhmmr0khb4zpl833yrwabmz";
     };
   };
 in
