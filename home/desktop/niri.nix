@@ -4,6 +4,7 @@
   programs.niri.settings = {
     input = {
       keyboard = {
+        numlock = false;
         xkb = {
           layout = "jp";
         };

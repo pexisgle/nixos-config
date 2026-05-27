@@ -15,7 +15,7 @@
 
   home.username = "pexisgle";
   home.homeDirectory = "/home/pexisgle";
-  home.stateVersion = "25.11";
+  home.stateVersion = "26.05";
   home.packages = with pkgs; [
     gcr
     kitty

@@ -25,5 +25,6 @@
     secretspec
     lutris
     mangohud
+    gimp
   ];
 }
