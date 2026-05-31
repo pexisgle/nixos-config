@@ -6,7 +6,7 @@
   users.users.pexisgle = {
     description = "pexisgle";
     isNormalUser = true;
-    extraGroups = [ "wheel" "video" "networkmanager" ];
+    extraGroups = [ "wheel" "video" "networkmanager" "uinput" ];
     shell = pkgs.zsh;
     packages = with pkgs; [
       tree
