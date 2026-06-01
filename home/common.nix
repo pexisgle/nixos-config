@@ -46,5 +46,9 @@
     KICAD10_TEMPLATE_DIR = "${pkgs.kicad.libraries.symbols}/share/kicad/template";
   };
 
+  home.sessionPath = [
+    "$HOME/.bun/bin"
+  ];
+
   programs.home-manager.enable = true;
 }

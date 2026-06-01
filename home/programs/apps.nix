@@ -26,5 +26,7 @@
     lutris
     mangohud
     gimp
+    bun
+    nodejs
   ];
 }
