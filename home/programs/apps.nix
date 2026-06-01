@@ -28,5 +28,6 @@
     gimp
     bun
     nodejs
+    rtk
   ];
 }
