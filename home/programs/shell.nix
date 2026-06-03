@@ -11,7 +11,7 @@
     oh-my-zsh = {
       enable = true;
       plugins = [
-        "git"         
+        "git"
       ];
       theme = "robbyrussell";
     };
@@ -23,7 +23,7 @@
 
   programs.direnv = {
     enable = true;
-    enableZshIntegration = true; 
-    nix-direnv.enable = true;    
+    enableZshIntegration = true;
+    nix-direnv.enable = true;
   };
 }

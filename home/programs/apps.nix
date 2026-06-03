@@ -6,6 +6,7 @@
     kitty
     xwayland-satellite
     nixd
+    nixfmt
     gh
     github-desktop-plus
     floorp-bin
@@ -15,7 +16,6 @@
     notion-app-enhanced
     vlc
     antigravity
-    antigravity-ide
     antigravity-cli
     opencode
     opencode-desktop

@@ -30,9 +30,9 @@
   };
 
   environment.systemPackages = with pkgs; [
-     vulkan-loader
-     vulkan-headers
-     vulkan-validation-layers
-     vulkan-tools
+    vulkan-loader
+    vulkan-headers
+    vulkan-validation-layers
+    vulkan-tools
   ];
 }

@@ -30,7 +30,6 @@
     notion-app-enhanced
     vlc
     antigravity
-    antigravity-ide
     antigravity-cli
     opencode
     zed-editor-fhs
