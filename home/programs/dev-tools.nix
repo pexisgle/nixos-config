@@ -16,5 +16,8 @@
     rtk
     zed-editor-fhs
     opencode-desktop
+    github-desktop-plus
+    antigravity
+    antigravity-cli
   ];
 }

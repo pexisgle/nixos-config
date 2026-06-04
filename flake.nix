@@ -21,6 +21,19 @@
       url = "github:nix-community/lanzaboote";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    agent-skills = {
+      url = "github:Kyure-A/agent-skills-nix";
+      inputs.home-manager.follows = "home-manager";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    nix-skills = {
+      url = "github:0xbigboss/claude-code";
+      flake = false;
+    };
+    vercel-skills = {
+      url = "github:vercel-labs/skills";
+      flake = false;
+    };
   };
 
   outputs =
@@ -28,6 +41,7 @@
       nixpkgs,
       home-manager,
       lanzaboote,
+      agent-skills,
       ...
     }@inputs:
     let
@@ -58,6 +72,9 @@
             {
               home-manager.useGlobalPkgs = true;
               home-manager.backupFileExtension = "backup";
+              home-manager.sharedModules = [
+                agent-skills.homeManagerModules.default
+              ];
               home-manager.users.pexisgle = import homeModule;
               home-manager.extraSpecialArgs = {
                 inherit inputs hostName;
