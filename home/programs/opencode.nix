@@ -6,6 +6,7 @@
     settings = {
       plugin = [
         "@tarquinen/opencode-dcp@latest"
+        "openslimedit@latest"
       ];
     };
   };
