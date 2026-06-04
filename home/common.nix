@@ -8,7 +8,12 @@
     ./desktop/material-shell.nix
     ./desktop/niri.nix
     ./desktop/xdg.nix
-    ./programs/apps.nix
+    ./programs/browsers.nix
+    ./programs/communication.nix
+    ./programs/dev-tools.nix
+    ./programs/gaming.nix
+    ./programs/media.nix
+    ./programs/opencode.nix
     ./programs/shell.nix
     ./programs/vscode.nix
   ];
@@ -17,25 +22,6 @@
   home.homeDirectory = "/home/pexisgle";
   home.stateVersion = "26.05";
   home.packages = with pkgs; [
-    gcr
-    kitty
-    xwayland-satellite
-    nixd
-    gh
-    github-desktop-plus
-    floorp-bin
-    google-chrome
-    vesktop
-    slack
-    notion-app-enhanced
-    vlc
-    antigravity
-    antigravity-cli
-    opencode
-    zed-editor-fhs
-    devenv
-    mise
-    secretspec
     kicad
   ];
 

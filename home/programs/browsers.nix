@@ -1,0 +1,8 @@
+{ pkgs, ... }:
+
+{
+  home.packages = with pkgs; [
+    floorp-bin
+    google-chrome
+  ];
+}
