@@ -3,6 +3,7 @@
 {
   imports = [
     ./core/boot.nix
+    ./core/docker.nix
     ./core/nix.nix
     ./core/network.nix
     ./desktop/base.nix

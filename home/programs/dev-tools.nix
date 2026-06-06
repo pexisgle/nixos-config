@@ -19,5 +19,6 @@
     github-desktop-plus
     antigravity
     antigravity-cli
+    zmkbatx
   ];
 }
