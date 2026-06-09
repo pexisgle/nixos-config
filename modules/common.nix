@@ -6,6 +6,7 @@
     ./core/docker.nix
     ./core/nix.nix
     ./core/network.nix
+    ./core/vpn.nix
     ./desktop/base.nix
     ./desktop/fonts.nix
     ./desktop/locale.nix
