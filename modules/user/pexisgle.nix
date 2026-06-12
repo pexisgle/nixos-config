@@ -12,6 +12,7 @@
       "networkmanager"
       "uinput"
       "docker"
+      "render"
     ];
     shell = pkgs.zsh;
     packages = with pkgs; [

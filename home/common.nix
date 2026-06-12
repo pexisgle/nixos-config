@@ -23,6 +23,7 @@
   home.stateVersion = "26.05";
   home.packages = with pkgs; [
     kicad
+    lmstudio
   ];
 
   home.sessionVariables = {

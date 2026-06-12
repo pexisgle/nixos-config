@@ -10,29 +10,33 @@
   hardware.graphics = {
     enable = true;
     enable32Bit = true;
-    extraPackages = [
-      config.hardware.nvidia.package
-    ];
-    extraPackages32 = [
-      config.hardware.nvidia.package
+    extraPackages = with pkgs; [
+      rocmPackages.clr
+      rocmPackages.clr.icd
     ];
   };
 
-  services.xserver.videoDrivers = [ "nvidia" ];
-
-  hardware.nvidia = {
-    modesetting.enable = true;
-    powerManagement.enable = true;
-    powerManagement.finegrained = false;
-    open = false;
-    nvidiaSettings = true;
-    package = config.boot.kernelPackages.nvidiaPackages.latest;
-  };
-
+  services.xserver.videoDrivers = [ "amdgpu" ];
+  boot.initrd.kernelModules = [ "amdgpu" ];
+  
   environment.systemPackages = with pkgs; [
     vulkan-loader
     vulkan-headers
     vulkan-validation-layers
     vulkan-tools
   ];
+
+  programs.nix-ld = {
+    enable = true;
+    libraries = with pkgs; [
+      stdenv.cc.cc.lib
+      zlib
+      glib
+      xorg.libX11
+      # ROCm/HIP に必要なライブラリ群
+      rocmPackages.clr
+      rocmPackages.rocm-smi
+      rocmPackages.rocm-runtime
+    ];
+  };
 }

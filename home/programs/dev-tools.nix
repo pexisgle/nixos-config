@@ -14,6 +14,7 @@
     bun
     nodejs
     rtk
+    jq
     zed-editor-fhs
     opencode-desktop
     github-desktop-plus
