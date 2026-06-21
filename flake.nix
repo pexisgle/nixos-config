@@ -46,9 +46,22 @@
     }@inputs:
     let
       customPackagesOverlay = final: prev: {
+        appimageTools = prev.appimageTools // {
+          wrapType2 = args: prev.appimageTools.wrapType2 (args // {
+            extraPkgs = p: (args.extraPkgs or (p: [])) p ++ (with final; [
+              numactl
+              elfutils
+              rocmPackages.rocprofiler-register
+              rocmPackages.clr
+              rocmPackages.rocblas
+              rocmPackages.hipblas
+              rocmPackages.rocminfo
+            ]);
+          });
+        };
+
         github-desktop-plus = final.callPackage ./pkgs/github-desktop-plus.nix { };
         antigravity = final.callPackage ./pkgs/antigravity-hub/package.nix { };
-        antigravity-cli = final.callPackage ./pkgs/antigravity-cli/package.nix { };
         # antigravity-ide = (final.callPackage ./pkgs/antigravity-ide/package.nix { }).fhs;
         openldap = prev.openldap.overrideAttrs (old: {
           doCheck = false;
