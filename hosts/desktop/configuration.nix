@@ -37,6 +37,11 @@
       rocmPackages.clr
       rocmPackages.rocm-smi
       rocmPackages.rocm-runtime
+      rocmPackages.rocblas
+      rocmPackages.hipblas
+      numactl
+      elfutils
+      rocmPackages.rocprofiler-register
     ];
   };
 }
