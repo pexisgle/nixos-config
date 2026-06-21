@@ -58,6 +58,35 @@ nix flake update
 
 更新後は `nixos-rebuild` で適用してください。
 
+### 自動更新 (GitHub Actions)
+
+`.github/workflows/update.yml` が毎週月曜 09:00 (JST) に以下を順番に実行し、変更があれば自動でPRを作ります。
+
+- `pkgs/antigravity-hub/sources.json` の更新
+- `pkgs/antigravity-cli/package.nix` の更新
+- `flake.lock` の更新 (`nix flake update`)
+
+手動実行も可能: Actions タブ → "update" → Run workflow → `target` を選択。
+
+- `all` (デフォルト): 全パッケージ + flake
+- `antigravity-hub`: hub のみ
+- `antigravity-cli`: cli のみ
+- `flake`: flake.lock のみ
+
+PRがマージされた後、ホスト側で `nixos-rebuild switch --flake .#pexisgle-desktop` (または laptop) を実行して反映してください。
+
+### ローカルから手動で実行
+
+CIと同じ処理をローカルで走らせるラッパー:
+
+```bash
+./scripts/update.sh                # 全パッケージ + flake
+./scripts/update.sh antigravity-hub
+./scripts/update.sh antigravity-cli
+./scripts/update.sh flake
+DRY_RUN=1 ./scripts/update.sh      # 変更を破棄して確認だけ
+```
+
 ## メモ
 
 - Home Manager は NixOS モジュールとして統合されています。

@@ -1,0 +1,170 @@
+name: update
+
+on:
+  schedule:
+    # JST 毎週月曜 09:00 (UTC 月曜 00:00)
+    - cron: "0 0 * * 1"
+  workflow_dispatch:
+    inputs:
+      target:
+        description: "What to update"
+        required: true
+        type: choice
+        default: all
+        options:
+          - all
+          - antigravity-hub
+          - antigravity-cli
+          - flake
+      dry_run:
+        description: "Dry run (no commit, no PR)"
+        required: false
+        type: boolean
+        default: false
+
+concurrency:
+  group: update
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  update:
+    name: Update (${{ inputs.target || 'all' }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Install Nix
+        uses: DeterminateSystems/nix-installer-action@v1
+        with:
+          extra-conf: |
+            experimental-features = nix-command flakes
+            accept-flake-config = true
+
+      - name: Enable unfree packages
+        run: |
+          mkdir -p ~/.config/nix
+          cat >> ~/.config/nix/nix.conf <<EOF
+          experimental-features = nix-command flakes
+          EOF
+          echo "NIXPKGS_ALLOW_UNFREE=1" >> $GITHUB_ENV
+
+      - name: Determine update set
+        id: plan
+        run: |
+          target="${{ inputs.target || 'all' }}"
+          case "$target" in
+            all)
+              echo "do_hub=true"     >> "$GITHUB_OUTPUT"
+              echo "do_cli=true"     >> "$GITHUB_OUTPUT"
+              echo "do_flake=true"   >> "$GITHUB_OUTPUT"
+              ;;
+            antigravity-hub) echo "do_hub=true"   >> "$GITHUB_OUTPUT" ;;
+            antigravity-cli) echo "do_cli=true"   >> "$GITHUB_OUTPUT" ;;
+            flake)           echo "do_flake=true" >> "$GITHUB_OUTPUT" ;;
+          esac
+
+      - name: Update antigravity-hub sources
+        if: steps.plan.outputs.do_hub == 'true'
+        run: bash pkgs/antigravity-hub/update.sh
+
+      - name: Update antigravity-cli (latest via nix-update)
+        if: steps.plan.outputs.do_cli == 'true'
+        run: |
+          set -euo pipefail
+          # Resolve latest version + per-platform URLs from the public storage layout.
+          # antigravity-cli publish layout: <version>-<exec_id>/{linux-x64,linux-arm,darwin-arm,darwin-x64}/cli_<plat>.tar.gz
+          version="$(curl -fsSL https://antigravity.google/api/cli/latest 2>/dev/null \
+            | jq -r '.version // empty')"
+          exec_id="$(curl -fsSL https://antigravity.google/api/cli/latest 2>/dev/null \
+            | jq -r '.execId // empty')"
+          if [[ -z "$version" || -z "$exec_id" ]]; then
+            echo "::warning::Failed to probe latest CLI version; skipping."
+            exit 0
+          fi
+          echo "Latest cli: $version ($exec_id)"
+          declare -A urls=(
+            [x86_64-linux]="${version}-${exec_id}/linux-x64/cli_linux_x64.tar.gz"
+            [aarch64-linux]="${version}-${exec_id}/linux-arm/cli_linux_arm64.tar.gz"
+            [aarch64-darwin]="${version}-${exec_id}/darwin-arm/cli_mac_arm64.tar.gz"
+            [x86_64-darwin]="${version}-${exec_id}/darwin-x64/cli_mac_x64.tar.gz"
+          )
+          args=("$version")
+          base="https://storage.googleapis.com/antigravity-public/antigravity-cli"
+          for system in x86_64-linux aarch64-linux aarch64-darwin x86_64-darwin; do
+            args+=("$system" "${base}/${urls[$system]}")
+          done
+          bash pkgs/antigravity-cli/update.sh "${args[@]}"
+
+      - name: Update flake.lock
+        if: steps.plan.outputs.do_flake == 'true'
+        run: nix flake update --commit-lock-file
+
+      - name: Detect changes
+        id: diff
+        run: |
+          if [[ -n "$(git status --porcelain)" ]]; then
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+            git status --porcelain
+          else
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            echo "No updates available."
+          fi
+
+      - name: Build (sanity check)
+        if: steps.diff.outputs.changed == 'true' && inputs.dry_run != 'true'
+        run: |
+          nix build .#nixosConfigurations.pexisgle-desktop.config.system.build.toplevel -L || \
+          nix build .#nixosConfigurations.pexisgle-laptop.config.system.build.toplevel -L || \
+          echo "::warning::Local build failed; continuing to open PR anyway."
+
+      - name: Configure git
+        if: steps.diff.outputs.changed == 'true' && inputs.dry_run != 'true'
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Commit changes
+        if: steps.diff.outputs.changed == 'true' && inputs.dry_run != 'true'
+        run: |
+          git add -A
+          git commit -m "chore(update): automated update
+
+          Triggered by: ${{ github.event_name }} (${{ github.event.schedule || github.event.inputs.target || 'manual' }})
+          Run: ${{ github.run_id }}"
+
+      - name: Create Pull Request
+        if: steps.diff.outputs.changed == 'true' && inputs.dry_run != 'true'
+        uses: peter-evans/create-pull-request@v6
+        with:
+          title: "chore(update): automated dependency & package update"
+          body: |
+            Automated update run: ${{ github.run_id }}
+
+            Trigger: `${{ github.event_name }}` (${{ github.event.schedule || 'workflow_dispatch' }})
+
+            **Targets updated:**
+            ${{ steps.plan.outputs.do_hub == 'true' && '- antigravity-hub' || '' }}
+            ${{ steps.plan.outputs.do_cli == 'true' && '- antigravity-cli' || '' }}
+            ${{ steps.plan.outputs.do_flake == 'true' && '- flake.lock (nix flake update)' || '' }}
+
+            Please review the diff and merge if all looks good. The host rebuild can be done with `nixos-rebuild switch --flake .#pexisgle-desktop`.
+
+            ---
+            *This PR was generated by the `update` workflow.*
+          branch: update/automated
+          commit-message: "chore(update): apply updates"
+          add-paths: |
+            pkgs/antigravity-hub/sources.json
+            pkgs/antigravity-cli/package.nix
+            flake.lock
+            flake.nix
+          delete-branch: true
