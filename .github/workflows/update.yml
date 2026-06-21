@@ -69,6 +69,11 @@ jobs:
             flake)           echo "do_flake=true" >> "$GITHUB_OUTPUT" ;;
           esac
 
+      - name: Configure git
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
       - name: Update antigravity-hub sources
         if: steps.plan.outputs.do_hub == 'true'
         run: bash pkgs/antigravity-hub/update.sh
@@ -94,12 +99,6 @@ jobs:
           nix build .#nixosConfigurations.pexisgle-desktop.config.system.build.toplevel -L || \
           nix build .#nixosConfigurations.pexisgle-laptop.config.system.build.toplevel -L || \
           echo "::warning::Local build failed; continuing to open PR anyway."
-
-      - name: Configure git
-        if: steps.diff.outputs.changed == 'true' && inputs.dry_run != 'true'
-        run: |
-          git config user.name  "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
 
       - name: Commit changes
         if: steps.diff.outputs.changed == 'true' && inputs.dry_run != 'true'
