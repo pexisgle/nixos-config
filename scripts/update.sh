@@ -1,6 +1,14 @@
 #!/usr/bin/env bash
 # Wrapper for the GitHub Actions update workflow.
 # Locally runs the same updaters that the workflow uses, with sensible flags.
+#
+# Usage:
+#   ./scripts/update.sh                       # update everything
+#   ./scripts/update.sh flake                # update flake.lock only
+#   ./scripts/update.sh antigravity-hub      # update antigravity-hub only
+#   FLAKE_INPUTS=nixpkgs ./scripts/update.sh flake   # update nixpkgs only
+#   FLAKE_INPUTS="nixpkgs home-manager" ./scripts/update.sh flake
+#   DRY_RUN=1 ./scripts/update.sh            # preview only
 set -euo pipefail
 
 script_dir="$(cd -- "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -20,8 +28,14 @@ run_hub() {
 }
 
 run_flake() {
-  log "Updating flake.lock..."
-  nix flake update
+  if [[ -n "${FLAKE_INPUTS:-}" ]]; then
+    log "Updating flake.lock (inputs: $FLAKE_INPUTS)..."
+    # shellcheck disable=SC2086
+    nix flake update $FLAKE_INPUTS
+  else
+    log "Updating flake.lock (all inputs)..."
+    nix flake update
+  fi
 }
 
 case "$target" in
