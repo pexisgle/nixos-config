@@ -14,6 +14,7 @@
     ./programs/gaming.nix
     ./programs/media.nix
     ./programs/opencode.nix
+    ./programs/ssh.nix
     ./programs/shell.nix
     ./programs/vscode.nix
   ];
