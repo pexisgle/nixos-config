@@ -32,7 +32,7 @@
       stdenv.cc.cc.lib
       zlib
       glib
-      xorg.libX11
+      libx11
       # ROCm/HIP に必要なライブラリ群
       rocmPackages.clr
       rocmPackages.rocm-smi

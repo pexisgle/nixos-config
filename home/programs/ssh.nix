@@ -3,10 +3,11 @@
 {
   programs.ssh = {
     enable = true;
-    matchBlocks = {
-      sol = {
-        hostname = "sol.cc.uec.ac.jp";
-        user = "s2611114";
+    enableDefaultConfig = false;
+    settings = {
+      "Host sol" = {
+        HostName = "sol.cc.uec.ac.jp";
+        User = "s2611114";
       };
     };
   };
