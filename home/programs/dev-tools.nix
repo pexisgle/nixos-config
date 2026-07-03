@@ -20,6 +20,6 @@
     github-desktop-plus
     antigravity
     antigravity-cli
-    code-cursor
+    code-cursor-fhs
   ];
 }
