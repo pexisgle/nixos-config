@@ -8,6 +8,11 @@
         "@tarquinen/opencode-dcp@latest"
         "openslimedit@latest"
       ];
+      mcp.github = {
+        type = "local";
+        command = [ "npx" "-y" "@modelcontextprotocol/server-github" ];
+        environment.GITHUB_TOKEN = "{env:GITHUB_TOKEN}";
+      };
     };
   };
 
