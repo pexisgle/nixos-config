@@ -1,4 +1,4 @@
-{ inputs, ... }:
+{ inputs, config, pkgs, lib, ... }:
 
 {
   programs.opencode = {
@@ -10,8 +10,14 @@
       ];
       mcp.github = {
         type = "local";
-        command = [ "npx" "-y" "@modelcontextprotocol/server-github" ];
-        environment.GITHUB_TOKEN = "{env:GITHUB_TOKEN}";
+        command = [
+          "${pkgs.writeShellScript "opencode-github-mcp" ''
+            TOKEN="$(${pkgs.coreutils}/bin/cat "${config.sops.secrets.github_token.path}")"
+            export GITHUB_TOKEN="$TOKEN"
+            export GITHUB_PERSONAL_ACCESS_TOKEN="$TOKEN"
+            exec ${pkgs.nodejs}/bin/npx -y @modelcontextprotocol/server-github
+          ''}"
+        ];
       };
     };
   };

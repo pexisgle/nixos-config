@@ -1,0 +1,7 @@
+keys:
+  - &pexisgle age1m6wdfr4yyjxnetjeydqs2wcthcq5yhvmqp7fyllnn9we0y3cvdrs66wvnw
+creation_rules:
+  - path_regex: secrets/.*\.ya?ml$
+    key_groups:
+      - age:
+        - *pexisgle

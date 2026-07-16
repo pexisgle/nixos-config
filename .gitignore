@@ -1,0 +1,5 @@
+# plaintext secrets (only encrypted sops files should be committed)
+secrets/*.env
+secrets/*.txt
+secrets/*.plain.yaml
+secrets/*.plain.yml

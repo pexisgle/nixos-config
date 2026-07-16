@@ -36,14 +36,20 @@
       url = "github:vercel-labs/skills";
       flake = false;
     };
+    sops-nix = {
+      url = "github:Mic92/sops-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
     {
+      self,
       nixpkgs,
       home-manager,
       lanzaboote,
       agent-skills,
+      sops-nix,
       ...
     }@inputs:
     let
@@ -93,10 +99,12 @@
               home-manager.backupFileExtension = "backup";
               home-manager.sharedModules = [
                 agent-skills.homeManagerModules.default
+                sops-nix.homeManagerModules.sops
               ];
               home-manager.users.pexisgle = import homeModule;
               home-manager.extraSpecialArgs = {
                 inherit inputs hostName;
+                sopsFile = "${self}/secrets/common.yaml";
               };
             }
             lanzaboote.nixosModules.lanzaboote
