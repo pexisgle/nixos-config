@@ -28,7 +28,6 @@
   ];
 
   home.sessionVariables = {
-    GITHUB_TOKEN = "$(cat ${config.sops.secrets.github_token.path})";
     KICAD10_SYMBOL_DIR = "${pkgs.kicad.libraries.symbols}/share/kicad/symbols";
     KICAD10_FOOTPRINT_DIR = "${pkgs.kicad.libraries.footprints}/share/kicad/footprints";
     KICAD10_TEMPLATE_DIR = "${pkgs.kicad.libraries.symbols}/share/kicad/template";
