@@ -108,6 +108,7 @@
               };
             }
             lanzaboote.nixosModules.lanzaboote
+            sops-nix.nixosModules.sops
           ];
         };
     in
