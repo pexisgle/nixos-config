@@ -26,12 +26,13 @@
   sops.secrets = {
     uec_vpn_psk = { };
     uec_vpn_user = { };
+    uec_vpn_pass = { };
   };
 
   sops.templates."uec-vpn" = {
     content = builtins.replaceStrings
-      [ "__PSK__" "__USER__" ]
-      [ config.sops.placeholder.uec_vpn_psk config.sops.placeholder.uec_vpn_user ]
+      [ "__PSK__" "__USER__" "__PASS__" ]
+      [ config.sops.placeholder.uec_vpn_psk config.sops.placeholder.uec_vpn_user config.sops.placeholder.uec_vpn_pass ]
       ''
         [connection]
         id=UEC VPN
@@ -45,6 +46,7 @@
 
         [vpn-secrets]
         ipsec-psk=__PSK__
+        password=__PASS__
 
         [ipv4]
         method=auto
