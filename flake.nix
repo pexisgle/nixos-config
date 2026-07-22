@@ -40,6 +40,11 @@
       url = "github:Mic92/sops-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    comfyui-nix = {
+      url = "github:utensils/comfyui-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
@@ -50,6 +55,7 @@
       lanzaboote,
       agent-skills,
       sops-nix,
+      comfyui-nix,
       ...
     }@inputs:
     let
@@ -80,6 +86,8 @@
         antigravity = final.callPackage ./pkgs/antigravity-hub/package.nix { };
       };
 
+      comfyuiOverlay = import ./overlays/comfyui.nix { inherit comfyui-nix; };
+
       mkHost =
         { hostName, homeModule }:
         nixpkgs.lib.nixosSystem {
@@ -89,7 +97,7 @@
           };
           modules = [
             {
-              nixpkgs.overlays = [ customPackagesOverlay ];
+              nixpkgs.overlays = [ customPackagesOverlay comfyui-nix.overlays.default comfyuiOverlay ];
             }
             ./modules/common.nix
             (./hosts + "/${hostName}/configuration.nix")

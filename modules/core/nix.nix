@@ -15,6 +15,17 @@
 
     auto-optimise-store = true;
 
+    # --- download / build 高速化 ---
+    max-substitution-jobs = 64;
+    http-connections = 150;
+    download-buffer-size = 52428800;
+    max-jobs = "auto";
+    cores = 0;
+
+    # --- store 容量管理: GC 中の空き容量を確保 ---
+    min-free = 10737418240;   # 10 GiB
+    max-free = 32212254720;   # 30 GiB
+
     substituters = [
       "https://cache.nixos.org/"
       "https://nix-community.cachix.org"
