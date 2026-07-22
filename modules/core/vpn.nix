@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ config, pkgs, lib, ... }:
 
 {
   environment.systemPackages = with pkgs; [
@@ -6,8 +6,6 @@
     strongswan
     xl2tpd
   ];
-  
-  services.xl2tpd.enable = true;
 
   networking.networkmanager = {
     plugins = with pkgs; [
@@ -16,12 +14,17 @@
     ];
   };
 
-  services.strongswan = {
-    enable = true;
-    secrets = [ "ipsec.d/ipsec.nm-l2tp.secrets" ];
-  };
-  
-  environment.etc."strongswan.conf".text = "";
+  # Required so charon can start when launched by nm-l2tp-service
+  # (which runs "ipsec restart --conf <custom>" without STRONGSWAN_CONF)
+  environment.etc."strongswan.conf".text = ''
+    charon {
+      plugins {
+        stroke {
+          secrets_file = /etc/ipsec.secrets
+        }
+      }
+    }
+  '';
 
   sops.secrets = {
     uec_vpn_psk = { };
@@ -29,13 +32,13 @@
     uec_vpn_pass = { };
   };
 
-  sops.templates."uec-vpn" = {
+  sops.templates."uec-vpn-nmconnection" = {
     content = builtins.replaceStrings
       [ "__PSK__" "__USER__" "__PASS__" ]
       [ config.sops.placeholder.uec_vpn_psk config.sops.placeholder.uec_vpn_user config.sops.placeholder.uec_vpn_pass ]
       ''
         [connection]
-        id=UEC VPN
+        id=UEC-VPN
         type=vpn
         autoconnect=false
 
@@ -43,6 +46,9 @@
         service-type=org.freedesktop.NetworkManager.l2tp
         gateway=vpn.cc.uec.ac.jp
         user=__USER__
+        ipsec-enabled=yes
+        machine-auth-type=psk
+        password-flags=2
 
         [vpn-secrets]
         ipsec-psk=__PSK__
@@ -54,9 +60,10 @@
         [ipv6]
         method=disabled
       '';
-    path = "/etc/NetworkManager/system-connections/UEC VPN.nmconnection";
+  };
+
+  environment.etc."NetworkManager/system-connections/UEC-VPN.nmconnection" = {
+    source = config.sops.templates."uec-vpn-nmconnection".path;
     mode = "0600";
-    owner = "root";
-    group = "root";
   };
 }
