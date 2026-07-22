@@ -15,10 +15,19 @@ let
 
   pythonOverrides = finalPy: prevPy:
     (basePythonOverrides finalPy prevPy) // {
-      inline-snapshot = (prevPy.inline-snapshot or finalPy.inline-snapshot).overridePythonAttrs (_: {
+      "gradio-client" = (prevPy."gradio-client" or finalPy."gradio-client").overridePythonAttrs (_: {
+        dontCheckRuntimeDeps = true;
+      });
+      "gradio" = (prevPy."gradio" or finalPy."gradio").overridePythonAttrs (_: {
+        dontCheckRuntimeDeps = true;
+      });
+      "comfyui-manager" = (prevPy."comfyui-manager" or finalPy."comfyui-manager").overridePythonAttrs (_: {
+        dontCheckRuntimeDeps = true;
+      });
+      "inline-snapshot" = (prevPy."inline-snapshot" or finalPy."inline-snapshot").overridePythonAttrs (_: {
         doCheck = false;
       });
-      mss = (prevPy.mss or finalPy.mss).overridePythonAttrs (_: {
+      "mss" = (prevPy."mss" or finalPy."mss").overridePythonAttrs (_: {
         doCheck = false;
       });
     };
@@ -32,26 +41,38 @@ let
     inherit python versions;
   };
 
-  comfyuiManagerFixed = vendored.comfyuiManager.overridePythonAttrs (old: {
+  gradioClientFixed = vendored.gradioClient.overridePythonAttrs (_: {
     dontCheckRuntimeDeps = true;
-    propagatedBuildInputs = (old.propagatedBuildInputs or [ ]) ++ (
-      with python.pkgs;
-      [
-        chardet
-        gitpython
-        huggingface-hub
-        pygithub
-        rich
-        toml
-        transformers
-        typing-extensions
-        typer
-        uv
-      ]
-    );
   });
 
-  vendoredFixed = vendored // { comfyuiManager = comfyuiManagerFixed; };
+  vendoredFixed = builtins.mapAttrs (name: pkg:
+    if pkg != null && builtins.isAttrs pkg && pkg ? overridePythonAttrs then
+      pkg.overridePythonAttrs (old: {
+        dontCheckRuntimeDeps = true;
+        propagatedBuildInputs = builtins.map (input:
+          if (input.pname or "") == "gradio-client" then gradioClientFixed else input
+        ) (
+          (old.propagatedBuildInputs or [ ]) ++ (
+            if name == "comfyuiManager" then
+              with python.pkgs; [
+                chardet
+                gitpython
+                huggingface-hub
+                pygithub
+                rich
+                toml
+                transformers
+                typing-extensions
+                typer
+                uv
+              ]
+            else [ ]
+          )
+        );
+      })
+    else
+      pkg
+  ) vendored;
 
   customNodes = import "${comfyuiNixPath}/nix/custom-nodes.nix" {
     pkgs = final;
@@ -396,5 +417,25 @@ SITEEOF
   };
 in
 {
+  pythonPackagesExtensions = (prev.pythonPackagesExtensions or [ ]) ++ [
+    (pythonFinal: pythonPrev: {
+      "gradio-client" = (pythonPrev."gradio-client" or pythonFinal."gradio-client").overridePythonAttrs (_: {
+        dontCheckRuntimeDeps = true;
+      });
+      "gradio" = (pythonPrev."gradio" or pythonFinal."gradio").overridePythonAttrs (_: {
+        dontCheckRuntimeDeps = true;
+      });
+      "comfyui-manager" = (pythonPrev."comfyui-manager" or pythonFinal."comfyui-manager").overridePythonAttrs (_: {
+        dontCheckRuntimeDeps = true;
+      });
+      "inline-snapshot" = (pythonPrev."inline-snapshot" or pythonFinal."inline-snapshot").overridePythonAttrs (_: {
+        doCheck = false;
+      });
+      "mss" = (pythonPrev."mss" or pythonFinal."mss").overridePythonAttrs (_: {
+        doCheck = false;
+      });
+    })
+  ];
+
   comfy-ui-rocm = comfyUiPackageFixed;
 }
