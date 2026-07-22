@@ -17,7 +17,6 @@
     };
     niri = {
       url = "github:sodiboo/niri-flake";
-      inputs.nixpkgs.follows = "nixpkgs";
     };
     lanzaboote = {
       url = "github:nix-community/lanzaboote";
@@ -40,11 +39,6 @@
       url = "github:Mic92/sops-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-
-    comfyui-nix = {
-      url = "github:utensils/comfyui-nix";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
   };
 
   outputs =
@@ -55,38 +49,13 @@
       lanzaboote,
       agent-skills,
       sops-nix,
-      comfyui-nix,
       ...
     }@inputs:
     let
       customPackagesOverlay = final: prev: {
-        appimageTools = prev.appimageTools // {
-          wrapType2 =
-            args:
-            prev.appimageTools.wrapType2 (
-              args
-              // {
-                extraPkgs =
-                  p:
-                  (args.extraPkgs or (p: [ ])) p
-                  ++ (with final; [
-                    numactl
-                    elfutils
-                    rocmPackages.rocprofiler-register
-                    rocmPackages.clr
-                    rocmPackages.rocblas
-                    rocmPackages.hipblas
-                    rocmPackages.rocminfo
-                  ]);
-              }
-            );
-        };
-
         github-desktop-plus = final.callPackage ./pkgs/github-desktop-plus.nix { };
         antigravity = final.callPackage ./pkgs/antigravity-hub/package.nix { };
       };
-
-      comfyuiOverlay = import ./overlays/comfyui.nix { inherit comfyui-nix; };
 
       mkHost =
         { hostName, homeModule }:
@@ -97,7 +66,7 @@
           };
           modules = [
             {
-              nixpkgs.overlays = [ customPackagesOverlay comfyui-nix.overlays.default comfyuiOverlay ];
+              nixpkgs.overlays = [ customPackagesOverlay ];
             }
             ./modules/common.nix
             (./hosts + "/${hostName}/configuration.nix")
