@@ -47,9 +47,7 @@ jobs:
             accept-flake-config = true
 
       - name: Cache Nix store
-        uses: DeterminateSystems/magic-nix-cache-action@v9
-        with:
-          use-flakehub: false
+        uses: DeterminateSystems/flakehub-cache-action@v1
 
       - name: Enable unfree packages
         run: |
