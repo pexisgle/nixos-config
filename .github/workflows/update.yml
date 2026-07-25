@@ -10,10 +10,8 @@ on:
         description: "What to update"
         required: true
         type: choice
-        default: all
+        default: flake
         options:
-          - all
-          - antigravity-hub
           - flake
       dry_run:
         description: "Dry run (no commit, no PR)"
@@ -31,7 +29,7 @@ permissions:
 
 jobs:
   update:
-    name: Update (${{ inputs.target || 'all' }})
+    name: Update (${{ inputs.target || 'flake' }})
     runs-on: ubuntu-latest
     timeout-minutes: 120
     steps:
@@ -49,7 +47,9 @@ jobs:
             accept-flake-config = true
 
       - name: Cache Nix store
-        uses: DeterminateSystems/magic-nix-cache-action@v8
+        uses: DeterminateSystems/magic-nix-cache-action@v9
+        with:
+          use-flakehub: false
 
       - name: Enable unfree packages
         run: |
@@ -59,30 +59,12 @@ jobs:
           EOF
           echo "NIXPKGS_ALLOW_UNFREE=1" >> $GITHUB_ENV
 
-      - name: Determine update set
-        id: plan
-        run: |
-          target="${{ inputs.target || 'all' }}"
-          case "$target" in
-            all)
-              echo "do_hub=true"     >> "$GITHUB_OUTPUT"
-              echo "do_flake=true"   >> "$GITHUB_OUTPUT"
-              ;;
-            antigravity-hub) echo "do_hub=true"   >> "$GITHUB_OUTPUT" ;;
-            flake)           echo "do_flake=true" >> "$GITHUB_OUTPUT" ;;
-          esac
-
       - name: Configure git
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-      - name: Update antigravity-hub sources
-        if: steps.plan.outputs.do_hub == 'true'
-        run: bash pkgs/antigravity-hub/update.sh
-
       - name: Update flake.lock
-        if: steps.plan.outputs.do_flake == 'true'
         run: nix flake update --commit-lock-file
 
       - name: Detect changes
@@ -96,12 +78,12 @@ jobs:
             echo "No updates available."
           fi
 
-      - name: Build (sanity check)
+      - name: Evaluate configurations (sanity check)
         if: steps.diff.outputs.changed == 'true' && inputs.dry_run != 'true'
         run: |
-          nix build .#nixosConfigurations.pexisgle-desktop.config.system.build.toplevel -L || \
-          nix build .#nixosConfigurations.pexisgle-laptop.config.system.build.toplevel -L || \
-          echo "::warning::Local build failed; continuing to open PR anyway."
+          echo "Evaluating NixOS system configurations..."
+          nix eval .#nixosConfigurations.pexisgle-desktop.config.system.build.toplevel.drvPath
+          nix eval .#nixosConfigurations.pexisgle-laptop.config.system.build.toplevel.drvPath
 
       - name: Commit changes
         if: steps.diff.outputs.changed == 'true' && inputs.dry_run != 'true'
@@ -114,7 +96,7 @@ jobs:
 
       - name: Create Pull Request
         if: steps.diff.outputs.changed == 'true' && inputs.dry_run != 'true'
-        uses: peter-evans/create-pull-request@v6
+        uses: peter-evans/create-pull-request@v7
         with:
           title: "chore(update): automated dependency & package update"
           body: |
@@ -123,8 +105,7 @@ jobs:
             Trigger: `${{ github.event_name }}` (${{ github.event.schedule || 'workflow_dispatch' }})
 
             **Targets updated:**
-            ${{ steps.plan.outputs.do_hub == 'true' && '- antigravity-hub' || '' }}
-            ${{ steps.plan.outputs.do_flake == 'true' && '- flake.lock (nix flake update)' || '' }}
+            - flake.lock (nix flake update)
 
             Please review the diff and merge if all looks good. The host rebuild can be done with `nixos-rebuild switch --flake .#pexisgle-desktop`.
 
@@ -133,7 +114,6 @@ jobs:
           branch: update/automated
           commit-message: "chore(update): apply updates"
           add-paths: |
-            pkgs/antigravity-hub/sources.json
             flake.lock
             flake.nix
           delete-branch: true
