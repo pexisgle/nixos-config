@@ -39,6 +39,10 @@
       url = "github:Mic92/sops-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    antigravity-nix = {
+      url = "github:jacopone/antigravity-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
@@ -49,12 +53,18 @@
       lanzaboote,
       agent-skills,
       sops-nix,
+      antigravity-nix,
       ...
     }@inputs:
     let
       customPackagesOverlay = final: prev: {
         github-desktop-plus = final.callPackage ./pkgs/github-desktop-plus.nix { };
-        antigravity = final.callPackage ./pkgs/antigravity-hub/package.nix { };
+        antigravity = inputs.antigravity-nix.packages.${final.system}.default;
+        rtk = prev.rtk.overrideAttrs (oldAttrs: {
+          env = (oldAttrs.env or { }) // {
+            RUSTFLAGS = "--cap-lints allow";
+          };
+        });
       };
 
       mkHost =

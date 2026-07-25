@@ -60,18 +60,9 @@ nix flake update
 
 ### 自動更新 (GitHub Actions)
 
-`.github/workflows/update.yml` が毎週月曜 09:00 (JST) に以下を順番に実行し、変更があれば自動でPRを作ります。
+`.github/workflows/update.yml` が毎週月曜 09:00 (JST) に `flake.lock` の更新 (`nix flake update`) を実行し、変更があれば自動でPRを作ります。
 
-- `pkgs/antigravity-hub/sources.json` の更新
-- `flake.lock` の更新 (`nix flake update`)
-
-`antigravity-cli` は nixpkgs upstream を使用しているため、自前パッケージはありません。
-
-手動実行も可能: Actions タブ → "update" → Run workflow → `target` を選択。
-
-- `all` (デフォルト): antigravity-hub + flake
-- `antigravity-hub`: hub のみ
-- `flake`: flake.lock のみ
+Antigravity（Hub / CLI）は [jacopone/antigravity-nix](https://github.com/jacopone/antigravity-nix) Flake および nixpkgs から提供されているため、`nix flake update` で同時に最新版に更新されます。
 
 PRがマージされた後、ホスト側で `nixos-rebuild switch --flake .#pexisgle-desktop` (または laptop) を実行して反映してください。
 
@@ -80,9 +71,7 @@ PRがマージされた後、ホスト側で `nixos-rebuild switch --flake .#pex
 CIと同じ処理をローカルで走らせるラッパー:
 
 ```bash
-./scripts/update.sh                # antigravity-hub + flake
-./scripts/update.sh antigravity-hub
-./scripts/update.sh flake
+./scripts/update.sh                # flake.lock の更新
 DRY_RUN=1 ./scripts/update.sh      # 変更を破棄して確認だけ
 ```
 

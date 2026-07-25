@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ config, pkgs, lib, ... }:
 
 {
   imports = [
@@ -18,6 +18,16 @@
 
   services.xserver.videoDrivers = [ "amdgpu" ];
   boot.initrd.kernelModules = [ "amdgpu" ];
+
+  # Dual monitor flicker workaround for AMD KWin
+  environment.sessionVariables = {
+    KWIN_DRM_NO_AMS = "1";
+  };
+
+  swapDevices = lib.mkForce [ {
+    device = "/swapfile";
+    size = 16384;
+  } ];
   
   environment.systemPackages = with pkgs; [
     vulkan-loader
@@ -33,7 +43,6 @@
       zlib
       glib
       libx11
-      # ROCm/HIP に必要なライブラリ群
       rocmPackages.clr
       rocmPackages.rocm-smi
       rocmPackages.rocm-runtime

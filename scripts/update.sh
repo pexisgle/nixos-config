@@ -22,11 +22,6 @@ log() { printf '\033[1;34m==>\033[0m %s\n' "$*"; }
 warn() { printf '\033[1;33m!!\033[0m %s\n' "$*" >&2; }
 err()  { printf '\033[1;31mxx\033[0m %s\n' "$*" >&2; }
 
-run_hub() {
-  log "Updating antigravity-hub..."
-  bash pkgs/antigravity-hub/update.sh
-}
-
 run_flake() {
   if [[ -n "${FLAKE_INPUTS:-}" ]]; then
     log "Updating flake.lock (inputs: $FLAKE_INPUTS)..."
@@ -39,13 +34,11 @@ run_flake() {
 }
 
 case "$target" in
-  all)
-    run_hub; run_flake
+  all|flake)
+    run_flake
     ;;
-  antigravity-hub) run_hub ;;
-  flake)           run_flake ;;
   *)
-    err "Unknown target: $target (use: all | antigravity-hub | flake)"
+    err "Unknown target: $target (use: all | flake)"
     exit 1
     ;;
 esac
