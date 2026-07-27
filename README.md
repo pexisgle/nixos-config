@@ -62,7 +62,7 @@ nix flake update
 
 `.github/workflows/update.yml` が毎週月曜 09:00 (JST) に `flake.lock` の更新 (`nix flake update`) を実行し、変更があれば自動でPRを作ります。
 
-Antigravity（Hub / CLI）は [jacopone/antigravity-nix](https://github.com/jacopone/antigravity-nix) Flake および nixpkgs から提供されているため、`nix flake update` で同時に最新版に更新されます。
+Antigravity（Hub / CLI）は [Hy4ri/antigravity-flake](https://github.com/Hy4ri/antigravity-flake) Flake および nixpkgs から提供されているため、`nix flake update` で同時に最新版に更新されます。
 
 PRがマージされた後、ホスト側で `nixos-rebuild switch --flake .#pexisgle-desktop` (または laptop) を実行して反映してください。
 

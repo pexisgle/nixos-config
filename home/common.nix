@@ -25,6 +25,7 @@
   home.packages = with pkgs; [
     kicad
     lmstudio
+    claude-auto-retry
   ];
 
   home.sessionVariables = {

@@ -39,8 +39,8 @@
       url = "github:Mic92/sops-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    antigravity-nix = {
-      url = "github:jacopone/antigravity-nix";
+    antigravity-flake = {
+      url = "github:Hy4ri/antigravity-flake";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
@@ -53,13 +53,14 @@
       lanzaboote,
       agent-skills,
       sops-nix,
-      antigravity-nix,
+      antigravity-flake,
       ...
     }@inputs:
     let
       customPackagesOverlay = final: prev: {
         github-desktop-plus = final.callPackage ./pkgs/github-desktop-plus.nix { };
-        antigravity = inputs.antigravity-nix.packages.${final.system}.default;
+        claude-auto-retry = final.callPackage ./pkgs/claude-auto-retry.nix { };
+        antigravity = inputs.antigravity-flake.packages.${final.system}.antigravity;
         rtk = prev.rtk.overrideAttrs (oldAttrs: {
           env = (oldAttrs.env or { }) // {
             RUSTFLAGS = "--cap-lints allow";

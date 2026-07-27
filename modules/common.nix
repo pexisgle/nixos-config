@@ -2,6 +2,7 @@
 
 {
   imports = [
+    ./core/atd.nix
     ./core/boot.nix
     ./core/docker.nix
     ./core/nix.nix

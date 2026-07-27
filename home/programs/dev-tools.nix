@@ -4,6 +4,7 @@
   home.packages = with pkgs; [
     gcr
     kitty
+    tmux
     xwayland-satellite
     nixd
     nixfmt
@@ -16,6 +17,7 @@
     rtk
     jq
     zed-editor-fhs
+    claude-code
     opencode-desktop
     github-desktop-plus
     antigravity
