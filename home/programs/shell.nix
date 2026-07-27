@@ -18,9 +18,7 @@
 
     initContent = ''
       eval "$(devenv hook zsh)"
-    '';
 
-    initExtra = ''
       # >>> claude-auto-retry >>>
       # Drop any pre-existing `claude` alias (Claude Code's own installer adds one)
       # before defining the wrapper function. Without this, the shell expands the

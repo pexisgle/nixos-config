@@ -60,7 +60,8 @@
       customPackagesOverlay = final: prev: {
         github-desktop-plus = final.callPackage ./pkgs/github-desktop-plus.nix { };
         claude-auto-retry = final.callPackage ./pkgs/claude-auto-retry.nix { };
-        antigravity = inputs.antigravity-flake.packages.${final.system}.antigravity;
+        antigravity = inputs.antigravity-flake.packages.${final.stdenv.hostPlatform.system}.antigravity;
+        niri = final.niri-stable;
         rtk = prev.rtk.overrideAttrs (oldAttrs: {
           env = (oldAttrs.env or { }) // {
             RUSTFLAGS = "--cap-lints allow";
@@ -77,7 +78,7 @@
           };
           modules = [
             {
-              nixpkgs.overlays = [ customPackagesOverlay ];
+              nixpkgs.overlays = [ customPackagesOverlay inputs.niri.overlays.niri ];
             }
             ./modules/common.nix
             (./hosts + "/${hostName}/configuration.nix")
