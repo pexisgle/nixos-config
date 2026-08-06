@@ -5,7 +5,6 @@
     enable = true;
     settings = {
       plugin = [
-        "@tarquinen/opencode-dcp@latest"
         "openslimedit@latest"
       ];
       mcp.github = {

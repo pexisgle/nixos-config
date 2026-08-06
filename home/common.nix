@@ -17,6 +17,7 @@
     ./programs/ssh.nix
     ./programs/shell.nix
     ./programs/vscode.nix
+    inputs.codex-desktop-linux.homeManagerModules.default
   ];
 
   home.username = "pexisgle";
@@ -25,8 +26,15 @@
   home.packages = with pkgs; [
     kicad
     lmstudio
+    codex
     claude-auto-retry
+    opencodex
   ];
+
+  programs.codexDesktopLinux = {
+    enable = true;
+    cliPackage = pkgs.codex;
+  };
 
   home.sessionVariables = {
     KICAD10_SYMBOL_DIR = "${pkgs.kicad.libraries.symbols}/share/kicad/symbols";

@@ -43,6 +43,10 @@
       url = "github:Hy4ri/antigravity-flake";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    codex-desktop-linux = {
+      url = "github:ilysenko/codex-desktop-linux";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
@@ -60,6 +64,7 @@
       customPackagesOverlay = final: prev: {
         github-desktop-plus = final.callPackage ./pkgs/github-desktop-plus.nix { };
         claude-auto-retry = final.callPackage ./pkgs/claude-auto-retry.nix { };
+        opencodex = final.callPackage ./pkgs/opencodex.nix { };
         antigravity = inputs.antigravity-flake.packages.${final.stdenv.hostPlatform.system}.antigravity;
         niri = final.niri-stable;
         rtk = prev.rtk.overrideAttrs (oldAttrs: {

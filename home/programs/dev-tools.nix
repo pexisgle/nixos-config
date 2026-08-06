@@ -15,6 +15,33 @@
     bun
     nodejs
     rtk
+    # Search, navigation, and structural code queries
+    ripgrep
+    fd
+    ast-grep
+    fzf
+    zoxide
+    broot
+
+    # Modern command-line replacements and file utilities
+    bat
+    eza
+    sd
+    dust
+    duf
+    procs
+    tealdeer
+    yazi
+    ouch
+    jless
+
+    # Development workflow utilities
+    delta
+    tokei
+    hyperfine
+    just
+    watchexec
+    xh
     jq
     zed-editor-fhs
     claude-code

@@ -1,4 +1,4 @@
-{ config, ... }:
+{ config, pkgs, ... }:
 
 {
   programs.ssh = {
@@ -9,10 +9,20 @@
         HostName = "sol.cc.uec.ac.jp";
         User = "s2611114";
       };
+
+      "Host rpi" = {
+        HostName = "rpi.pexisgle.dev";
+        User = "pexisgle";
+        ProxyCommand = "${pkgs.cloudflared}/bin/cloudflared access ssh --hostname %h";
+      };
     };
   };
 
-  home.activation.sshConfig = config.lib.dag.entryAfter ["writeBoundary"] ''
+  home.packages = [
+    pkgs.cloudflared
+  ];
+
+  home.activation.sshConfig = config.lib.dag.entryAfter [ "writeBoundary" ] ''
     if [ -L ~/.ssh/config ]; then
       rm ~/.ssh/config
     fi
