@@ -28,7 +28,7 @@ No repository variable is required because the cache name is fixed in the workfl
 
 ## Codex Desktop Linux
 
-`codex-desktop-linux` publishes an upstream Cachix cache. The repository cache workflow pulls from it with `extraPullNames: codex-desktop-linux`, avoiding a local CI rebuild when the exact locked output is already available upstream.
+`codex-desktop-linux` publishes an upstream Cachix cache. The repository cache workflow always enables that cache for pulling, avoiding a local CI rebuild when the exact locked output is already available upstream.
 
 For local machines, enable it directly as well:
 
