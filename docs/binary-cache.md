@@ -13,7 +13,7 @@ Examples include:
 
 The repository-owned cache is `pexisgle` (`https://pexisgle.cachix.org`).
 
-`.github/workflows/cache.yml` builds both NixOS system closures on pushes to `main` and uploads newly built store paths to this cache.
+`.github/workflows/cache.yml` builds both NixOS system closures on pushes to `main`. When `CACHIX_AUTH_TOKEN` is configured, newly built store paths are uploaded to this cache. Without the secret, the workflow still validates both builds but skips upload.
 
 One-time setup:
 
