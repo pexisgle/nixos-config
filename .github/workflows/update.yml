@@ -26,12 +26,13 @@ concurrency:
 permissions:
   contents: write
   pull-requests: write
+  id-token: write
 
 jobs:
   update:
     name: Update (${{ inputs.target || 'flake' }})
     runs-on: ubuntu-latest
-    timeout-minutes: 120
+    timeout-minutes: 240
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -76,12 +77,12 @@ jobs:
             echo "No updates available."
           fi
 
-      - name: Evaluate configurations (sanity check)
+      - name: Build configurations (sanity check + cache warmup)
         if: steps.diff.outputs.changed == 'true' && inputs.dry_run != 'true'
         run: |
-          echo "Evaluating NixOS system configurations..."
-          nix eval .#nixosConfigurations.pexisgle-desktop.config.system.build.toplevel.drvPath
-          nix eval .#nixosConfigurations.pexisgle-laptop.config.system.build.toplevel.drvPath
+          echo "Building NixOS system configurations..."
+          nix build --no-link --print-build-logs .#nixosConfigurations.pexisgle-desktop.config.system.build.toplevel
+          nix build --no-link --print-build-logs .#nixosConfigurations.pexisgle-laptop.config.system.build.toplevel
 
       - name: Commit changes
         if: steps.diff.outputs.changed == 'true' && inputs.dry_run != 'true'
