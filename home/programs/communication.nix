@@ -5,6 +5,5 @@
     vesktop
     slack
     notion-app-enhanced
-    github-desktop-plus
   ];
 }
