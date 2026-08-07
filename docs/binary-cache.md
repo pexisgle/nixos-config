@@ -11,20 +11,20 @@ Examples include:
 
 ## Repository Cachix cache
 
-`.github/workflows/cache.yml` can build both NixOS system closures on pushes to `main` and upload newly built store paths to a Cachix cache.
+The repository-owned cache is `pexisgle` (`https://pexisgle.cachix.org`).
+
+`.github/workflows/cache.yml` builds both NixOS system closures on pushes to `main` and uploads newly built store paths to this cache.
 
 One-time setup:
 
-1. Create a Cachix cache.
-2. Add a GitHub Actions repository variable named `CACHIX_CACHE_NAME` containing the cache name.
-3. Add a GitHub Actions secret named `CACHIX_AUTH_TOKEN` containing a token with write access to that cache.
-4. Enable the same cache on each NixOS host with:
+1. Add a GitHub Actions secret named `CACHIX_AUTH_TOKEN` containing a token with write access to the `pexisgle` cache.
+2. Enable the cache on each NixOS host with:
 
    ```sh
-   nix run nixpkgs#cachix -- use <cache-name>
+   nix run nixpkgs#cachix -- use pexisgle
    ```
 
-The cache workflow is intentionally skipped until `CACHIX_CACHE_NAME` is configured.
+No repository variable is required because the cache name is fixed in the workflow.
 
 ## Codex Desktop Linux
 
@@ -40,4 +40,4 @@ nix run nixpkgs#cachix -- use codex-desktop-linux
 
 The existing dependency update workflow uses FlakeHub Cache. It now builds the desktop and laptop system closures after updating `flake.lock`, so successful update runs cache actual build outputs instead of evaluation metadata only.
 
-FlakeHub Cache is primarily useful to the CI workflow. The Cachix workflow above is the portable cache intended for normal NixOS hosts.
+FlakeHub Cache is primarily useful to the CI workflow. The `pexisgle` Cachix cache is the portable cache intended for normal NixOS hosts.
