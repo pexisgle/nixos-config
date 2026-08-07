@@ -25,6 +25,8 @@ jobs:
   build-and-cache:
     runs-on: ubuntu-latest
     timeout-minutes: 240
+    env:
+      CACHIX_AUTH_TOKEN: ${{ secrets.CACHIX_AUTH_TOKEN }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -37,11 +39,16 @@ jobs:
             accept-flake-config = true
 
       - name: Configure Cachix
+        if: env.CACHIX_AUTH_TOKEN != ''
         uses: cachix/cachix-action@v17
         with:
           name: pexisgle
           authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
           extraPullNames: codex-desktop-linux
+
+      - name: Explain missing Cachix token
+        if: env.CACHIX_AUTH_TOKEN == ''
+        run: echo "CACHIX_AUTH_TOKEN is not configured; builds will be validated but not uploaded to the pexisgle cache."
 
       - name: Enable unfree packages
         run: echo "NIXPKGS_ALLOW_UNFREE=1" >> "$GITHUB_ENV"
