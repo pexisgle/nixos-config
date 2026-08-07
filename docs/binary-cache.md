@@ -21,7 +21,7 @@ One-time setup:
 4. Enable the same cache on each NixOS host with:
 
    ```sh
-   cachix use <cache-name>
+   nix run nixpkgs#cachix -- use <cache-name>
    ```
 
 The cache workflow is intentionally skipped until `CACHIX_CACHE_NAME` is configured.
@@ -33,7 +33,7 @@ The cache workflow is intentionally skipped until `CACHIX_CACHE_NAME` is configu
 For local machines, enable it directly as well:
 
 ```sh
-cachix use codex-desktop-linux
+nix run nixpkgs#cachix -- use codex-desktop-linux
 ```
 
 ## FlakeHub Cache in update CI
