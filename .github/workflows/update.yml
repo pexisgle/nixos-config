@@ -77,7 +77,7 @@ jobs:
             echo "No updates available."
           fi
 
-      - name: Build configurations (sanity check + cache)
+      - name: Build configurations (sanity check + cache warmup)
         if: steps.diff.outputs.changed == 'true' && inputs.dry_run != 'true'
         run: |
           echo "Building NixOS system configurations..."
@@ -105,8 +105,6 @@ jobs:
 
             **Targets updated:**
             - flake.lock (nix flake update)
-
-            The desktop and laptop system closures were built successfully before this PR was created, and those builds are eligible for FlakeHub Cache reuse in CI.
 
             Please review the diff and merge if all looks good. The host rebuild can be done with `nixos-rebuild switch --flake .#pexisgle-desktop`.
 
