@@ -27,6 +27,8 @@
     pkgs.cloudflared
   ];
 
+  home.file.".ssh/config".force = true;
+
   home.activation.makeSshConfigWritable = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
     sshConfig="$HOME/.ssh/config"
     if [ -L "$sshConfig" ]; then

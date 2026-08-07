@@ -1,0 +1,64 @@
+name: cache
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "flake.nix"
+      - "flake.lock"
+      - "home/**"
+      - "hosts/**"
+      - "modules/**"
+      - "pkgs/**"
+      - ".github/workflows/cache.yml"
+  workflow_dispatch:
+
+concurrency:
+  group: nix-cache-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  build-and-cache:
+    runs-on: ubuntu-latest
+    timeout-minutes: 240
+    env:
+      CACHIX_AUTH_TOKEN: ${{ secrets.CACHIX_AUTH_TOKEN }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Nix
+        uses: DeterminateSystems/nix-installer-action@v1
+        with:
+          extra-conf: |
+            experimental-features = nix-command flakes
+            accept-flake-config = true
+
+      - name: Configure upstream Cachix caches
+        uses: cachix/cachix-action@v17
+        with:
+          name: codex-desktop-linux
+
+      - name: Configure repository Cachix cache
+        if: env.CACHIX_AUTH_TOKEN != ''
+        uses: cachix/cachix-action@v17
+        with:
+          name: pexisgle
+          authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
+
+      - name: Explain missing Cachix token
+        if: env.CACHIX_AUTH_TOKEN == ''
+        run: echo "CACHIX_AUTH_TOKEN is not configured; builds will be validated but not uploaded to the pexisgle cache."
+
+      - name: Enable unfree packages
+        run: echo "NIXPKGS_ALLOW_UNFREE=1" >> "$GITHUB_ENV"
+
+      - name: Build desktop closure
+        run: nix build --no-link --print-build-logs .#nixosConfigurations.pexisgle-desktop.config.system.build.toplevel
+
+      - name: Build laptop closure
+        run: nix build --no-link --print-build-logs .#nixosConfigurations.pexisgle-laptop.config.system.build.toplevel
