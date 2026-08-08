@@ -20,6 +20,7 @@ concurrency:
 
 permissions:
   contents: read
+  id-token: write
 
 jobs:
   build-and-cache:
@@ -37,6 +38,9 @@ jobs:
           extra-conf: |
             experimental-features = nix-command flakes
             accept-flake-config = true
+
+      - name: Configure GitHub Actions Nix cache
+        uses: DeterminateSystems/magic-nix-cache-action@main
 
       - name: Configure upstream Cachix caches
         uses: cachix/cachix-action@v17
