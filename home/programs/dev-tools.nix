@@ -11,7 +11,6 @@
     gh
     devenv
     mise
-    secretspec
     bun
     nodejs
     rtk
