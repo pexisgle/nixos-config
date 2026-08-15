@@ -1,17 +1,20 @@
-{ ... }:
+{ pkgs, ... }:
 
 {
-  programs.niri.settings = {
-    input = {
-      keyboard = {
-        numlock = false;
-        xkb = {
-          layout = "jp";
+  programs.niri = {
+    package = pkgs.niri;
+    settings = {
+      input = {
+        keyboard = {
+          numlock = false;
+          xkb = {
+            layout = "jp";
+          };
         };
       };
+      "spawn-at-startup" = [
+        { argv = [ "vesktop" ]; }
+      ];
     };
-    "spawn-at-startup" = [
-      { argv = [ "vesktop" ]; }
-    ];
   };
 }

@@ -17,6 +17,7 @@
     };
     niri = {
       url = "github:sodiboo/niri-flake";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
     lanzaboote = {
       url = "github:nix-community/lanzaboote";
@@ -66,7 +67,7 @@
         claude-auto-retry = final.callPackage ./pkgs/claude-auto-retry.nix { };
         opencodex = final.callPackage ./pkgs/opencodex.nix { };
         antigravity = inputs.antigravity-flake.packages.${final.stdenv.hostPlatform.system}.antigravity;
-        niri = final.niri-stable;
+
       };
 
       mkHost =
@@ -78,7 +79,7 @@
           };
           modules = [
             {
-              nixpkgs.overlays = [ customPackagesOverlay inputs.niri.overlays.niri ];
+              nixpkgs.overlays = [ customPackagesOverlay ];
             }
             ./modules/common.nix
             (./hosts + "/${hostName}/configuration.nix")
