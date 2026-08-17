@@ -23,10 +23,6 @@
 
   programs.agent-skills = {
     enable = true;
-    sources.nix-skills = {
-      input = "nix-skills";
-      subdir = ".claude/skills";
-    };
     sources.vercel-skills = {
       input = "vercel-skills";
       subdir = "skills";
@@ -35,8 +31,6 @@
       path = ../../skills;
     };
     skills.enable = [
-      "nix-best-practices"
-      "find-skills"
       "agent-skills-nix"
     ];
     targets.opencode.enable = true;

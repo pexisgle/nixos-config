@@ -43,7 +43,6 @@
     xh
     jq
     zed-editor-fhs
-    claude-code
     opencode-desktop
     github-desktop-plus
     antigravity

@@ -3,7 +3,7 @@
 }:
 
 let
-  version = "3.5.12.0";
+  version = "3.6.4.4";
 
   customSrc = pkgs.fetchFromGitHub {
     owner = "pol-rivero";
@@ -12,7 +12,7 @@ let
 
     fetchSubmodules = true;
 
-    hash = "sha256-fiOCfAUhQFvwJu+ANLMGG3dsbwl7g5o0B35pWerppT4=";
+    hash = "sha256-B8ReS9tdWd9CbJ3Yq6IjBgOdeovEMTX0+iqdfGcAZDs=";
   };
 
   customFetchYarnDeps =

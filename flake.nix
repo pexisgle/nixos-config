@@ -28,10 +28,6 @@
       inputs.home-manager.follows = "home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    nix-skills = {
-      url = "github:0xbigboss/claude-code";
-      flake = false;
-    };
     vercel-skills = {
       url = "github:vercel-labs/skills";
       flake = false;
@@ -64,7 +60,6 @@
     let
       customPackagesOverlay = final: prev: {
         github-desktop-plus = final.callPackage ./pkgs/github-desktop-plus.nix { };
-        claude-auto-retry = final.callPackage ./pkgs/claude-auto-retry.nix { };
         opencodex = final.callPackage ./pkgs/opencodex.nix { };
         antigravity = inputs.antigravity-flake.packages.${final.stdenv.hostPlatform.system}.antigravity;
 

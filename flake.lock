@@ -295,22 +295,6 @@
         "type": "github"
       }
     },
-    "nix-skills": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1782334197,
-        "narHash": "sha256-pUskpjvWFzGTwJSpMiyYo60V0kM8+dT4acK16nI4mII=",
-        "owner": "0xbigboss",
-        "repo": "claude-code",
-        "rev": "2921eb8a685a2589c4c3e6ecbc8eaa12ffadde73",
-        "type": "github"
-      },
-      "original": {
-        "owner": "0xbigboss",
-        "repo": "claude-code",
-        "type": "github"
-      }
-    },
     "nixpkgs": {
       "locked": {
         "lastModified": 1786862985,
@@ -375,7 +359,6 @@
         "home-manager": "home-manager",
         "lanzaboote": "lanzaboote",
         "niri": "niri",
-        "nix-skills": "nix-skills",
         "nixpkgs": "nixpkgs",
         "sops-nix": "sops-nix",
         "vercel-skills": "vercel-skills"

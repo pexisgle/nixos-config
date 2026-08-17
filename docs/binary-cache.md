@@ -6,7 +6,6 @@ Examples include:
 
 - `github-desktop-plus`
 - `opencodex`
-- `claude-auto-retry`
 - packages produced directly by external flake inputs when their upstream cache does not contain the exact locked revision
 
 ## Repository Cachix cache

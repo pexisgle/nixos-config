@@ -27,7 +27,6 @@
     kicad
     lmstudio
     codex
-    claude-auto-retry
     opencodex
   ];
 
