@@ -37,6 +37,12 @@ in
     inherit version;
     src = customSrc;
 
+    postPatch = (oldAttrs.postPatch or "") + ''
+      substituteInPlace script/build.ts \
+        --replace-fail "import { removeCurlVersionRequirements } from './remove-curl-version-requirements'" "" \
+        --replace-fail '    removeCurlVersionRequirements(gitDir)' '    // Nix replaces the bundled Git in postFixup.'
+    '';
+
     postFixup = (oldAttrs.postFixup or "") + ''
       echo "Finalizing Git environment for NixOS (Corrected Paths)..."
 
