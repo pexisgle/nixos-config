@@ -22,9 +22,9 @@ let
       // {
         hash =
           if pkgs.lib.hasSuffix "app/yarn.lock" (builtins.toString args.yarnLock) then
-            "sha256-tUky+f2i70rWGeQM3rTwCbrL/TjgWTV1eciZlkZO9yU="
+            pkgs.lib.fakeHash
           else
-            "sha256-0wesKg8A6jjVYbM4Z5zt1J0NetOEBlBE8Sg8iBFOqC8=";
+            "sha256-4W/9sRnamKlqNIPOHtUQRJayddLjFOrjpu3ZwDMLkf8=";
       }
     );
 
