@@ -30,9 +30,6 @@
   "engines": {
     "node": ">=18"
   },
-  "trustedDependencies": [
-    "bun"
-  ],
   "scripts": {
     "dev": "bun run src/cli/index.ts start",
     "dev:proxy": "bun run src/cli/index.ts start",
@@ -62,11 +59,9 @@
     "@bufbuild/protobuf": "^2.14.0",
     "@modelcontextprotocol/sdk": "^1.30.0",
     "@napi-rs/keyring": "1.3.0",
-    "bun": "1.3.14",
     "zod": "4.4.3"
   },
   "devDependencies": {
-    "@types/bun": "1.3.14",
     "typescript": "7.0.2"
   },
   "overrides": {
