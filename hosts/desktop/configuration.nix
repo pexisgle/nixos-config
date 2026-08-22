@@ -53,15 +53,4 @@
       rocmPackages.rocprofiler-register
     ];
   };
-
-  services.open-webui = {
-    enable = true;
-    port = 11111;
-    environment = {
-      OPENAI_API_BASE_URLS = "http://127.0.0.1:8000/v1";
-      OPENAI_API_KEYS = "dummy";
-      ENABLE_OLLAMA_API = "False";
-      WEBUI_AUTH = "False";
-    };
-  };
 }

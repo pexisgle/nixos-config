@@ -25,7 +25,7 @@
   home.stateVersion = "26.05";
   home.packages = with pkgs; [
     kicad
-    llama-cpp
+    jan
     codex
     opencodex
   ];
