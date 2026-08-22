@@ -48,5 +48,6 @@
     antigravity
     antigravity-cli
     code-cursor-fhs
+    grok-bot
   ];
 }

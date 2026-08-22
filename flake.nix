@@ -44,6 +44,10 @@
       url = "github:ilysenko/codex-desktop-linux";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    grok-bot = {
+      url = "github:jordangarrison/grok-bot-flake";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
@@ -55,6 +59,7 @@
       agent-skills,
       sops-nix,
       antigravity-flake,
+      grok-bot,
       ...
     }@inputs:
     let
@@ -62,7 +67,7 @@
         github-desktop-plus = final.callPackage ./pkgs/github-desktop-plus.nix { };
         opencodex = final.callPackage ./pkgs/opencodex.nix { };
         antigravity = inputs.antigravity-flake.packages.${final.stdenv.hostPlatform.system}.antigravity;
-
+        grok-bot = inputs.grok-bot.packages.${final.stdenv.hostPlatform.system}.default;
       };
 
       mkHost =
