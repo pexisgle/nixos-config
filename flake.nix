@@ -68,6 +68,9 @@
         opencodex = final.callPackage ./pkgs/opencodex.nix { };
         antigravity = inputs.antigravity-flake.packages.${final.stdenv.hostPlatform.system}.antigravity;
         grok-bot = inputs.grok-bot.packages.${final.stdenv.hostPlatform.system}.default;
+        llama-cpp = prev.llama-cpp.override {
+          rocmSupport = true;
+        };
       };
 
       mkHost =

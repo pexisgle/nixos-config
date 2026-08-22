@@ -49,5 +49,6 @@
     antigravity-cli
     code-cursor-fhs
     grok-bot
+    python3Packages.huggingface-hub
   ];
 }
