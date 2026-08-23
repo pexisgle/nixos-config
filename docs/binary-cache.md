@@ -25,15 +25,9 @@ One-time setup:
 
 No repository variable is required because the cache name is fixed in the workflow.
 
-## Codex Desktop Linux
+## Numtide binary cache
 
-`codex-desktop-linux` publishes an upstream Cachix cache. The repository cache workflow always enables that cache for pulling, avoiding a local CI rebuild when the exact locked output is already available upstream.
-
-For local machines, enable it directly as well:
-
-```sh
-nix run nixpkgs#cachix -- use codex-desktop-linux
-```
+`numtide/llm-agents.nix` provides prebuilt packages (such as `chatgpt`) via the Numtide binary cache (`https://cache.numtide.com`), which is configured in `modules/core/nix.nix`.
 
 ## FlakeHub Cache in update CI
 

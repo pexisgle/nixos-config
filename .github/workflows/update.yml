@@ -52,11 +52,6 @@ jobs:
       - name: Cache Nix store in FlakeHub Cache
         uses: DeterminateSystems/flakehub-cache-action@v1
 
-      - name: Configure upstream Cachix caches
-        uses: cachix/cachix-action@v17
-        with:
-          name: codex-desktop-linux
-
       - name: Configure repository Cachix cache
         if: env.CACHIX_AUTH_TOKEN != ''
         uses: cachix/cachix-action@v17

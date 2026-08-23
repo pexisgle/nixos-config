@@ -29,7 +29,7 @@
     substituters = [
       "https://cache.nixos.org/"
       "https://pexisgle.cachix.org"
-      "https://codex-desktop-linux.cachix.org"
+      "https://cache.numtide.com"
       "https://nix-community.cachix.org"
       "https://niri.cachix.org"
       "https://lanzaboote.cachix.org"
@@ -42,7 +42,7 @@
     trusted-public-keys = [
       "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
       "pexisgle.cachix.org-1:6IcVMm0m93b5M6O7aA4lN6/DhfxepMHeivvLeTd6Yko="
-      "codex-desktop-linux.cachix.org-1:nX/xy6AdK9hQE24A8ALGjkCKj2ObFmcnemiL5Cid4nk="
+      "niks3.numtide.com-1:DTx8wZduET09hRmMtKdQDxNNthLQETkc/yaX7M4qK0g="
       "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
       "niri.cachix.org-1:Wv0OmO7PsuocRKzfDoJ3mulSl7Z6oezYhGhR+3W2964="
       "lanzaboote.cachix.org-1:Nt9//zGmqkg1k5iu+B3bkj3OmHKjSw9pvf3faffLLNk="
@@ -54,7 +54,7 @@
 
     trusted-substituters = [
       "https://pexisgle.cachix.org"
-      "https://codex-desktop-linux.cachix.org"
+      "https://cache.numtide.com"
       "https://nix-community.cachix.org"
       "https://niri.cachix.org"
       "https://lanzaboote.cachix.org"

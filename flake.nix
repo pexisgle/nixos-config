@@ -40,8 +40,8 @@
       url = "github:Hy4ri/antigravity-flake";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    codex-desktop-linux = {
-      url = "github:ilysenko/codex-desktop-linux";
+    llm-agents = {
+      url = "github:numtide/llm-agents.nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     grok-bot = {
@@ -60,6 +60,7 @@
       sops-nix,
       antigravity-flake,
       grok-bot,
+      llm-agents,
       ...
     }@inputs:
     let
@@ -68,6 +69,8 @@
         opencodex = final.callPackage ./pkgs/opencodex.nix { };
         antigravity = inputs.antigravity-flake.packages.${final.stdenv.hostPlatform.system}.antigravity;
         grok-bot = inputs.grok-bot.packages.${final.stdenv.hostPlatform.system}.default;
+        chatgpt = inputs.llm-agents.packages.${final.stdenv.hostPlatform.system}.chatgpt;
+        opencode2 = inputs.llm-agents.packages.${final.stdenv.hostPlatform.system}.opencode2;
       };
 
       mkHost =

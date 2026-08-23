@@ -17,7 +17,6 @@
     ./programs/ssh.nix
     ./programs/shell.nix
     ./programs/vscode.nix
-    inputs.codex-desktop-linux.homeManagerModules.default
   ];
 
   home.username = "pexisgle";
@@ -28,12 +27,8 @@
     jan
     codex
     opencodex
+    chatgpt
   ];
-
-  programs.codexDesktopLinux = {
-    enable = true;
-    cliPackage = pkgs.codex;
-  };
 
   home.sessionVariables = {
     KICAD10_SYMBOL_DIR = "${pkgs.kicad.libraries.symbols}/share/kicad/symbols";
