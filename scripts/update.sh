@@ -1,14 +1,15 @@
 #!/usr/bin/env bash
-# Wrapper for the GitHub Actions update workflow.
-# Locally runs the same updaters that the workflow uses, with sensible flags.
+# Wrapper for updating Nix flake inputs and custom packages.
+# Locally runs the same updaters that the GitHub Actions workflow uses.
 #
 # Usage:
-#   ./scripts/update.sh                       # update everything
-#   ./scripts/update.sh flake                # update flake.lock only
-#   ./scripts/update.sh antigravity-hub      # update antigravity-hub only
-#   FLAKE_INPUTS=nixpkgs ./scripts/update.sh flake   # update nixpkgs only
-#   FLAKE_INPUTS="nixpkgs home-manager" ./scripts/update.sh flake
-#   DRY_RUN=1 ./scripts/update.sh            # preview only
+#   ./scripts/update.sh                       # update everything (flake + all pkgs)
+#   ./scripts/update.sh flake                 # update flake.lock only
+#   ./scripts/update.sh pkgs                  # update all custom packages only
+#   ./scripts/update.sh opencodex             # update opencodex only
+#   ./scripts/update.sh github-desktop-plus   # update github-desktop-plus only
+#   FLAKE_INPUTS=nixpkgs ./scripts/update.sh flake   # update specific flake input
+#   DRY_RUN=1 ./scripts/update.sh             # preview only (discards changes after run)
 set -euo pipefail
 
 script_dir="$(cd -- "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -33,12 +34,37 @@ run_flake() {
   fi
 }
 
+run_opencodex() {
+  log "Updating opencodex..."
+  "$script_dir/update-opencodex.sh"
+}
+
+run_github_desktop_plus() {
+  log "Updating github-desktop-plus..."
+  "$script_dir/update-github-desktop-plus.sh"
+}
+
 case "$target" in
-  all|flake)
+  all)
+    run_flake
+    run_opencodex
+    run_github_desktop_plus
+    ;;
+  flake)
     run_flake
     ;;
+  pkgs)
+    run_opencodex
+    run_github_desktop_plus
+    ;;
+  opencodex)
+    run_opencodex
+    ;;
+  github-desktop-plus)
+    run_github_desktop_plus
+    ;;
   *)
-    err "Unknown target: $target (use: all | flake)"
+    err "Unknown target: $target (use: all | flake | pkgs | opencodex | github-desktop-plus)"
     exit 1
     ;;
 esac

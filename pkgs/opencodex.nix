@@ -2,16 +2,19 @@
 
 stdenv.mkDerivation {
   pname = "opencodex";
-  version = "2.24.2";
+  version = "2.31.0";
 
   src = fetchzip {
-    url = "https://registry.npmjs.org/@bitkyc08/opencodex/-/opencodex-2.24.2.tgz";
-    hash = "sha256-4MW7RUbr8DgmL/L6HEzmNsA0il6lgqFgyvxTzDcViY0=";
+    url = "https://registry.npmjs.org/@bitkyc08/opencodex/-/opencodex-2.31.0.tgz";
+    hash = "sha256-WlEtDVfKF0zYn9mgUFX4EXGwcjaE7IwAbLpOm6BLOko=";
   };
 
   npmDeps = importNpmLock.buildNodeModules {
     npmRoot = ./opencodex;
     inherit nodejs;
+    derivationArgs = {
+      npmRebuildFlags = [ "--ignore-scripts" ];
+    };
   };
 
   nativeBuildInputs = [ makeWrapper ];
