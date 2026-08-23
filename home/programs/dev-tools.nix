@@ -44,6 +44,7 @@
     jq
     zed-editor-fhs
     opencode-desktop
+    opencode2
     github-desktop-plus
     antigravity
     antigravity-cli
