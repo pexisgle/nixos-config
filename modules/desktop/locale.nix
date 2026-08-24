@@ -1,6 +1,10 @@
-{ pkgs, ... }:
+{ pkgs, inputs, ... }:
 
 {
+  imports = [
+    inputs.nix-hazkey.nixosModules.hazkey
+  ];
+
   time.timeZone = "Asia/Tokyo";
   time.hardwareClockInLocalTime = true;
 
@@ -17,12 +21,15 @@
     LC_TIME = "ja_JP.UTF-8";
   };
 
+  # Hazkey (azooKey engine + Zenzai neural conversion model)
+  services.hazkey.enable = true;
+
   i18n.inputMethod = {
     type = "fcitx5";
     enable = true;
     fcitx5.waylandFrontend = true;
     fcitx5.addons = with pkgs; [
-      fcitx5-mozc
+      fcitx5-mozc-ut
       fcitx5-gtk
     ];
   };
