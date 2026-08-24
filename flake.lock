@@ -31,11 +31,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1787422942,
-        "narHash": "sha256-4n6Oo5l8ZwOLZJ+qtK+GWJh6tnHKs8rB/B/+ThzWUp4=",
+        "lastModified": 1787505359,
+        "narHash": "sha256-xV7nqTMqR31HHhCXjhXM1RDp48ZtWLrPY+6LPFcYFgg=",
         "owner": "Hy4ri",
         "repo": "antigravity-flake",
-        "rev": "70ac8ba8ad61b1277dea292f43949fce3bd319a1",
+        "rev": "917be6746bc59dbff21cfcaf52ddd1d6c6c7bdaa",
         "type": "github"
       },
       "original": {
@@ -304,11 +304,11 @@
         "treefmt-nix": "treefmt-nix"
       },
       "locked": {
-        "lastModified": 1787462289,
-        "narHash": "sha256-JzRwvboh8r37Coj6UhtnDiL0LIdPyz3+0zknDqS1zi0=",
+        "lastModified": 1787531217,
+        "narHash": "sha256-HWMSQq3DrpqulKIOJFbqGqTGf5TjK8jZ4n9AdsJfI6I=",
         "owner": "numtide",
         "repo": "llm-agents.nix",
-        "rev": "5fae6955fa522382e640b65876fb2f456059f4c2",
+        "rev": "9532e7c4703758df2d6bf184f469238f09db5631",
         "type": "github"
       },
       "original": {
