@@ -52,6 +52,8 @@ jobs:
           extra-conf: |
             experimental-features = nix-command flakes
             accept-flake-config = true
+            max-substitution-jobs = 64
+            http-connections = 50
 
       - name: Cache Nix store in FlakeHub Cache
         uses: DeterminateSystems/flakehub-cache-action@v1
@@ -62,6 +64,7 @@ jobs:
         with:
           name: pexisgle
           authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
+          extraPullNames: nix-community,niri,lanzaboote,quickshell,devenv,nix-gaming,hyprland
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -106,8 +109,9 @@ jobs:
         if: steps.diff.outputs.changed == 'true' && inputs.dry_run != 'true'
         run: |
           echo "Building NixOS system configurations..."
-          nix build --no-link --print-build-logs .#nixosConfigurations.pexisgle-desktop.config.system.build.toplevel
-          nix build --no-link --print-build-logs .#nixosConfigurations.pexisgle-laptop.config.system.build.toplevel
+          nix build --no-link --print-build-logs \
+            .#nixosConfigurations.pexisgle-desktop.config.system.build.toplevel \
+            .#nixosConfigurations.pexisgle-laptop.config.system.build.toplevel
 
       - name: Create Pull Request
         if: steps.diff.outputs.changed == 'true' && inputs.dry_run != 'true'

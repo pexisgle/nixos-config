@@ -29,8 +29,10 @@ No repository variable is required because the cache name is fixed in the workfl
 
 `numtide/llm-agents.nix` provides prebuilt packages (such as `chatgpt`) via the Numtide binary cache (`https://cache.numtide.com`), which is configured in `modules/core/nix.nix`.
 
-## FlakeHub Cache in update CI
+## FlakeHub Cache in CI workflows
 
-The existing dependency update workflow uses FlakeHub Cache. It now builds the desktop and laptop system closures after updating `flake.lock`, so successful update runs cache actual build outputs instead of evaluation metadata only.
+Both `.github/workflows/cache.yml` and `.github/workflows/update.yml` use FlakeHub Cache alongside Cachix. FlakeHub Cache caches intermediate store paths within GitHub Actions storage, while Cachix distributes final packages to user hosts.
 
-FlakeHub Cache is primarily useful to the CI workflow. The `pexisgle` Cachix cache is the portable cache intended for normal NixOS hosts.
+## Upstream binary caches via flake.nix
+
+Upstream caches (Numtide, niri, lanzaboote, etc.) are configured in `flake.nix` under `nixConfig` as well as `modules/core/nix.nix`. This allows CI runners (with `accept-flake-config = true`) and CLI builds to resolve upstream binary substituters directly without requiring manual system-level configuration on the host.

@@ -37,6 +37,11 @@ jobs:
           extra-conf: |
             experimental-features = nix-command flakes
             accept-flake-config = true
+            max-substitution-jobs = 64
+            http-connections = 50
+
+      - name: Cache Nix store in FlakeHub Cache
+        uses: DeterminateSystems/flakehub-cache-action@v1
 
       - name: Configure repository Cachix cache
         if: env.CACHIX_AUTH_TOKEN != ''
@@ -44,6 +49,7 @@ jobs:
         with:
           name: pexisgle
           authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
+          extraPullNames: nix-community,niri,lanzaboote,quickshell,devenv,nix-gaming,hyprland
 
       - name: Explain missing Cachix token
         if: env.CACHIX_AUTH_TOKEN == ''
@@ -52,8 +58,8 @@ jobs:
       - name: Enable unfree packages
         run: echo "NIXPKGS_ALLOW_UNFREE=1" >> "$GITHUB_ENV"
 
-      - name: Build desktop closure
-        run: nix build --no-link --print-build-logs .#nixosConfigurations.pexisgle-desktop.config.system.build.toplevel
-
-      - name: Build laptop closure
-        run: nix build --no-link --print-build-logs .#nixosConfigurations.pexisgle-laptop.config.system.build.toplevel
+      - name: Build NixOS system closures
+        run: |
+          nix build --no-link --print-build-logs \
+            .#nixosConfigurations.pexisgle-desktop.config.system.build.toplevel \
+            .#nixosConfigurations.pexisgle-laptop.config.system.build.toplevel
