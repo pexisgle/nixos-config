@@ -8,6 +8,7 @@
     ./core/nix.nix
     ./core/network.nix
     ./core/secrets.nix
+    ./core/tmp.nix
     ./core/vpn.nix
     ./desktop/base.nix
     ./desktop/fonts.nix
