@@ -85,6 +85,16 @@ jobs:
         run: |
           ./scripts/update.sh "${{ inputs.target || 'all' }}"
 
+      - name: Lint and evaluate (fmt + flake check)
+        run: |
+          echo "Checking Nix formatting..."
+          # hardware-configuration.nix is generated output; keep it unformatted.
+          nix run --inputs-from . nixpkgs#nixfmt -- --check $(git ls-files '*.nix' | grep -v hardware-configuration)
+          echo "Evaluating flake..."
+          nix flake check --no-build
+          echo "Checking flake/lib cache mirror..."
+          ./scripts/check-caches.sh
+
       - name: Detect changes
         id: diff
         run: |
@@ -96,8 +106,7 @@ jobs:
             echo "### Changes detected:" >> "$GITHUB_STEP_SUMMARY"
             echo '```diff' >> "$GITHUB_STEP_SUMMARY"
             git diff --stat -- flake.lock flake.nix pkgs/ >> "$GITHUB_STEP_SUMMARY"
-            echo '```' >> "$GITHUB_STEP_SUMMARY"
-            
+
             {
               echo "diff_stat<<EOF"
               git diff --stat -- flake.lock flake.nix pkgs/

@@ -70,15 +70,15 @@ case "$target" in
 esac
 
 if [[ "$dry_run" == "1" ]]; then
-  warn "DRY_RUN=1 — discarding changes"
-  git restore --staged --worktree . 2>/dev/null || true
+  warn "DRY_RUN=1 — discarding updater-owned changes only"
+  git restore --staged --worktree -- flake.lock pkgs/opencodex.nix pkgs/opencodex/package.json pkgs/opencodex/package-lock.json pkgs/github-desktop-plus.nix 2>/dev/null || true
   exit 0
 fi
 
-if [[ -n "$(git status --porcelain)" ]]; then
+if [[ -n "$(git status --porcelain -- flake.lock pkgs/)" ]]; then
   log "Changes detected. Showing diff summary:"
-  git status --short
-  log "Review with: git diff"
+  git status --short -- flake.lock pkgs/
+  log "Review with: git diff -- flake.lock pkgs/"
   log "Commit with: git add -A && git commit -m 'chore: update'"
 else
   log "Nothing to update — already on latest."

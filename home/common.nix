@@ -1,4 +1,11 @@
-{ pkgs, config, inputs, sopsFile, ... }:
+{
+  pkgs,
+  config,
+  inputs,
+  sopsFile,
+  sopsPaths ? import ../lib/sops.nix,
+  ...
+}:
 
 {
   imports = [
@@ -31,6 +38,8 @@
     chatgpt
   ];
 
+  # KiCad library paths track the packaged KiCad major version.
+  # On a KiCad 11 bump these become KICAD11_* pointing at the same layout.
   home.sessionVariables = {
     KICAD10_SYMBOL_DIR = "${pkgs.kicad.libraries.symbols}/share/kicad/symbols";
     KICAD10_FOOTPRINT_DIR = "${pkgs.kicad.libraries.footprints}/share/kicad/footprints";
@@ -38,9 +47,9 @@
   };
 
   sops = {
-    age.keyFile = "/home/pexisgle/.config/sops/age/keys.txt";
+    age.keyFile = sopsPaths.ageKeyFile;
     defaultSopsFile = sopsFile;
-    secrets.github_token = {};
+    secrets.github_token = { };
   };
 
   home.sessionPath = [

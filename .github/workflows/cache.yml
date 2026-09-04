@@ -11,6 +11,7 @@ on:
       - "hosts/**"
       - "modules/**"
       - "pkgs/**"
+      - "lib/**"
       - ".github/workflows/cache.yml"
   workflow_dispatch:
 
@@ -57,6 +58,16 @@ jobs:
 
       - name: Enable unfree packages
         run: echo "NIXPKGS_ALLOW_UNFREE=1" >> "$GITHUB_ENV"
+
+      - name: Lint and evaluate (fmt + flake check)
+        run: |
+          echo "Checking Nix formatting..."
+          # hardware-configuration.nix is generated output; keep it unformatted.
+          nix run --inputs-from . nixpkgs#nixfmt -- --check $(git ls-files '*.nix' | grep -v hardware-configuration)
+          echo "Evaluating flake..."
+          nix flake check --no-build
+          echo "Checking flake/lib cache mirror..."
+          ./scripts/check-caches.sh
 
       - name: Build NixOS system closures
         run: |

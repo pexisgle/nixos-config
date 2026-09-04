@@ -8,6 +8,13 @@ Examples include:
 - `opencodex`
 - packages produced directly by external flake inputs when their upstream cache does not contain the exact locked revision
 
+## Cache list source of truth
+
+The cache URLs and keys live in `lib/caches.nix` for the NixOS side
+(`modules/core/nix.nix`) and as mirror literals in `flake.nix` `nixConfig`
+(which must stay literal, so it cannot import the file). Keep both in sync;
+`./scripts/check-caches.sh` verifies the mirror and CI runs it.
+
 ## Repository Cachix cache
 
 The repository-owned cache is `pexisgle` (`https://pexisgle.cachix.org`).

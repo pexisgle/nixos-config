@@ -1,6 +1,10 @@
 {
   description = "Pexisgle's NixOS Flake Configuration";
 
+  # NOTE: flake nixConfig must stay a literal attrset (no let/import): Nix reads
+  # it without full evaluation. The same lists live in lib/caches.nix for the
+  # NixOS side (modules/core/nix.nix); keep both in sync and run
+  # ./scripts/check-caches.sh to verify. CI runs it on every update/cache run.
   nixConfig = {
     extra-substituters = [
       "https://pexisgle.cachix.org"
@@ -89,6 +93,8 @@
       ...
     }@inputs:
     let
+      caches = import ./lib/caches.nix;
+      sopsPaths = import ./lib/sops.nix;
       customPackagesOverlay = final: prev: {
         github-desktop-plus = final.callPackage ./pkgs/github-desktop-plus.nix { };
         opencodex = final.callPackage ./pkgs/opencodex.nix { };
@@ -103,7 +109,12 @@
         nixpkgs.lib.nixosSystem {
           system = "x86_64-linux";
           specialArgs = {
-            inherit inputs hostName;
+            inherit
+              inputs
+              hostName
+              caches
+              sopsPaths
+              ;
           };
           modules = [
             {
@@ -121,7 +132,12 @@
               ];
               home-manager.users.pexisgle = import homeModule;
               home-manager.extraSpecialArgs = {
-                inherit inputs hostName;
+                inherit
+                  inputs
+                  hostName
+                  caches
+                  sopsPaths
+                  ;
                 sopsFile = "${self}/secrets/common.yaml";
               };
             }
@@ -131,6 +147,9 @@
         };
     in
     {
+      # Enables `nix fmt` for this repo.
+      formatter.x86_64-linux = nixpkgs.legacyPackages.x86_64-linux.nixfmt;
+
       nixosConfigurations = {
         pexisgle-desktop = mkHost {
           hostName = "desktop";

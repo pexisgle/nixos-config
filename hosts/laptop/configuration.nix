@@ -1,3 +1,6 @@
+# Laptop keeps only its hostname: amdgpu base comes from
+# modules/hardware/amdgpu-base.nix via modules/common.nix.
+# Add laptop-only deltas here (e.g. power management) when needed.
 { ... }:
 
 {
@@ -6,11 +9,4 @@
   ];
 
   networking.hostName = "pexisgle-laptop";
-
-  hardware.graphics = {
-    enable = true;
-    enable32Bit = true;
-  };
-
-  services.xserver.videoDrivers = [ "amdgpu" ];
 }

@@ -3,3 +3,10 @@ secrets/*.env
 secrets/*.txt
 secrets/*.plain.yaml
 secrets/*.plain.yml
+
+# Nix build results, direnv, and Home Manager backups (*.backup comes from
+# home-manager.backupFileExtension in flake.nix).
+result
+result-*
+.direnv/
+*.backup

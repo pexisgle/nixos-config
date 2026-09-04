@@ -16,8 +16,12 @@
       theme = "robbyrussell";
     };
 
+    # devenv may not be installed in minimal shells (e.g. CI); guard so
+    # interactive startup never fails and non-interactive shells stay fast.
     initContent = ''
-      eval "$(devenv hook zsh)"
+      if command -v devenv >/dev/null 2>&1; then
+        eval "$(devenv hook zsh)"
+      fi
     '';
   };
 
@@ -26,4 +30,17 @@
     enableZshIntegration = true;
     nix-direnv.enable = true;
   };
+
+  # Shell integrations for CLI tools installed in dev-tools.nix.
+  # The packages themselves come from programs.* so hooks/completions stay wired.
+  programs.fzf.enable = true;
+  programs.zoxide = {
+    enable = true;
+    enableZshIntegration = true;
+  };
+  programs.eza = {
+    enable = true;
+    enableZshIntegration = true;
+  };
+  programs.bat.enable = true;
 }

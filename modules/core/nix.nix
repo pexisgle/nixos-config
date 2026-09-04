@@ -1,4 +1,9 @@
-{ ... }:
+# Nix daemon / store settings.
+# Binary caches themselves live in lib/caches.nix (shared with flake nixConfig).
+{
+  caches ? import ../../lib/caches.nix,
+  ...
+}:
 
 {
   nixpkgs.config.allowUnfree = true;
@@ -15,54 +20,23 @@
 
     auto-optimise-store = true;
 
-    # --- download / build 高速化 ---
+    # Download / build throughput: high parallelism assumes a fast link.
+    # Lower these on metered or slow networks.
     max-substitution-jobs = 64;
     http-connections = 150;
     download-buffer-size = 52428800;
     max-jobs = "auto";
     cores = 0;
 
-    # --- store 容量管理: GC 中の空き容量を確保 ---
-    min-free = 10737418240;   # 10 GiB
-    max-free = 32212254720;   # 30 GiB
+    # Keep 10-30 GiB free around GC so large closures (ROCm, kernels)
+    # never fill the root filesystem mid-rebuild.
+    min-free = 10737418240; # 10 GiB
+    max-free = 32212254720; # 30 GiB
 
-    substituters = [
-      "https://cache.nixos.org/"
-      "https://pexisgle.cachix.org"
-      "https://cache.numtide.com"
-      "https://nix-community.cachix.org"
-      "https://niri.cachix.org"
-      "https://lanzaboote.cachix.org"
-      "https://quickshell.cachix.org"
-      "https://devenv.cachix.org"
-      "https://nix-gaming.cachix.org"
-      "https://hyprland.cachix.org"
-    ];
-
-    trusted-public-keys = [
-      "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
-      "pexisgle.cachix.org-1:6IcVMm0m93b5M6O7aA4lN6/DhfxepMHeivvLeTd6Yko="
-      "niks3.numtide.com-1:DTx8wZduET09hRmMtKdQDxNNthLQETkc/yaX7M4qK0g="
-      "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
-      "niri.cachix.org-1:Wv0OmO7PsuocRKzfDoJ3mulSl7Z6oezYhGhR+3W2964="
-      "lanzaboote.cachix.org-1:Nt9//zGmqkg1k5iu+B3bkj3OmHKjSw9pvf3faffLLNk="
-      "quickshell.cachix.org-1:vBm3s5tZThc5KDLj6zhHVCMp8wX/AZJwle9wqdi81ts="
-      "devenv.cachix.org-1:w1cLUi8dv3hnoSPGAuibQv+f9TZLr6cv/Hm9XgU50cw="
-      "nix-gaming.cachix.org-1:nbjlureqMbRAxR1gJ/f3hxemL9svXaZF/Ees8vCUUs4="
-      "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="
-    ];
-
-    trusted-substituters = [
-      "https://pexisgle.cachix.org"
-      "https://cache.numtide.com"
-      "https://nix-community.cachix.org"
-      "https://niri.cachix.org"
-      "https://lanzaboote.cachix.org"
-      "https://quickshell.cachix.org"
-      "https://devenv.cachix.org"
-      "https://nix-gaming.cachix.org"
-      "https://hyprland.cachix.org"
-    ];
+    substituters = [ caches.nixosSubstituter ] ++ caches.extraSubstituters;
+    trusted-public-keys = [ caches.nixosTrustedPublicKey ] ++ caches.extraTrustedPublicKeys;
+    # Only caches we control or explicitly trust may serve store paths.
+    trusted-substituters = caches.extraSubstituters;
   };
 
   nix.settings.trusted-users = [
@@ -70,6 +44,9 @@
     "@wheel"
   ];
 
+  # Daily GC keeps the store bounded; generations older than 3 days are
+  # collectable. lanzaboote keeps 5 bootloader entries independently,
+  # so rollback depth is limited by GC here, not by configurationLimit alone.
   nix.gc = {
     automatic = true;
     dates = "daily";

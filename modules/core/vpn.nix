@@ -1,4 +1,9 @@
-{ config, pkgs, lib, ... }:
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}:
 
 {
   environment.systemPackages = with pkgs; [
@@ -33,33 +38,38 @@
   };
 
   sops.templates."uec-vpn-nmconnection" = {
-    content = builtins.replaceStrings
-      [ "__PSK__" "__USER__" "__PASS__" ]
-      [ config.sops.placeholder.uec_vpn_psk config.sops.placeholder.uec_vpn_user config.sops.placeholder.uec_vpn_pass ]
-      ''
-        [connection]
-        id=UEC-VPN
-        type=vpn
-        autoconnect=false
+    content =
+      builtins.replaceStrings
+        [ "__PSK__" "__USER__" "__PASS__" ]
+        [
+          config.sops.placeholder.uec_vpn_psk
+          config.sops.placeholder.uec_vpn_user
+          config.sops.placeholder.uec_vpn_pass
+        ]
+        ''
+          [connection]
+          id=UEC-VPN
+          type=vpn
+          autoconnect=false
 
-        [vpn]
-        service-type=org.freedesktop.NetworkManager.l2tp
-        gateway=vpn.cc.uec.ac.jp
-        user=__USER__
-        ipsec-enabled=yes
-        machine-auth-type=psk
-        password-flags=2
+          [vpn]
+          service-type=org.freedesktop.NetworkManager.l2tp
+          gateway=vpn.cc.uec.ac.jp
+          user=__USER__
+          ipsec-enabled=yes
+          machine-auth-type=psk
+          password-flags=2
 
-        [vpn-secrets]
-        ipsec-psk=__PSK__
-        password=__PASS__
+          [vpn-secrets]
+          ipsec-psk=__PSK__
+          password=__PASS__
 
-        [ipv4]
-        method=auto
+          [ipv4]
+          method=auto
 
-        [ipv6]
-        method=disabled
-      '';
+          [ipv6]
+          method=disabled
+        '';
   };
 
   environment.etc."NetworkManager/system-connections/UEC-VPN.nmconnection" = {

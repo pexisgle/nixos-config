@@ -1,11 +1,19 @@
+# Explicit args (no <nixpkgs> fallback): called via callPackage from flake overlay.
+# Upstream-first: this fork tracks pol-rivero/github-desktop-plus; re-check each
+# nixpkgs bump whether upstream github-desktop suffices before updating hashes.
 {
-  pkgs ? import <nixpkgs> { },
+  lib,
+  fetchFromGitHub,
+  fetchYarnDeps,
+  github-desktop,
+  git,
+  git-lfs,
 }:
 
 let
   version = "3.6.5.0";
 
-  customSrc = pkgs.fetchFromGitHub {
+  customSrc = fetchFromGitHub {
     owner = "pol-rivero";
     repo = "github-desktop-plus";
     rev = "v${version}";
@@ -17,11 +25,11 @@ let
 
   customFetchYarnDeps =
     args:
-    pkgs.fetchYarnDeps (
+    fetchYarnDeps (
       args
       // {
         hash =
-          if pkgs.lib.hasSuffix "app/yarn.lock" (builtins.toString args.yarnLock) then
+          if lib.hasSuffix "app/yarn.lock" (builtins.toString args.yarnLock) then
             "sha256-ecvx5bPBJmVq9H8msRGNF/PoJgd8o7zZR2TCkgZQCMM="
           else
             "sha256-eijkCdG69X8Gm79kSq5zcRTQaWaf/5d8IL3y0a6zLrw=";
@@ -29,7 +37,7 @@ let
     );
 
 in
-(pkgs.github-desktop.override {
+(github-desktop.override {
   fetchYarnDeps = customFetchYarnDeps;
 }).overrideAttrs
   (oldAttrs: {
@@ -56,24 +64,24 @@ in
       rm -rf $APP_GIT_DIR
       mkdir -p $APP_GIT_DIR/bin $APP_GIT_DIR/libexec/git-core
 
-      ln -s ${pkgs.git}/bin/git $APP_GIT_DIR/bin/git
-      ln -s ${pkgs.git}/libexec/git-core/* $APP_GIT_DIR/libexec/git-core/
+      ln -s ${git}/bin/git $APP_GIT_DIR/bin/git
+      ln -s ${git}/libexec/git-core/* $APP_GIT_DIR/libexec/git-core/
 
       cp $PLUS_TOOLS/* $APP_GIT_DIR/libexec/git-core/
       ln -s $APP_GIT_DIR/libexec/git-core/git-credential-desktop $APP_GIT_DIR/bin/git-credential-desktop
 
       wrapProgram $out/bin/github-desktop \
         --prefix PATH : "$APP_GIT_DIR/bin:${
-          pkgs.lib.makeBinPath [
-            pkgs.git
-            pkgs.git-lfs
+          lib.makeBinPath [
+            git
+            git-lfs
           ]
         }" \
         --set GIT_EXEC_PATH "$APP_GIT_DIR/libexec/git-core" \
         --set GIT_SSL_CAINFO "/etc/ssl/certs/ca-certificates.crt"
 
       rm -f $out/share/icons/hicolor/512x512/apps/github-desktop.png
-      ACTUAL_ICON=$(find $out/share/github-desktop/resources/app/static -type f -name "*icon*.png" -o -name "*logo*.png" | head -n 1)
+      ACTUAL_ICON=$(find $out/share/github-desktop/resources/app/static -type f \( -name "*icon*.png" -o -name "*logo*.png" \) | sort | head -n 1)
       if [ -n "$ACTUAL_ICON" ]; then
         ln -s "$ACTUAL_ICON" $out/share/icons/hicolor/512x512/apps/github-desktop.png
       fi

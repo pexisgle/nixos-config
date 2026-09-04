@@ -7,16 +7,14 @@
   boot.lanzaboote = {
     enable = true;
     pkiBundle = "/var/lib/sbctl";
+    # Boot menu entries kept; actual rollback depth is bounded by nix.gc
+    # (--delete-older-than 3d in modules/core/nix.nix).
     configurationLimit = 5;
   };
 
+  # Track latest stable kernel for new AMD firmware. If out-of-tree modules
+  # (e.g. ZFS) break, pin to pkgs.linuxPackages here or per-host.
   boot.kernelPackages = pkgs.linuxPackages_latest;
-
-  # RDNA 4 (RX 9060 XT) display timing stability fixes
-  boot.kernelParams = [
-    "amdgpu.sg_display=0"
-    "amdgpu.dcdebugmask=0x400"
-  ];
 
   boot.loader.timeout = 5;
 

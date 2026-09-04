@@ -1,4 +1,9 @@
-{ config, pkgs, lib, ... }:
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}:
 
 {
   # opencode-go/muse-spark-1.3-contributor は Zen Go の /responses 専用モデルだが、
@@ -19,7 +24,13 @@
           | .providers["opencode-go"].modelInputModalities = ((.providers["opencode-go"].modelInputModalities // {}) + {"muse-spark-1.3-contributor": ["text", "image"]})
         else . end
       ' "$cfg" > "$tmp" 2>/dev/null; then
-        mv "$tmp" "$cfg"
+        # Only touch the live config when the merge changes it,
+        # so repeated activations stay no-op.
+        if ! ${pkgs.diffutils}/bin/cmp -s "$cfg" "$tmp"; then
+          mv "$tmp" "$cfg"
+        else
+          rm -f "$tmp"
+        fi
       else
         rm -f "$tmp"
       fi
@@ -29,7 +40,10 @@
   systemd.user.services.opencodex-proxy = {
     Unit = {
       Description = "OpenCodex Proxy Server";
-      After = [ "network-online.target" "nss-lookup.target" ];
+      After = [
+        "network-online.target"
+        "nss-lookup.target"
+      ];
       Wants = [ "network-online.target" ];
     };
 
@@ -43,12 +57,14 @@
       # and boot/login never blocks on this. Uses node dns.lookup, the same
       # resolver stack opencodex itself uses.
       ExecStartPre = "${pkgs.writeShellScript "opencodex-wait-dns" ''
-        for _ in $(seq 1 15); do
-          if node -e "require('node:dns').promises.lookup('opencode.ai').then(()=>process.exit(0),()=>process.exit(1))" >/dev/null 2>&1 \
-            && node -e "require('node:dns').promises.lookup('token-plan.ap-southeast-1.maas.aliyuncs.com').then(()=>process.exit(0),()=>process.exit(1))" >/dev/null 2>&1; then
+        set -u
+        NODE=${pkgs.nodejs}/bin/node
+        for _ in $(${pkgs.coreutils}/bin/seq 1 15); do
+          if "$NODE" -e "require('node:dns').promises.lookup('opencode.ai').then(()=>process.exit(0),()=>process.exit(1))" >/dev/null 2>&1 \
+            && "$NODE" -e "require('node:dns').promises.lookup('token-plan.ap-southeast-1.maas.aliyuncs.com').then(()=>process.exit(0),()=>process.exit(1))" >/dev/null 2>&1; then
             exit 0
           fi
-          sleep 2
+          ${pkgs.coreutils}/bin/sleep 2
         done
         exit 0
       ''}";
@@ -65,10 +81,20 @@
         "OCX_SERVICE=1"
         "OCX_BUN_RUNTIME_SOURCE=override"
         "OCX_BUN_RUNTIME_PATH=${pkgs.bun}/bin/bun"
-        "PATH=${lib.makeBinPath [ pkgs.nodejs pkgs.bun pkgs.coreutils pkgs.procps ]}"
+        "PATH=${
+          lib.makeBinPath [
+            pkgs.nodejs
+            pkgs.bun
+            pkgs.coreutils
+            pkgs.procps
+          ]
+        }"
       ];
-      StandardOutput = "append:%h/.opencodex/service.log";
-      StandardError = "append:%h/.opencodex/service.log";
+      # Journal instead of an unbounded log file; inspect with
+      # journalctl --user -u opencodex-proxy.
+      StandardOutput = "journal";
+      StandardError = "journal";
+      SyslogIdentifier = "opencodex-proxy";
     };
 
     Install = {

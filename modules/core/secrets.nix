@@ -1,7 +1,12 @@
-{ inputs, ... }:
+# sops paths: key location is shared with Home Manager via lib/sops.nix.
+{
+  inputs,
+  sopsPaths ? import ../../lib/sops.nix,
+  ...
+}:
 
 {
-  sops.age.keyFile = "/home/pexisgle/.config/sops/age/keys.txt";
+  sops.age.keyFile = sopsPaths.ageKeyFile;
   sops.defaultSopsFile = "${inputs.self}/secrets/common.yaml";
   sops.useTmpfs = true;
 }

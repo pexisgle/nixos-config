@@ -14,6 +14,7 @@
     ./desktop/fonts.nix
     ./desktop/locale.nix
     ./gaming/steam.nix
+    ./hardware/amdgpu-base.nix
     ./user/pexisgle.nix
   ];
 }

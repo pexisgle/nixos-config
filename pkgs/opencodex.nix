@@ -1,4 +1,12 @@
-{ lib, stdenv, fetchzip, nodejs, bun, makeWrapper, importNpmLock }:
+{
+  lib,
+  stdenv,
+  fetchzip,
+  nodejs,
+  bun,
+  makeWrapper,
+  importNpmLock,
+}:
 
 stdenv.mkDerivation {
   pname = "opencodex";
@@ -29,7 +37,12 @@ stdenv.mkDerivation {
     mkdir -p $out/bin
     makeWrapper ${nodejs}/bin/node $out/bin/ocx \
       --set OPENCODEX_BUN_PATH ${bun}/bin/bun \
-      --prefix PATH : ${lib.makeBinPath [ nodejs bun ]} \
+      --prefix PATH : ${
+        lib.makeBinPath [
+          nodejs
+          bun
+        ]
+      } \
       --add-flags "$out/lib/node_modules/@bitkyc08/opencodex/bin/ocx.mjs"
     ln -s $out/bin/ocx $out/bin/opencodex
 

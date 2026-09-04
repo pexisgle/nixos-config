@@ -6,6 +6,8 @@
   ];
 
   time.timeZone = "Asia/Tokyo";
+  # Dual-boot with Windows expects local-time RTC; on Linux-only machines
+  # prefer false (UTC) to avoid DST/NTP skew.
   time.hardwareClockInLocalTime = true;
 
   i18n.defaultLocale = "ja_JP.UTF-8";

@@ -1,4 +1,9 @@
-{ config, pkgs, lib, ... }:
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}:
 
 {
   imports = [
@@ -7,28 +12,34 @@
 
   networking.hostName = "pexisgle-desktop";
 
-  hardware.graphics = {
-    enable = true;
-    enable32Bit = true;
-    extraPackages = with pkgs; [
-      rocmPackages.clr
-      rocmPackages.clr.icd
-    ];
-  };
+  # Base amdgpu setup comes from modules/hardware/amdgpu-base.nix.
+  # This host only adds desktop-GPU extras (ROCm, Vulkan dev, RDNA4 quirks).
+  hardware.graphics.extraPackages = with pkgs; [
+    rocmPackages.clr
+    rocmPackages.clr.icd
+  ];
 
-  services.xserver.videoDrivers = [ "amdgpu" ];
   boot.initrd.kernelModules = [ "amdgpu" ];
+
+  # RDNA 4 (RX 9060 XT) display timing stability fixes.
+  # Kept desktop-only: the laptop shares the amdgpu base but not this GPU quirk.
+  boot.kernelParams = [
+    "amdgpu.sg_display=0"
+    "amdgpu.dcdebugmask=0x400"
+  ];
 
   # Dual monitor flicker workaround for AMD KWin
   environment.sessionVariables = {
     KWIN_DRM_NO_AMS = "1";
   };
 
-  swapDevices = lib.mkForce [ {
-    device = "/swapfile";
-    size = 16384;
-  } ];
-  
+  swapDevices = lib.mkForce [
+    {
+      device = "/swapfile";
+      size = 16384;
+    }
+  ];
+
   environment.systemPackages = with pkgs; [
     vulkan-loader
     vulkan-headers
