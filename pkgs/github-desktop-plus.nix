@@ -3,7 +3,7 @@
 }:
 
 let
-  version = "3.6.4.5";
+  version = "3.6.5.0";
 
   customSrc = pkgs.fetchFromGitHub {
     owner = "pol-rivero";
@@ -12,7 +12,7 @@ let
 
     fetchSubmodules = true;
 
-    hash = "sha256-N13D2CEkLgkGzuyW83FggjOsfpPa0Q3P2a1zQGV87aI=";
+    hash = "sha256-BjU5gGglRe6uIgK9srDzSliV8OlyURXQIEw+lhlGTQ0=";
   };
 
   customFetchYarnDeps =
@@ -22,9 +22,9 @@ let
       // {
         hash =
           if pkgs.lib.hasSuffix "app/yarn.lock" (builtins.toString args.yarnLock) then
-            "sha256-jPQo+KFfTAoJmad4Wt1khAX2nwZgl5ChJhmqQUfiiJ0="
+            "sha256-ecvx5bPBJmVq9H8msRGNF/PoJgd8o7zZR2TCkgZQCMM="
           else
-            "sha256-4W/9sRnamKlqNIPOHtUQRJayddLjFOrjpu3ZwDMLkf8=";
+            "sha256-eijkCdG69X8Gm79kSq5zcRTQaWaf/5d8IL3y0a6zLrw=";
       }
     );
 
