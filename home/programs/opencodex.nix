@@ -1,6 +1,31 @@
-{ pkgs, lib, ... }:
+{ config, pkgs, lib, ... }:
 
 {
+  # opencode-go/muse-spark-1.3-contributor は Zen Go の /responses 専用モデルだが、
+  # opencodex 2.40.0 の同梱レジストリは 1.2 までしか wire 既定を持たないため、
+  # provider 全体の openai-chat のままだと /chat/completions に投げて 500 になる。
+  # また上流は reasoning.effort=max を拒否する(400)ため ladder から max を外し、
+  # max 要求は xhigh へクランプさせる。初回起動後の live config に冪等マージする。
+  home.activation.opencodexMuseSpark13Wire = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+    cfg="$HOME/.opencodex/config.json"
+    if [ -f "$cfg" ]; then
+      tmp="$(mktemp)"
+      if ${pkgs.jq}/bin/jq '
+        if .providers?["opencode-go"] then
+          .providers["opencode-go"].modelAdapters = ((.providers["opencode-go"].modelAdapters // {}) + {"muse-spark-1.3-contributor": "openai-responses"})
+          | .providers["opencode-go"].modelReasoningEfforts = ((.providers["opencode-go"].modelReasoningEfforts // {}) + {"muse-spark-1.3-contributor": ["minimal", "low", "medium", "high", "xhigh"]})
+          | .providers["opencode-go"].modelDefaultReasoningEfforts = ((.providers["opencode-go"].modelDefaultReasoningEfforts // {}) + {"muse-spark-1.3-contributor": "high"})
+          | .providers["opencode-go"].modelContextWindows = ((.providers["opencode-go"].modelContextWindows // {}) + {"muse-spark-1.3-contributor": 1048576})
+          | .providers["opencode-go"].modelInputModalities = ((.providers["opencode-go"].modelInputModalities // {}) + {"muse-spark-1.3-contributor": ["text", "image"]})
+        else . end
+      ' "$cfg" > "$tmp" 2>/dev/null; then
+        mv "$tmp" "$cfg"
+      else
+        rm -f "$tmp"
+      fi
+    fi
+  '';
+
   systemd.user.services.opencodex-proxy = {
     Unit = {
       Description = "OpenCodex Proxy Server";
