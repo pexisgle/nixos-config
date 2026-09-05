@@ -68,6 +68,17 @@
               output = 50.0;
             };
           };
+          "claude-fable-5.1" = {
+            name = "claude-fable-5.1";
+            limit = {
+              context = 1000000;
+              output = 128000;
+            };
+            cost = {
+              input = 10.0;
+              output = 50.0;
+            };
+          };
         };
       };
       mcp.github = {
