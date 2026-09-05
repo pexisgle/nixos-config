@@ -17,6 +17,59 @@
       # mcp-server-github attr to pin yet (upstream-first evaluated).
       # Re-check on nixpkgs bumps; when available, replace command with
       # "${pkgs.mcp-server-github}/bin/mcp-server-github".
+      provider.explabs = {
+        npm = "@ai-sdk/openai-compatible";
+        name = "Experiential Labs";
+        options = {
+          baseURL = "https://api.experientiallabs.ai/v1";
+        };
+        models = {
+          "qwen3.8-27b" = {
+            name = "qwen3.8-27b";
+            limit = {
+              context = 1000000;
+              output = 131072;
+            };
+            cost = {
+              input = 0.32;
+              output = 2.4;
+            };
+          };
+          "deepseek-v4-flash" = {
+            name = "deepseek-v4-flash";
+            limit = {
+              context = 1048576;
+              output = 384000;
+            };
+            cost = {
+              input = 0.042448;
+              output = 0.084896;
+            };
+          };
+          "gpt-5.6-luna" = {
+            name = "gpt-5.6-luna";
+            limit = {
+              context = 1050000;
+              output = 128000;
+            };
+            cost = {
+              input = 0.2;
+              output = 1.2;
+            };
+          };
+          "gpt-6-astra" = {
+            name = "gpt-6-astra";
+            limit = {
+              context = 1050000;
+              output = 128000;
+            };
+            cost = {
+              input = 10.0;
+              output = 50.0;
+            };
+          };
+        };
+      };
       mcp.github = {
         type = "local";
         command = [
