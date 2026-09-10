@@ -27,17 +27,15 @@ let
   '';
 in
 {
-  # OpenSSH refuses a main ~/.ssh/config that is not a regular file owned by
-  # the invoking user ("Bad owner or permissions"), and Home Manager's
-  # programs.ssh deploys it as a root-owned symlink into the Nix store.
-  # ssh permission-checks only the main config, not files pulled in via
-  # Include, so hosts live in a store-symlinked include under config.d/ and
-  # the main config is materialized as a user-owned 0600 file by the
-  # activation below.
-  home.file.".ssh/config.d/10-hm-hosts.conf".source = hmHosts;
-
-  home.activation.sshMainConfig = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+  # OpenSSH refuses config files that are not regular files owned by the
+  # invoking user or that have loose permissions ("Bad owner or permissions").
+  # This applies to files pulled in via Include as well as the main ~/.ssh/config.
+  # Home Manager's home.file deploys files as store-symlinks, so we materialize
+  # both the main config and hm-hosts as user-owned 0600 files via activation.
+  home.activation.sshConfig = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+    run install -d -m 700 "$HOME/.ssh" "$HOME/.ssh/config.d"
     run install -Dm 600 -- "${mainConfig}" "$HOME/.ssh/config"
+    run install -Dm 600 -- "${hmHosts}" "$HOME/.ssh/config.d/10-hm-hosts.conf"
   '';
 
   home.packages = [
