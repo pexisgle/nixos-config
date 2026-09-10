@@ -7,7 +7,7 @@
   # Consolidate only after checking which projects rely on mise vs devenv.
   home.packages = with pkgs; [
     # Terminal / session
-    gcr
+    gcr_4
     kitty
     tmux
     xwayland-satellite
