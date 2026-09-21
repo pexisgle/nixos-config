@@ -102,20 +102,5 @@
     };
   };
 
-  programs.agent-skills = {
-    enable = true;
-    sources.vercel-skills = {
-      input = "vercel-skills";
-      subdir = "skills";
-    };
-    sources.local-skills = {
-      path = ../../skills;
-    };
-    skills.enable = [
-      "agent-skills-nix"
-    ];
-    targets.opencode.enable = true;
-  };
-
   home.file.".config/opencode/plugins/rtk.ts".source = ./opencode/plugins/rtk.ts;
 }

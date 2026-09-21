@@ -1,25 +1,5 @@
 {
   "nodes": {
-    "agent-skills": {
-      "inputs": {
-        "nixpkgs": [
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1789145426,
-        "narHash": "sha256-Wf+7Qzt8+nz4TXPCbWnMjOAdzbVM6blW9J6JP+YhSy8=",
-        "owner": "Kyure-A",
-        "repo": "agent-skills-nix",
-        "rev": "5133c874553c6c295654d8de4e3f62c95736b9c6",
-        "type": "github"
-      },
-      "original": {
-        "owner": "Kyure-A",
-        "repo": "agent-skills-nix",
-        "type": "github"
-      }
-    },
     "antigravity-flake": {
       "inputs": {
         "nixpkgs": [
@@ -424,7 +404,6 @@
     },
     "root": {
       "inputs": {
-        "agent-skills": "agent-skills",
         "antigravity-flake": "antigravity-flake",
         "dms": "dms",
         "grok-bot": "grok-bot",
@@ -434,8 +413,7 @@
         "niri": "niri",
         "nix-hazkey": "nix-hazkey",
         "nixpkgs": "nixpkgs",
-        "sops-nix": "sops-nix",
-        "vercel-skills": "vercel-skills"
+        "sops-nix": "sops-nix"
       }
     },
     "rust-overlay": {
@@ -512,22 +490,6 @@
       "original": {
         "owner": "numtide",
         "repo": "treefmt-nix",
-        "type": "github"
-      }
-    },
-    "vercel-skills": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1789657217,
-        "narHash": "sha256-/B2el3+KYXohGCM4JaHl2EUx1c6mlYdUNrWiE0z/7lA=",
-        "owner": "vercel-labs",
-        "repo": "skills",
-        "rev": "7407f3893ad4dceab546ac002c3ef806e4000c73",
-        "type": "github"
-      },
-      "original": {
-        "owner": "vercel-labs",
-        "repo": "skills",
         "type": "github"
       }
     },

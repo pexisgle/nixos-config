@@ -48,15 +48,6 @@
       url = "github:nix-community/lanzaboote";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    agent-skills = {
-      url = "github:Kyure-A/agent-skills-nix";
-      inputs.home-manager.follows = "home-manager";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-    vercel-skills = {
-      url = "github:vercel-labs/skills";
-      flake = false;
-    };
     sops-nix = {
       url = "github:Mic92/sops-nix";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -85,7 +76,6 @@
       nixpkgs,
       home-manager,
       lanzaboote,
-      agent-skills,
       sops-nix,
       antigravity-flake,
       grok-bot,
@@ -127,7 +117,6 @@
               home-manager.useGlobalPkgs = true;
               home-manager.backupFileExtension = "backup";
               home-manager.sharedModules = [
-                agent-skills.homeManagerModules.default
                 sops-nix.homeManagerModules.sops
               ];
               home-manager.users.pexisgle = import homeModule;
