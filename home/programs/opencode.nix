@@ -44,6 +44,13 @@
           "mcp"
         ];
       };
+
+      providers.commandcode = {
+        name = "Command Code";
+        env = [ "COMMANDCODE_API_KEY" ];
+        package = "@opencode/ai/providers/openai-compatible";
+        settings.baseURL = "https://api.commandcode.ai/provider/v1";
+      };
     };
   };
 
