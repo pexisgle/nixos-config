@@ -63,5 +63,6 @@
   };
 
   home.file.".config/opencode/plugins/rtk.ts".source = ./opencode/plugins/rtk.ts;
-  home.file.".config/opencode/plugins/model-discovery.ts".source = ./opencode/plugins/model-discovery.ts;
+  home.file.".config/opencode/plugins/model-discovery.ts".source =
+    ./opencode/plugins/model-discovery.ts;
 }

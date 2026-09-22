@@ -14,6 +14,7 @@ type RemoteModel = {
 
 type ProviderModel = {
   id: string
+  modelID: string
   providerID: string
   name: string
   api: {
@@ -78,6 +79,7 @@ function modelFromRemote(providerID: string, remote: RemoteModel): ProviderModel
   const context = remote.context_length ?? remote.context_window ?? 128_000
   return {
     id: remote.id,
+    modelID: remote.id,
     providerID,
     name: remote.name ?? remote.id,
     api: { type: "aisdk", package: OPENAI_COMPATIBLE },
@@ -107,7 +109,11 @@ async function fetchModels(provider: (typeof PROVIDERS)[number]): Promise<Provid
   const payload = (await response.json()) as { data?: RemoteModel[] }
   const models = payload.data ?? []
   return models
-    .filter((model) => !provider.chatOnly || model.supported_endpoints?.includes("/chat/completions"))
+    .filter((model) => {
+      // Some gateways omit supported_endpoints. In that case retain the model;
+      // the provider's OpenAI-compatible runtime will determine compatibility.
+      return !provider.chatOnly || !model.supported_endpoints || model.supported_endpoints.includes("/chat/completions")
+    })
     .map((model) => modelFromRemote(provider.id, model))
     .filter((model): model is ProviderModel => model !== undefined)
 }
@@ -116,22 +122,41 @@ export default {
   id: "model-discovery",
   async setup(ctx: ProviderContext) {
     let disposed = false
+    const discovered = new Map<string, ProviderModel[]>()
 
-    const refresh = async () => {
+    // Keep one transform for the lifetime of the plugin. The callback
+    // captures `discovered`; refreshes update that map and replay this
+    // transform via provider.reload(). Adding a new transform on every
+    // refresh leaves stale registrations behind.
+    const refresh = async (reload = true) => {
+      let changed = false
       for (const provider of PROVIDERS) {
         try {
           const models = await fetchModels(provider)
-          await ctx.provider.transform((editor) => editor.models.set(provider.id, models))
+          discovered.set(provider.id, models)
+          changed = true
           console.info(`[model-discovery] ${provider.id}: loaded ${models.length} models`)
         } catch (error) {
+          // Keep the last successful inventory instead of replacing it with an
+          // empty list when a provider is temporarily unavailable.
           console.warn(`[model-discovery] ${provider.id}: unable to refresh models`, error)
         }
       }
+      if (changed && reload) await ctx.provider.reload()
     }
 
-    await refresh()
+    // Populate the source before registering the transform. Registering it
+    // while the map is empty can leave an empty inventory on older V2 builds.
+    await refresh(false)
+    await ctx.provider.transform((editor) => {
+      for (const provider of PROVIDERS) {
+        const models = discovered.get(provider.id)
+        if (models) editor.models.set(provider.id, models)
+      }
+    })
+
     const timer = setInterval(() => {
-      if (!disposed) void refresh()
+      if (!disposed) void refresh().catch((error) => console.warn("[model-discovery] refresh failed", error))
     }, REFRESH_INTERVAL_MS)
 
     return () => {
