@@ -47,6 +47,5 @@
     };
   };
 
-
   home.file.".config/opencode/plugins/rtk.ts".source = ./opencode/plugins/rtk.ts;
 }
