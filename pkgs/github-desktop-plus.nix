@@ -11,7 +11,7 @@
 }:
 
 let
-  version = "3.6.6.0";
+  version = "3.6.6.1";
 
   customSrc = fetchFromGitHub {
     owner = "pol-rivero";
@@ -20,7 +20,7 @@ let
 
     fetchSubmodules = true;
 
-    hash = "sha256-btEUWIphz3BKTCbyuX0PHu4RE/31YgePofyUpsuQlvA=";
+    hash = "sha256-YgV33nm1uxszQ4PPMioNA0jGTSy4ag+J9Ww9D13CPIE=";
   };
 
   customFetchYarnDeps =
@@ -32,7 +32,7 @@ let
           if lib.hasSuffix "app/yarn.lock" (builtins.toString args.yarnLock) then
             "sha256-JSpeuHigOribcaQEu9MG0L1+eLSZHe0/M0FVjwX1WCU="
           else
-            "sha256-eijkCdG69X8Gm79kSq5zcRTQaWaf/5d8IL3y0a6zLrw=";
+            "sha256-7eZyHfiPhez0VmusDsQSVkH84PgrVcGSs/iMfauWzbg=";
       }
     );
 
