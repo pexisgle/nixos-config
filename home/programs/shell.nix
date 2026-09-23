@@ -31,6 +31,14 @@
     nix-direnv.enable = true;
   };
 
+  # mise: toolchain version pinning (node/pnpm via mikuec.com/mise.toml + .node-version).
+  # programs.mise adds `eval "$(mise activate zsh)"` via zsh.initContent.
+  # dev-tools.nix already installs the mise package; the module reuses pkgs.mise.
+  programs.mise = {
+    enable = true;
+    enableZshIntegration = true;
+  };
+
   # Shell integrations for CLI tools installed in dev-tools.nix.
   # The packages themselves come from programs.* so hooks/completions stay wired.
   programs.fzf.enable = true;

@@ -54,6 +54,11 @@
 
   home.sessionPath = [
     "$HOME/.bun/bin"
+    # mise shims fallback for non-interactive shells (opencode/VSCode/tasks).
+    # Interactive shells use `mise activate` hook from programs.mise; shims
+    # ensure `node`/`pnpm` resolve even without the hook. mise prepends its
+    # tool paths ahead of nixpkgs nodejs when the hook is active.
+    "$HOME/.local/share/mise/shims"
   ];
 
   programs.home-manager.enable = true;
