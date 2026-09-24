@@ -10,11 +10,11 @@
 
 stdenv.mkDerivation {
   pname = "opencodex";
-  version = "2.63.0";
+  version = "2.64.0";
 
   src = fetchzip {
-    url = "https://registry.npmjs.org/@bitkyc08/opencodex/-/opencodex-2.63.0.tgz";
-    hash = "sha256-ydD2n2teagDSI+qWBVwvkONfWbtwmdm5V9485gNRnYc=";
+    url = "https://registry.npmjs.org/@bitkyc08/opencodex/-/opencodex-2.64.0.tgz";
+    hash = "sha256-vkz7YzPy4K4j63aEhQ9UF+NbagDDy0pLUEz0g0euuVY=";
   };
 
   npmDeps = importNpmLock.buildNodeModules {
