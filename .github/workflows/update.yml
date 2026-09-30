@@ -159,7 +159,7 @@ jobs:
             pkgs/**
           delete-branch: true
 
-      - name: Enable auto-merge
+      - name: Merge validated Pull Request
         id: merge
         # schedule 実行では input が空になるため、schedule は常に自動マージ可とする。
         if: >-
@@ -169,12 +169,22 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           # ここに到達する時点で fmt / flake check / ビルドはすべて成功している。
-          # --auto はマージ条件を満たし次第マージするため、将来 branch protection を
-          # 追加しても壊れない。--match-head-commit で検証済みコミットのみをマージする。
-          gh pr merge \
-            "${{ steps.cpr.outputs.pull-request-number }}" \
-            --auto --squash \
-            --match-head-commit "${{ steps.cpr.outputs.pull-request-head-sha }}"
+          # 保護ルールがある場合は auto-merge を使い、未設定の場合は直接マージする。
+          # どちらの場合も --match-head-commit で検証済みコミットのみをマージする。
+          pr_number="${{ steps.cpr.outputs.pull-request-number }}"
+          head_sha="${{ steps.cpr.outputs.pull-request-head-sha }}"
+          if output=$(gh pr merge "$pr_number" --auto --squash \
+            --match-head-commit "$head_sha" 2>&1); then
+            printf '%s\n' "$output"
+          else
+            status=$?
+            printf '%s\n' "$output" >&2
+            if [[ "$output" == *"Protected branch rules not configured for this branch"* ]]; then
+              gh pr merge "$pr_number" --squash --match-head-commit "$head_sha"
+            else
+              exit "$status"
+            fi
+          fi
 
       - name: Trigger cache warmup on main
         if: steps.merge.outcome == 'success'
