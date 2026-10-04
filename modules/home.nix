@@ -1,9 +1,10 @@
+# Home Manager 側の共有モジュール入口 + グローバル設定。
+# どのファイルが Home Manager 用かは、この import 一覧を唯一の真実とする。
 {
   pkgs,
-  config,
   inputs,
   sopsFile,
-  sopsPaths ? import ../lib/sops.nix,
+  sopsPaths,
   ...
 }:
 
@@ -12,19 +13,24 @@
     inputs.niri.homeModules.niri
     inputs.dms.homeModules.dank-material-shell
     inputs.dms.homeModules.niri
-    ./desktop/material-shell.nix
+    # apps
+    ./apps/browsers.nix
+    ./apps/communication.nix
+    ./apps/media.nix
+    # desktop
+    ./desktop/dms.nix
     ./desktop/niri.nix
     ./desktop/xdg.nix
-    ./programs/browsers.nix
-    ./programs/communication.nix
-    ./programs/dev-tools.nix
-    ./programs/gaming.nix
-    ./programs/media.nix
-    ./programs/opencode.nix
-    ./programs/opencodex.nix
-    ./programs/ssh.nix
-    ./programs/shell.nix
-    ./programs/vscode.nix
+    # dev
+    ./dev/opencode.nix
+    ./dev/opencodex.nix
+    ./dev/shell.nix
+    ./dev/tools.nix
+    ./dev/vscode.nix
+    # i18n
+    ./i18n/hazkey.nix
+    # networking
+    ./networking/ssh.nix
   ];
 
   home.username = "pexisgle";
@@ -53,7 +59,6 @@
   };
 
   home.sessionPath = [
-    "$HOME/.bun/bin"
     # mise shims fallback for non-interactive shells (opencode/VSCode/tasks).
     # Interactive shells use `mise activate` hook from programs.mise; shims
     # ensure `node`/`pnpm` resolve even without the hook. mise prepends its

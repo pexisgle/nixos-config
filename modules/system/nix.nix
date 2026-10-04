@@ -1,16 +1,13 @@
 # Nix daemon / store settings.
-# Binary caches themselves live in lib/caches.nix (shared with flake nixConfig).
-{
-  caches ? import ../../lib/caches.nix,
-  ...
-}:
+# Binary caches themselves live in modules/system/caches.nix (shared with flake nixConfig).
+{ ... }:
 
+let
+  # Module arguments cannot supply defaults, so import the mirror directly.
+  caches = import ./caches.nix;
+in
 {
   nixpkgs.config.allowUnfree = true;
-
-  nixpkgs.config.permittedInsecurePackages = [
-    "electron-40.10.5"
-  ];
 
   nix.settings = {
     experimental-features = [

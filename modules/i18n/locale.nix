@@ -1,10 +1,6 @@
-{ pkgs, inputs, ... }:
+{ ... }:
 
 {
-  imports = [
-    inputs.nix-hazkey.nixosModules.hazkey
-  ];
-
   time.timeZone = "Asia/Tokyo";
   # Dual-boot with Windows expects local-time RTC; on Linux-only machines
   # prefer false (UTC) to avoid DST/NTP skew.
@@ -22,19 +18,4 @@
     LC_TELEPHONE = "ja_JP.UTF-8";
     LC_TIME = "ja_JP.UTF-8";
   };
-
-  # Hazkey (azooKey engine + Zenzai neural conversion model)
-  services.hazkey.enable = true;
-
-  i18n.inputMethod = {
-    type = "fcitx5";
-    enable = true;
-    fcitx5.waylandFrontend = true;
-    fcitx5.addons = with pkgs; [
-      fcitx5-mozc-ut
-      fcitx5-gtk
-    ];
-  };
-
-  environment.systemPackages = [ pkgs.kdePackages.fcitx5-configtool ];
 }

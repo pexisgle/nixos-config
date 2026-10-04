@@ -9,7 +9,7 @@ log() { printf '\033[1;34m==>\033[0m %s\n' "$*"; }
 warn() { printf '\033[1;33m!!\033[0m %s\n' "$*" >&2; }
 err()  { printf '\033[1;31mxx\033[0m %s\n' "$*" >&2; }
 
-PKG_NIX="$root/pkgs/github-desktop-plus.nix"
+PKG_NIX="$root/packages/github-desktop-plus.nix"
 
 if [[ ! -f "$PKG_NIX" ]]; then
   err "File not found: $PKG_NIX"
@@ -51,6 +51,17 @@ log "Git source hash: $SRC_HASH"
 log "Cloning repository for yarn lock hash calculation..."
 git clone --depth 1 --branch "$LATEST_TAG" https://github.com/pol-rivero/github-desktop-plus.git "$TMP_DIR/repo"
 
+# The fork's lockfiles may pin @electron/* tarballs to Microsoft's 1ES feed,
+# which prefetch-yarn-deps cannot fetch. Rewrite those URLs to the public
+# registry first; packages/github-desktop-plus.nix performs the same rewrite.
+# Keep this sed in sync with the package definition.
+log "Rewriting Microsoft feed URLs in yarn.lock to registry.npmjs.org..."
+for lock in "$TMP_DIR/repo/yarn.lock" "$TMP_DIR/repo/app/yarn.lock"; do
+  if [[ -f "$lock" ]]; then
+    sed -i -E 's|https://[A-Za-z0-9.-]*\.pkgs\.visualstudio\.com/[^[:space:]]*/registry/|https://registry.npmjs.org/|g' "$lock"
+  fi
+done
+
 log "Calculating root yarn.lock hash..."
 ROOT_YARN_OUTPUT=$(nix shell --inputs-from . nixpkgs#prefetch-yarn-deps --command prefetch-yarn-deps "$TMP_DIR/repo/yarn.lock")
 ROOT_YARN_BASE32=$(echo "$ROOT_YARN_OUTPUT" | grep -v 'ignoring lockfile entry' | tr -d '[:space:]')
@@ -69,10 +80,10 @@ log "Updating $PKG_NIX..."
 sed -i -E "s|version = \".*\";|version = \"${LATEST_VERSION}\";|" "$PKG_NIX"
 
 # Update source hash
-sed -i -E "s|hash = \"sha256-.*\";|hash = \"${SRC_HASH}\";|" "$PKG_NIX"
+sed -i -E "s|srcHash = \"sha256-.*\";|srcHash = \"${SRC_HASH}\";|" "$PKG_NIX"
 
-# Update yarn lock hashes in customFetchYarnDeps
-sed -i -E "/hasSuffix \"app\/yarn.lock\"/,/else/ s|\"sha256-.*\"|\"${APP_YARN_HASH}\"|" "$PKG_NIX"
-sed -i -E "/else/,/};/ s|\"sha256-.*\"|\"${ROOT_YARN_HASH}\"|" "$PKG_NIX"
+# Update yarn lock hashes (named bindings at the top of the let block)
+sed -i -E "s|rootYarnHash = \"sha256-.*\";|rootYarnHash = \"${ROOT_YARN_HASH}\";|" "$PKG_NIX"
+sed -i -E "s|appYarnHash = \"sha256-.*\";|appYarnHash = \"${APP_YARN_HASH}\";|" "$PKG_NIX"
 
 log "Successfully updated github-desktop-plus to $LATEST_VERSION"

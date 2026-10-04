@@ -6,7 +6,6 @@
 #   ./scripts/update.sh                       # update everything (flake + all pkgs)
 #   ./scripts/update.sh flake                 # update flake.lock only
 #   ./scripts/update.sh pkgs                  # update all custom packages only
-#   ./scripts/update.sh opencodex             # update opencodex only
 #   ./scripts/update.sh github-desktop-plus   # update github-desktop-plus only
 #   FLAKE_INPUTS=nixpkgs ./scripts/update.sh flake   # update specific flake input
 #   DRY_RUN=1 ./scripts/update.sh             # preview only (discards changes after run)
@@ -34,11 +33,6 @@ run_flake() {
   fi
 }
 
-run_opencodex() {
-  log "Updating opencodex..."
-  "$script_dir/update-opencodex.sh"
-}
-
 run_github_desktop_plus() {
   log "Updating github-desktop-plus..."
   "$script_dir/update-github-desktop-plus.sh"
@@ -47,38 +41,33 @@ run_github_desktop_plus() {
 case "$target" in
   all)
     run_flake
-    run_opencodex
     run_github_desktop_plus
     ;;
   flake)
     run_flake
     ;;
   pkgs)
-    run_opencodex
     run_github_desktop_plus
-    ;;
-  opencodex)
-    run_opencodex
     ;;
   github-desktop-plus)
     run_github_desktop_plus
     ;;
   *)
-    err "Unknown target: $target (use: all | flake | pkgs | opencodex | github-desktop-plus)"
+    err "Unknown target: $target (use: all | flake | pkgs | github-desktop-plus)"
     exit 1
     ;;
 esac
 
 if [[ "$dry_run" == "1" ]]; then
   warn "DRY_RUN=1 — discarding updater-owned changes only"
-  git restore --staged --worktree -- flake.lock pkgs/opencodex.nix pkgs/opencodex/package.json pkgs/opencodex/package-lock.json pkgs/github-desktop-plus.nix 2>/dev/null || true
+  git restore --staged --worktree -- flake.lock packages/github-desktop-plus.nix 2>/dev/null || true
   exit 0
 fi
 
-if [[ -n "$(git status --porcelain -- flake.lock pkgs/)" ]]; then
+if [[ -n "$(git status --porcelain -- flake.lock packages/)" ]]; then
   log "Changes detected. Showing diff summary:"
-  git status --short -- flake.lock pkgs/
-  log "Review with: git diff -- flake.lock pkgs/"
+  git status --short -- flake.lock packages/
+  log "Review with: git diff -- flake.lock packages/"
   log "Commit with: git add -A && git commit -m 'chore: update'"
 else
   log "Nothing to update — already on latest."

@@ -16,8 +16,7 @@
       theme = "robbyrussell";
     };
 
-    # devenv may not be installed in minimal shells (e.g. CI); guard so
-    # interactive startup never fails and non-interactive shells stay fast.
+    # Guard so interactive startup never fails if devenv is unavailable.
     initContent = ''
       if command -v devenv >/dev/null 2>&1; then
         eval "$(devenv hook zsh)"

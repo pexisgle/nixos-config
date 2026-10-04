@@ -25,7 +25,6 @@
     mise
     bun
     nodejs
-    python3Packages.huggingface-hub
 
     # Remote tooling helper (opencode rtk plugin dependency)
     rtk
@@ -58,12 +57,11 @@
 
     # Editors / AI coding tools
     zed-editor-fhs
-    opencode-desktop
     opencode2
+    opencode2-desktop
     github-desktop-plus
     antigravity
     antigravity-cli
-    code-cursor-fhs
-    grok-bot
+    command-code
   ];
 }

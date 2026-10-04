@@ -1,7 +1,8 @@
-# sops paths: key location is shared with Home Manager via lib/sops.nix.
+# sops paths: the age key location is defined in flake.nix and passed through
+# specialArgs (NixOS) / extraSpecialArgs (Home Manager).
 {
   inputs,
-  sopsPaths ? import ../../lib/sops.nix,
+  sopsPaths,
   ...
 }:
 

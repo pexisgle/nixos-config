@@ -8,7 +8,7 @@
     enable = true;
     pkiBundle = "/var/lib/sbctl";
     # Boot menu entries kept; actual rollback depth is bounded by nix.gc
-    # (--delete-older-than 3d in modules/core/nix.nix).
+    # (--delete-older-than 3d in modules/system/nix.nix).
     configurationLimit = 5;
   };
 

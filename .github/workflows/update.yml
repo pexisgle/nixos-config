@@ -15,7 +15,6 @@ on:
           - all
           - flake
           - pkgs
-          - opencodex
           - github-desktop-plus
       dry_run:
         description: "Dry run (no commit, no PR)"
@@ -104,18 +103,18 @@ jobs:
       - name: Detect changes
         id: diff
         run: |
-          if git diff --quiet -- flake.lock flake.nix pkgs/; then
+          if git diff --quiet -- flake.lock flake.nix packages/; then
             echo "changed=false" >> "$GITHUB_OUTPUT"
             echo "No updates available."
           else
             echo "changed=true" >> "$GITHUB_OUTPUT"
             echo "### Changes detected:" >> "$GITHUB_STEP_SUMMARY"
             echo '```diff' >> "$GITHUB_STEP_SUMMARY"
-            git diff --stat -- flake.lock flake.nix pkgs/ >> "$GITHUB_STEP_SUMMARY"
+            git diff --stat -- flake.lock flake.nix packages/ >> "$GITHUB_STEP_SUMMARY"
 
             {
               echo "diff_stat<<EOF"
-              git diff --stat -- flake.lock flake.nix pkgs/
+              git diff --stat -- flake.lock flake.nix packages/
               echo "EOF"
             } >> "$GITHUB_OUTPUT"
           fi
@@ -156,7 +155,7 @@ jobs:
           add-paths: |
             flake.lock
             flake.nix
-            pkgs/**
+            packages/**
           delete-branch: true
 
       - name: Merge validated Pull Request

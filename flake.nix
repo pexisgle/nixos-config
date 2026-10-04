@@ -2,8 +2,8 @@
   description = "Pexisgle's NixOS Flake Configuration";
 
   # NOTE: flake nixConfig must stay a literal attrset (no let/import): Nix reads
-  # it without full evaluation. The same lists live in lib/caches.nix for the
-  # NixOS side (modules/core/nix.nix); keep both in sync and run
+  # it without full evaluation. The same lists live in modules/system/caches.nix
+  # for the NixOS side (modules/system/nix.nix); keep both in sync and run
   # ./scripts/check-caches.sh to verify. CI runs it on every update/cache run.
   nixConfig = {
     extra-substituters = [
@@ -60,10 +60,6 @@
       url = "github:numtide/llm-agents.nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    grok-bot = {
-      url = "github:jordangarrison/grok-bot-flake";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
     nix-hazkey = {
       url = "github:aster-void/nix-hazkey";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -78,31 +74,33 @@
       lanzaboote,
       sops-nix,
       antigravity-flake,
-      grok-bot,
       llm-agents,
       ...
     }@inputs:
     let
-      caches = import ./lib/caches.nix;
-      sopsPaths = import ./lib/sops.nix;
+      # Shared by NixOS and Home Manager through specialArgs below.
+      sopsPaths = {
+        ageKeyFile = "/home/pexisgle/.config/sops/age/keys.txt";
+      };
       customPackagesOverlay = final: prev: {
-        github-desktop-plus = final.callPackage ./pkgs/github-desktop-plus.nix { };
-        opencodex = final.callPackage ./pkgs/opencodex.nix { };
+        github-desktop-plus = final.callPackage ./packages/github-desktop-plus.nix { };
+        opencodex = inputs.llm-agents.packages.${final.stdenv.hostPlatform.system}.opencodex;
         antigravity = inputs.antigravity-flake.packages.${final.stdenv.hostPlatform.system}.antigravity;
-        grok-bot = inputs.grok-bot.packages.${final.stdenv.hostPlatform.system}.default;
         chatgpt = inputs.llm-agents.packages.${final.stdenv.hostPlatform.system}.chatgpt;
+        command-code = inputs.llm-agents.packages.${final.stdenv.hostPlatform.system}.command-code;
         opencode2 = inputs.llm-agents.packages.${final.stdenv.hostPlatform.system}.opencode2;
+        opencode2-desktop =
+          inputs.llm-agents.packages.${final.stdenv.hostPlatform.system}.opencode2-desktop;
       };
 
       mkHost =
-        { hostName, homeModule }:
+        { hostName }:
         nixpkgs.lib.nixosSystem {
           system = "x86_64-linux";
           specialArgs = {
             inherit
               inputs
               hostName
-              caches
               sopsPaths
               ;
           };
@@ -110,7 +108,7 @@
             {
               nixpkgs.overlays = [ customPackagesOverlay ];
             }
-            ./modules/common.nix
+            ./modules/nixos.nix
             (./hosts + "/${hostName}/configuration.nix")
             home-manager.nixosModules.home-manager
             {
@@ -119,12 +117,11 @@
               home-manager.sharedModules = [
                 sops-nix.homeManagerModules.sops
               ];
-              home-manager.users.pexisgle = import homeModule;
+              home-manager.users.pexisgle = import (./hosts + "/${hostName}/home.nix");
               home-manager.extraSpecialArgs = {
                 inherit
                   inputs
                   hostName
-                  caches
                   sopsPaths
                   ;
                 sopsFile = "${self}/secrets/common.yaml";
@@ -142,12 +139,10 @@
       nixosConfigurations = {
         pexisgle-desktop = mkHost {
           hostName = "desktop";
-          homeModule = ./home/desktop.nix;
         };
 
         pexisgle-laptop = mkHost {
           hostName = "laptop";
-          homeModule = ./home/laptop.nix;
         };
       };
     };

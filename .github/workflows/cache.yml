@@ -7,11 +7,10 @@ on:
     paths:
       - "flake.nix"
       - "flake.lock"
-      - "home/**"
       - "hosts/**"
       - "modules/**"
-      - "pkgs/**"
-      - "lib/**"
+      - "packages/**"
+      - "scripts/**"
       - ".github/workflows/cache.yml"
   workflow_dispatch:
 

@@ -6,22 +6,19 @@
 }:
 
 {
-  # opencode-go/muse-spark-1.3-contributor は Zen Go の /responses 専用モデルだが、
-  # opencodex 2.40.0 の同梱レジストリは 1.2 までしか wire 既定を持たないため、
-  # provider 全体の openai-chat のままだと /chat/completions に投げて 500 になる。
-  # また上流は reasoning.effort=max を拒否する(400)ため ladder から max を外し、
-  # max 要求は xhigh へクランプさせる。初回起動後の live config に冪等マージする。
+  # opencodex 2.77 の同梱レジストリは muse-spark-1.3-contributor の wire
+  # (openai-responses)・context window・入力モダリティを既に持つため、ここでは
+  # レジストリ未収載の reasoning effort ladder だけを補う。上流は effort=max を
+  # 拒否する(400)ため ladder から max を外し、max 要求は xhigh へクランプさせる。
+  # 初回起動後の live config に冪等マージする。
   home.activation.opencodexMuseSpark13Wire = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
     cfg="$HOME/.opencodex/config.json"
     if [ -f "$cfg" ]; then
       tmp="$(mktemp)"
       if ${pkgs.jq}/bin/jq '
         if .providers?["opencode-go"] then
-          .providers["opencode-go"].modelAdapters = ((.providers["opencode-go"].modelAdapters // {}) + {"muse-spark-1.3-contributor": "openai-responses"})
-          | .providers["opencode-go"].modelReasoningEfforts = ((.providers["opencode-go"].modelReasoningEfforts // {}) + {"muse-spark-1.3-contributor": ["minimal", "low", "medium", "high", "xhigh"]})
+          .providers["opencode-go"].modelReasoningEfforts = ((.providers["opencode-go"].modelReasoningEfforts // {}) + {"muse-spark-1.3-contributor": ["minimal", "low", "medium", "high", "xhigh"]})
           | .providers["opencode-go"].modelDefaultReasoningEfforts = ((.providers["opencode-go"].modelDefaultReasoningEfforts // {}) + {"muse-spark-1.3-contributor": "high"})
-          | .providers["opencode-go"].modelContextWindows = ((.providers["opencode-go"].modelContextWindows // {}) + {"muse-spark-1.3-contributor": 1048576})
-          | .providers["opencode-go"].modelInputModalities = ((.providers["opencode-go"].modelInputModalities // {}) + {"muse-spark-1.3-contributor": ["text", "image"]})
         else . end
       ' "$cfg" > "$tmp" 2>/dev/null; then
         # Only touch the live config when the merge changes it,
@@ -73,7 +70,9 @@
           OPENCODEX_API_AUTH_TOKEN="$(cat "$HOME/.opencodex/service-api-token")"
           export OPENCODEX_API_AUTH_TOKEN
         fi
-        exec ${pkgs.bun}/bin/bun ${pkgs.opencodex}/lib/node_modules/@bitkyc08/opencodex/src/cli/index.ts start --port 10100
+        # llm-agents.nix の opencodex は bun + src/cli/index.ts を exec する
+        # ラッパーなので、内部レイアウトに依存せず ocx を直接起動する。
+        exec ${pkgs.opencodex}/bin/ocx start --port 10100
       ''}";
       Restart = "on-failure";
       RestartSec = 5;

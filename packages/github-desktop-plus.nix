@@ -8,10 +8,16 @@
   github-desktop,
   git,
   git-lfs,
+  runCommand,
 }:
 
 let
-  version = "3.6.6.1";
+  version = "3.6.7.0";
+
+  # Updated by scripts/update-github-desktop-plus.sh (named hashes are its targets).
+  srcHash = "sha256-30hSPHQbMsipGVCUihT8I0ywiXDvdcUtHc5ddJIDTzA=";
+  rootYarnHash = "sha256-gGrbqBJ9W3Xo+5ptUff+wivjZBU/bPj+b8Ory7X1ImA=";
+  appYarnHash = "sha256-JSpeuHigOribcaQEu9MG0L1+eLSZHe0/M0FVjwX1WCU=";
 
   customSrc = fetchFromGitHub {
     owner = "pol-rivero";
@@ -20,19 +26,32 @@ let
 
     fetchSubmodules = true;
 
-    hash = "sha256-YgV33nm1uxszQ4PPMioNA0jGTSy4ag+J9Ww9D13CPIE=";
+    hash = srcHash;
   };
+
+  # The fork's lockfiles may record @electron/* resolved URLs on Microsoft's
+  # 1ES feed, which prefetch-yarn-deps cannot fetch. Rewrite them to the public
+  # npm registry: tarball contents (and integrity hashes) are identical.
+  # Keep this sed in sync with scripts/update-github-desktop-plus.sh.
+  patchedLocks = runCommand "github-desktop-plus-yarn-locks" { } ''
+    mkdir -p $out/app
+    cp -f ${customSrc}/yarn.lock $out/yarn.lock
+    cp -f ${customSrc}/app/yarn.lock $out/app/yarn.lock
+    sed -i -E \
+      's|https://[A-Za-z0-9.-]*\.pkgs\.visualstudio\.com/[^[:space:]]*/registry/|https://registry.npmjs.org/|g' \
+      $out/yarn.lock $out/app/yarn.lock
+  '';
 
   customFetchYarnDeps =
     args:
+    let
+      isAppLock = lib.hasSuffix "app/yarn.lock" (builtins.toString args.yarnLock);
+    in
     fetchYarnDeps (
       args
       // {
-        hash =
-          if lib.hasSuffix "app/yarn.lock" (builtins.toString args.yarnLock) then
-            "sha256-JSpeuHigOribcaQEu9MG0L1+eLSZHe0/M0FVjwX1WCU="
-          else
-            "sha256-7eZyHfiPhez0VmusDsQSVkH84PgrVcGSs/iMfauWzbg=";
+        yarnLock = if isAppLock then "${patchedLocks}/app/yarn.lock" else "${patchedLocks}/yarn.lock";
+        hash = if isAppLock then appYarnHash else rootYarnHash;
       }
     );
 
@@ -46,9 +65,31 @@ in
     src = customSrc;
 
     postPatch = (oldAttrs.postPatch or "") + ''
+      # Keep the build's lockfiles consistent with patchedLocks above, so the
+      # offline yarn cache keys match. Same sed as patchedLocks / the updater.
+      sed -i -E \
+        's|https://[A-Za-z0-9.-]*\.pkgs\.visualstudio\.com/[^[:space:]]*/registry/|https://registry.npmjs.org/|g' \
+        yarn.lock app/yarn.lock
+
       substituteInPlace script/build.ts \
         --replace-fail "import { removeCurlVersionRequirements } from './remove-curl-version-requirements'" "" \
         --replace-fail '    removeCurlVersionRequirements(gitDir)' '    // Nix replaces the bundled Git in postFixup.'
+    '';
+
+    postInstall = (oldAttrs.postInstall or "") + ''
+      # The 3.6.7.0 static-resource copy leaves absolute /build symlinks for a
+      # few gitignore aliases (e.g. Clojure.gitignore -> Leiningen.gitignore),
+      # which fail fixup's noBrokenSymlinks check once installed. The targets
+      # exist only inside the build tree, so materialize any link pointing
+      # there while /build still exists.
+      for link in $(find "$out/share/github-desktop/resources/app/static" -type l); do
+        target="$(readlink "$link")"
+        case "$target" in
+          "$NIX_BUILD_TOP"/*)
+            cp --remove-destination -f "$target" "$link"
+            ;;
+        esac
+      done
     '';
 
     postFixup = (oldAttrs.postFixup or "") + ''

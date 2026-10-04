@@ -9,15 +9,8 @@
   hardware.bluetooth.settings.General.Privacy = "disabled";
   services.blueman.enable = true;
 
-  # Explicitly opened TCP ports (services.sunshine.openFirewall and
-  # services for Steam remote play open their own ports separately):
-  # 3389 = RDP, 5900 = VNC, 47989-47990 = Sunshine/Moonlight streaming.
-  # These bind on all interfaces; restrict to LAN/VPN via firewall zones
+  # No explicit ports here: the owning modules open what they need
+  # (services.sunshine openFirewall on the desktop host, Steam remote play).
+  # Services bind on all interfaces; restrict to LAN/VPN via firewall zones
   # if this machine is ever exposed directly to the internet.
-  networking.firewall.allowedTCPPorts = [
-    3389
-    5900
-    47989
-    47990
-  ];
 }

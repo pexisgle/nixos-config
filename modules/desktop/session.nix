@@ -27,17 +27,11 @@
     config.common.default = "kde";
   };
 
-  services.sunshine = {
-    enable = true;
-    autoStart = true;
-    # Required for Wayland KMS capture; omit for Xorg-only setups.
-    # openFirewall covers Sunshine ports; the explicit 47989-47990 TCP entries
-    # in modules/core/network.nix are kept for documentation/VNC overlap.
-    capSysAdmin = true;
-    openFirewall = true;
-  };
+  # Gaming performance daemon, used by Steam/Lutris when available.
+  programs.gamemode.enable = true;
 
-  # Needed for Sunshine virtual input and other user-space input emulation.
+  # Needed for user-space input emulation (Steam Input virtual controllers,
+  # Sunshine virtual input on the desktop host, etc.).
   hardware.uinput.enable = true;
 
   environment.systemPackages = with pkgs; [

@@ -1,4 +1,4 @@
-# Binary cache definitions for the NixOS side (modules/core/nix.nix).
+# Binary cache definitions for the NixOS side (modules/system/nix.nix).
 #! Mirror of the literal lists in flake.nix nixConfig, which must stay literal
 # (Nix reads it without full evaluation). Update both files together and run
 # ./scripts/check-caches.sh to verify.
