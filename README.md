@@ -3,7 +3,7 @@
 Pexisgle用の NixOS Flake 設定です。1つのリポジトリで desktop / laptop の2ホストを管理し、Home Manager を統合しています。
 
 - 新ホストでは `secrets/common.yaml` を復号できる age 鍵（`flake.nix` の `sopsPaths.ageKeyFile`）を配置し、`nix run nixpkgs#cachix -- use pexisgle` でキャッシュを有効化してください（詳細は「バイナリキャッシュ」）。
-- 切り戻しは世代選択で行います。GC（daily、`--delete-older-than 3d`）より前の世代には戻れないため、直前の世代番号を控えておくと安全です。
+- 切り戻しは世代選択で行います。GC（daily、`nh clean` による `--keep 5 --keep-since 3d`）より前の世代には戻れないため、直前の世代番号を控えておくと安全です。
 
 ## 構成
 
@@ -15,7 +15,7 @@ hosts/
 modules/                  # 両ホスト共通
   nixos.nix               # ★ NixOS 側の入口マニフェスト（import 一覧）
   home.nix                # ★ Home Manager 側の入口マニフェスト + グローバル設定
-  system/                 # boot / nix / caches / secrets / users / tmp / atd / docker
+  system/                 # boot / nix / nh / caches / secrets / users / tmp / atd / docker
   networking/             # network（NM/Bluetooth/firewall） / vpn / ssh
   i18n/                   # locale / input-method（fcitx5 + hazkey） / hazkey（Zenzai GPU シード）
   desktop/                # session / fonts（NixOS） + niri / dms / xdg（HM）
@@ -45,17 +45,25 @@ secrets/                  # sops 暗号文（.sops.yaml はルート据え置き
 
 ## 使い方
 
-リポジトリ直下で実行します。
+リポジトリ直下で実行します（`programs.nh.flake` が設定されているため、`nh os switch` も利用可能です）。
 
 ### Desktop に反映
 
 ```bash
+# nh を使用する場合（ホスト自動判別）
+nh os switch
+
+# または nixos-rebuild を直接使用する場合
 sudo nixos-rebuild switch --flake .#pexisgle-desktop
 ```
 
 ### Laptop に反映
 
 ```bash
+# nh を使用する場合（ホスト自動判別）
+nh os switch
+
+# または nixos-rebuild を直接使用する場合
 sudo nixos-rebuild switch --flake .#pexisgle-laptop
 ```
 

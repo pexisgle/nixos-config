@@ -38,6 +38,8 @@
   home.stateVersion = "26.05";
   home.packages = with pkgs; [
     kicad
+    godot
+    unityhub
     jan
     codex
     opencodex

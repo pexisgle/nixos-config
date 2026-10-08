@@ -7,8 +7,8 @@
   boot.lanzaboote = {
     enable = true;
     pkiBundle = "/var/lib/sbctl";
-    # Boot menu entries kept; actual rollback depth is bounded by nix.gc
-    # (--delete-older-than 3d in modules/system/nix.nix).
+    # Boot menu entries kept; actual rollback depth is bounded by nh clean
+    # (--keep 5 --keep-since 3d in modules/system/nh.nix).
     configurationLimit = 5;
   };
 

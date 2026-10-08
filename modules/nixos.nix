@@ -8,6 +8,7 @@
     ./system/atd.nix
     ./system/boot.nix
     ./system/docker.nix
+    ./system/nh.nix
     ./system/nix.nix
     ./system/secrets.nix
     ./system/tmp.nix

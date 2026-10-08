@@ -12,10 +12,10 @@
 }:
 
 let
-  version = "3.6.7.0";
+  version = "3.6.7.1";
 
   # Updated by scripts/update-github-desktop-plus.sh (named hashes are its targets).
-  srcHash = "sha256-30hSPHQbMsipGVCUihT8I0ywiXDvdcUtHc5ddJIDTzA=";
+  srcHash = "sha256-8xQeaHFJbhtozJIgL0UUyzSn6GCvgPZLEpheAPqztmo=";
   rootYarnHash = "sha256-gGrbqBJ9W3Xo+5ptUff+wivjZBU/bPj+b8Ory7X1ImA=";
   appYarnHash = "sha256-JSpeuHigOribcaQEu9MG0L1+eLSZHe0/M0FVjwX1WCU=";
 
@@ -74,6 +74,12 @@ in
       substituteInPlace script/build.ts \
         --replace-fail "import { removeCurlVersionRequirements } from './remove-curl-version-requirements'" "" \
         --replace-fail '    removeCurlVersionRequirements(gitDir)' '    // Nix replaces the bundled Git in postFixup.'
+
+      # Upstream 3.6.7.1 added verify-symlinks which rejects non-relocatable
+      # symlinks (such as absolute Nix store paths to git-core). Stub it out.
+      if [ -f script/verify-symlinks.ts ]; then
+        echo "export function assertRelocatableSymlinks(_root: string): void {}" > script/verify-symlinks.ts
+      fi
     '';
 
     postInstall = (oldAttrs.postInstall or "") + ''

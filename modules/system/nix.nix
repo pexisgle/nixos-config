@@ -41,14 +41,8 @@ in
     "@wheel"
   ];
 
-  # Daily GC keeps the store bounded; generations older than 3 days are
-  # collectable. lanzaboote keeps 5 bootloader entries independently,
-  # so rollback depth is limited by GC here, not by configurationLimit alone.
-  nix.gc = {
-    automatic = true;
-    dates = "daily";
-    options = "--delete-older-than 3d";
-  };
+  # Garbage collection and generation cleanup are handled by programs.nh.clean
+  # in modules/system/nh.nix (keeping recent generations and freeing unreferenced store paths).
 
   system.stateVersion = "26.05";
 }
