@@ -178,7 +178,12 @@ jobs:
           else
             status=$?
             printf '%s\n' "$output" >&2
-            if [[ "$output" == *"Protected branch rules not configured for this branch"* ]]; then
+            if [[ "$output" == *"Protected branch rules not configured"* || \
+                  "$output" == *"clean status"* || \
+                  "$output" == *"auto-merge is not allowed"* || \
+                  "$output" == *"Auto merge is not allowed"* || \
+                  "$output" == *"auto merge is not allowed"* ]]; then
+              echo "Auto-merge could not be enabled; falling back to direct squash merge."
               gh pr merge "$pr_number" --squash --match-head-commit "$head_sha"
             else
               exit "$status"
