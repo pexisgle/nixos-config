@@ -20,6 +20,23 @@ let
       HostName sol.cc.uec.ac.jp
       User s2611114
 
+    Host ced
+      HostName orange01.ced.cei.uec.ac.jp
+      User s2611114
+      ProxyJump sol
+      ServerAliveInterval 60
+
+    Host orange*
+      HostName %h.ced.cei.uec.ac.jp
+      User s2611114
+      ProxyJump sol
+      ServerAliveInterval 60
+
+    Host ced* !ced
+      User s2611114
+      ProxyCommand ssh -q -W $(echo %h | sed -E 's/^ced-?(orange)?/orange/').ced.cei.uec.ac.jp:22 sol
+      ServerAliveInterval 60
+
     Host rpi
       HostName rpi.pexisgle.dev
       User pexisgle
