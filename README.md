@@ -119,7 +119,7 @@ nix flake update
 
 ### 自動更新 (GitHub Actions)
 
-`.github/workflows/update.yml` が毎週月曜 09:00 (JST) に `flake.lock` の更新 (`nix flake update`) を実行し、変更があれば自動でPRを作ります。
+`.github/workflows/update.yml` が毎週月曜・木曜 09:00 (JST) に `flake.lock` の更新 (`nix flake update`) を実行し、変更があれば自動でPRを作ります。
 
 Antigravity（Hub / CLI）は [Hy4ri/antigravity-flake](https://github.com/Hy4ri/antigravity-flake) Flake および nixpkgs から提供されているため、`nix flake update` で同時に最新版に更新されます。
 

@@ -2,8 +2,9 @@ name: update
 
 on:
   schedule:
-    # JST 毎週月曜 09:00 (UTC 月曜 00:00)
+    # JST 毎週月曜・木曜 09:00 (UTC 月曜・木曜 00:00)
     - cron: "0 0 * * 1"
+    - cron: "0 0 * * 4"
   workflow_dispatch:
     inputs:
       target:
