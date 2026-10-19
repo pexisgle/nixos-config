@@ -12,12 +12,12 @@
 }:
 
 let
-  version = "3.6.7.1";
+  version = "3.6.7.2";
 
   # Updated by scripts/update-github-desktop-plus.sh (named hashes are its targets).
-  srcHash = "sha256-8xQeaHFJbhtozJIgL0UUyzSn6GCvgPZLEpheAPqztmo=";
-  rootYarnHash = "sha256-gGrbqBJ9W3Xo+5ptUff+wivjZBU/bPj+b8Ory7X1ImA=";
-  appYarnHash = "sha256-JSpeuHigOribcaQEu9MG0L1+eLSZHe0/M0FVjwX1WCU=";
+  srcHash = "sha256-9olwy9mFnJjreJ1DQCLfZWI7FRIHlSivB16zVWUlLR4=";
+  rootYarnHash = "sha256-sMHSKjyoiMWrACtO9iL78mfEK3Hn/X3Aayzmh0+lQeE=";
+  appYarnHash = "sha256-TUK6MDetz7zsjWD0dQUaTQDrYVKkeJaa318zDjpD3Xw=";
 
   customSrc = fetchFromGitHub {
     owner = "pol-rivero";
