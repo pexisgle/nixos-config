@@ -119,6 +119,7 @@
               home-manager.backupFileExtension = "backup";
               home-manager.sharedModules = [
                 sops-nix.homeManagerModules.sops
+                ./modules/home.nix
               ];
               home-manager.users.pexisgle = import (./hosts + "/${hostName}/home.nix");
               home-manager.extraSpecialArgs = {
@@ -136,7 +137,8 @@
         };
     in
     {
-      # Enables `nix fmt` for this repo.
+      # NOTE: `nixfmt` は引数なしで起動すると標準入力待ちになるため、`nix fmt` を直接実行するとハングします。
+      # フォーマット時は `nix run --inputs-from . nixpkgs#nixfmt -- $(git ls-files '*.nix')` を使用してください。
       formatter.x86_64-linux = nixpkgs.legacyPackages.x86_64-linux.nixfmt;
 
       nixosConfigurations = {

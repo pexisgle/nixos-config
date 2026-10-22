@@ -10,15 +10,25 @@ Pexisgle用の NixOS Flake 設定です。1つのリポジトリで desktop / la
 ```
 flake.nix                 # inputs / overlay / 2ホスト配線 / 共有定数（sopsPaths）
 hosts/
-  desktop/                # マシン固有: configuration.nix + gpu.nix + gaming.nix + home.nix
-  laptop/                 #            configuration.nix + home.nix
+  desktop/                # Desktop 専用
+    configuration.nix     #   NixOS エントリポイント
+    hardware-configuration.nix
+    home.nix              #   Home Manager エントリポイント
+    nixos/                #   Desktop 専用 NixOS 設定（gpu.nix / gaming.nix 等）
+    home/                 #   Desktop 専用 HM 設定（gaming.nix 等）
+  laptop/                 # Laptop 専用
+    configuration.nix     #   NixOS エントリポイント
+    hardware-configuration.nix
+    home.nix              #   Home Manager エントリポイント
+    nixos/                #   Laptop 専用 NixOS 設定（power.nix 等）
+    home/                 #   Laptop 専用 HM 設定（display.nix 等）
 modules/                  # 両ホスト共通
   nixos.nix               # ★ NixOS 側の入口マニフェスト（import 一覧）
   home.nix                # ★ Home Manager 側の入口マニフェスト + グローバル設定
   system/                 # boot / nix / nh / caches / secrets / users / tmp / atd / docker
   networking/             # network（NM/Bluetooth/firewall） / vpn / ssh
   i18n/                   # locale / input-method（fcitx5 + hazkey） / hazkey（Zenzai GPU シード）
-  desktop/                # session / fonts（NixOS） + niri / dms / xdg（HM）
+  gui/                    # デスクトップ環境: session / fonts（NixOS） + niri / dms / xdg（HM）
   hardware/amdgpu.nix
   dev/                    # shell / tools / vscode（HM） + opencode / opencodex（+ plugins）
   apps/                   # browsers / communication / media（HM）
@@ -34,7 +44,10 @@ secrets/                  # sops 暗号文（.sops.yaml はルート据え置き
 |---|---|
 | 両ホスト共通の設定 | `modules/<領域>/`（例: VPN と SSH はどちらも `modules/networking/`） |
 | NixOS 用か Home Manager 用か | `modules/nixos.nix` / `modules/home.nix` の import 一覧で表現（唯一の真実） |
-| 特定ホストのみ | `hosts/<host>/`（desktop 専用の Steam/Sunshine は `hosts/desktop/gaming.nix`） |
+| Desktop 専用（NixOS） | `hosts/desktop/nixos/<機能名>.nix`（`configuration.nix` で import） |
+| Desktop 専用（Home Manager） | `hosts/desktop/home/<機能名>.nix`（`home.nix` で import） |
+| Laptop 専用（NixOS） | `hosts/laptop/nixos/<機能名>.nix`（`configuration.nix` で import） |
+| Laptop 専用（Home Manager） | `hosts/laptop/home/<機能名>.nix`（`home.nix` で import） |
 | 自作パッケージ | `packages/` |
 | 秘密情報 | `secrets/` |
 
@@ -67,13 +80,23 @@ nh os switch
 sudo nixos-rebuild switch --flake .#pexisgle-laptop
 ```
 
-### ビルド確認のみ
+### ビルド確認・フォーマット
 
 ```bash
+# ビルド・評価チェック
 nix build .#nixosConfigurations.pexisgle-desktop.config.system.build.toplevel .#nixosConfigurations.pexisgle-laptop.config.system.build.toplevel
 nix flake check --no-build   # 評価チェック
-nix run --inputs-from . nixpkgs#nixfmt -- --check $(git ls-files '*.nix')   # フォーマット確認（修正は nix fmt）
+
+# フォーマット確認
+nix run --inputs-from . nixpkgs#nixfmt -- --check $(git ls-files '*.nix')
+
+# フォーマット適用
+nix run --inputs-from . nixpkgs#nixfmt -- $(git ls-files '*.nix')
 ```
+
+> [!WARNING]
+> `nix fmt` を引数なしで直接実行すると、`nixfmt` が標準入力待ちになりプロセスが停止（ハング）します。
+> フォーマットを適用する場合は、上記の `nix run --inputs-from . nixpkgs#nixfmt -- $(git ls-files '*.nix')` を使用してください。
 
 ## バイナリキャッシュ
 

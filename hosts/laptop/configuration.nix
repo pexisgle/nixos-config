@@ -1,11 +1,11 @@
-# Laptop keeps only its hostname: amdgpu base comes from
-# modules/hardware/amdgpu.nix via modules/nixos.nix.
-# Add laptop-only deltas here (e.g. power management) when needed.
+# Laptop-specific NixOS entrypoint.
+# Shared NixOS modules are automatically applied via flake.nix (modules/nixos.nix).
 { ... }:
 
 {
   imports = [
     ./hardware-configuration.nix
+    ./nixos/power.nix
   ];
 
   networking.hostName = "pexisgle-laptop";
