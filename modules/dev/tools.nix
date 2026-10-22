@@ -63,5 +63,6 @@
     antigravity
     antigravity-cli
     command-code
+    dsh
   ];
 }

@@ -97,7 +97,7 @@ nix run nixpkgs#cachix -- use pexisgle
 
 ### Numtide キャッシュ
 
-`numtide/llm-agents.nix` 由来のパッケージ（`opencodex` / `chatgpt` / `opencode2` / `opencode2-desktop` / `command-code`）は `https://cache.numtide.com` から取得します。
+`numtide/llm-agents.nix` 由来のパッケージ（`opencodex` / `chatgpt` / `opencode2` / `opencode2-desktop` / `command-code` / `dsh`）は `https://cache.numtide.com` から取得します。
 
 ### FlakeHub Cache（CI）
 

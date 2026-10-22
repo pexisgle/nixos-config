@@ -93,6 +93,7 @@
         opencode2 = inputs.llm-agents.packages.${final.stdenv.hostPlatform.system}.opencode2;
         opencode2-desktop =
           inputs.llm-agents.packages.${final.stdenv.hostPlatform.system}.opencode2-desktop;
+        dsh = inputs.llm-agents.packages.${final.stdenv.hostPlatform.system}.dsh;
       };
 
       mkHost =
