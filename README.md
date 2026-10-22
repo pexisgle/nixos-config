@@ -14,7 +14,7 @@ hosts/
     configuration.nix     #   NixOS エントリポイント
     hardware-configuration.nix
     home.nix              #   Home Manager エントリポイント
-    nixos/                #   Desktop 専用 NixOS 設定（gpu.nix / gaming.nix 等）
+    nixos/                #   Desktop 専用 NixOS 設定（gpu.nix / gaming.nix / docker.nix 等）
     home/                 #   Desktop 専用 HM 設定（gaming.nix 等）
   laptop/                 # Laptop 専用
     configuration.nix     #   NixOS エントリポイント
@@ -25,7 +25,7 @@ hosts/
 modules/                  # 両ホスト共通
   nixos.nix               # ★ NixOS 側の入口マニフェスト（import 一覧）
   home.nix                # ★ Home Manager 側の入口マニフェスト + グローバル設定
-  system/                 # boot / nix / nh / caches / secrets / users / tmp / atd / docker
+  system/                 # boot / nix / nh / caches / secrets / users / tmp / atd
   networking/             # network（NM/Bluetooth/firewall） / vpn / ssh
   i18n/                   # locale / input-method（fcitx5 + hazkey） / hazkey（Zenzai GPU シード）
   gui/                    # デスクトップ環境: session / fonts（NixOS） + niri / dms / xdg（HM）
