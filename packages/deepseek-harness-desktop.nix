@@ -2,6 +2,7 @@
   lib,
   appimageTools,
   fetchurl,
+  dsh-unwrapped,
 }:
 
 let
@@ -15,10 +16,19 @@ let
 
   appimageContents = appimageTools.extract {
     inherit pname version src;
+    postExtract = ''
+      # Point desktop backend to modern dsh-unwrapped (0.2.x)
+      sed -i -E "s|resolveDshEntry\(\) \{|resolveDshEntry() { return '${dsh-unwrapped}/lib/node_modules/@deepseek-ai/dsh/lib/bin.js';|g" \
+        $out/resources/app/src/dsh-service.js
+
+      # In dsh 0.2.x, plugin market is built-in. Empty out legacy dshmarket patch to prevent version mismatch.
+      echo "[]" > $out/resources/app/config/plugin-market.patch.yml
+    '';
   };
 in
-appimageTools.wrapType2 {
-  inherit pname version src;
+appimageTools.wrapAppImage {
+  inherit pname version;
+  contents = appimageContents;
 
   extraInstallCommands = ''
     install -m 644 -D ${appimageContents}/deepseek-harness.desktop $out/share/applications/deepseek-harness.desktop
@@ -29,10 +39,11 @@ appimageTools.wrapType2 {
   '';
 
   meta = with lib; {
-    description = "Desktop shell for DeepSeek Harness";
+    description = "Desktop shell for DeepSeek Harness (bundled with latest dsh)";
     homepage = "https://github.com/agent-earth/deepseek-harness-desktop";
     license = licenses.mit;
     platforms = [ "x86_64-linux" ];
     mainProgram = "deepseek-harness-desktop";
   };
 }
+
