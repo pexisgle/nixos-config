@@ -32,7 +32,7 @@ modules/                  # 両ホスト共通
   hardware/amdgpu.nix
   dev/                    # shell / tools / vscode（HM） + opencode / opencodex（+ plugins）
   apps/                   # browsers / communication / media（HM）
-packages/                 # 自作パッケージ（github-desktop-plus.nix）
+packages/                 # 自作・拡張パッケージ（github-desktop-plus / deepseek-harness-desktop / dsh）
 scripts/                  # update.sh / update-github-desktop-plus.sh / check-caches.sh
 secrets/                  # sops 暗号文（.sops.yaml はルート据え置き）
 .github/workflows/        # CI（cache / update）

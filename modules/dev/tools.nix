@@ -64,5 +64,6 @@
     antigravity-cli
     command-code
     dsh
+    deepseek-harness-desktop
   ];
 }

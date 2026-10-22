@@ -93,7 +93,11 @@
         opencode2 = inputs.llm-agents.packages.${final.stdenv.hostPlatform.system}.opencode2;
         opencode2-desktop =
           inputs.llm-agents.packages.${final.stdenv.hostPlatform.system}.opencode2-desktop;
-        dsh = inputs.llm-agents.packages.${final.stdenv.hostPlatform.system}.dsh;
+        dsh-unwrapped = inputs.llm-agents.packages.${final.stdenv.hostPlatform.system}.dsh;
+        dsh = final.callPackage ./packages/dsh.nix { };
+        deepseek-harness = final.dsh;
+        deepseek-harness-desktop = final.callPackage ./packages/deepseek-harness-desktop.nix { };
+        dsh-desktop = final.deepseek-harness-desktop;
       };
 
       mkHost =
