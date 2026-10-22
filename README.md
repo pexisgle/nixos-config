@@ -99,13 +99,9 @@ nix run nixpkgs#cachix -- use pexisgle
 
 `numtide/llm-agents.nix` 由来のパッケージ（`opencodex` / `chatgpt` / `opencode2` / `opencode2-desktop` / `command-code` / `dsh`）は `https://cache.numtide.com` から取得します。
 
-### FlakeHub Cache（CI）
-
-`cache.yml` / `update.yml` は FlakeHub Cache も併用し、GitHub Actions 内の中間ストアパスをキャッシュします。
-
 ### 上流キャッシュ
 
-Numtide / niri / lanzaboote / quickshell などの上流キャッシュは `flake.nix` の `nixConfig` と `modules/system/nix.nix` の両方に設定されています。
+Numtide / niri / lanzaboote / quickshell などの上流キャッシュは `flake.nix` の `nixConfig` と `modules/system/nix.nix` の両方に設定されています。CI（GitHub Actions）の Nix インストール時にも同一のリストが初期設定され、評価・ビルドの全段階で外部キャッシュを活用します。
 
 ## 更新
 
