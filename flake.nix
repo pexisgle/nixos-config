@@ -97,6 +97,11 @@
         opencode2 = inputs.llm-agents.packages.${final.stdenv.hostPlatform.system}.opencode2;
         opencode2-desktop =
           inputs.llm-agents.packages.${final.stdenv.hostPlatform.system}.opencode2-desktop;
+        dsh-unwrapped = inputs.llm-agents.packages.${final.stdenv.hostPlatform.system}.dsh;
+        dsh = final.callPackage ./packages/dsh.nix { };
+        deepseek-harness = final.dsh;
+        deepseek-harness-desktop = final.callPackage ./packages/deepseek-harness-desktop.nix { };
+        dsh-desktop = final.deepseek-harness-desktop;
       };
 
       mkHost =
@@ -122,6 +127,7 @@
               home-manager.backupFileExtension = "backup";
               home-manager.sharedModules = [
                 sops-nix.homeManagerModules.sops
+                ./modules/home.nix
               ];
               home-manager.users.pexisgle = import (./hosts + "/${hostName}/home.nix");
               home-manager.extraSpecialArgs = {
@@ -139,7 +145,8 @@
         };
     in
     {
-      # Enables `nix fmt` for this repo.
+      # NOTE: `nixfmt` は引数なしで起動すると標準入力待ちになるため、`nix fmt` を直接実行するとハングします。
+      # フォーマット時は `nix run --inputs-from . nixpkgs#nixfmt -- $(git ls-files '*.nix')` を使用してください。
       formatter.x86_64-linux = nixpkgs.legacyPackages.x86_64-linux.nixfmt;
 
       nixosConfigurations = {

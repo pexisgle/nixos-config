@@ -20,4 +20,6 @@
       dates = "weekly";
     };
   };
+
+  users.users.pexisgle.extraGroups = [ "docker" ];
 }

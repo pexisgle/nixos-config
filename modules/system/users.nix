@@ -11,7 +11,6 @@
       "video"
       "networkmanager"
       "uinput"
-      "docker"
       "render"
     ];
     shell = pkgs.zsh;

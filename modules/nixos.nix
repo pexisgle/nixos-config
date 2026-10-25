@@ -7,7 +7,6 @@
     # system
     ./system/atd.nix
     ./system/boot.nix
-    ./system/docker.nix
     ./system/nh.nix
     ./system/nix.nix
     ./system/secrets.nix
@@ -19,9 +18,9 @@
     # i18n
     ./i18n/input-method.nix
     ./i18n/locale.nix
-    # desktop environment
-    ./desktop/fonts.nix
-    ./desktop/session.nix
+    # desktop environment (GUI)
+    ./gui/fonts.nix
+    ./gui/session.nix
     # hardware
     ./hardware/amdgpu.nix
   ];

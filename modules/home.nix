@@ -17,10 +17,10 @@
     ./apps/browsers.nix
     ./apps/communication.nix
     ./apps/media.nix
-    # desktop
-    ./desktop/dms.nix
-    ./desktop/niri.nix
-    ./desktop/xdg.nix
+    # gui (desktop environment)
+    ./gui/dms.nix
+    ./gui/niri.nix
+    ./gui/xdg.nix
     # dev
     ./dev/opencode.nix
     ./dev/opencodex.nix

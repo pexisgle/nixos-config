@@ -1,39 +1,10 @@
 {
-  config,
   pkgs,
   lib,
   ...
 }:
 
 {
-  # opencodex 2.77 の同梱レジストリは muse-spark-1.3-contributor の wire
-  # (openai-responses)・context window・入力モダリティを既に持つため、ここでは
-  # レジストリ未収載の reasoning effort ladder だけを補う。上流は effort=max を
-  # 拒否する(400)ため ladder から max を外し、max 要求は xhigh へクランプさせる。
-  # 初回起動後の live config に冪等マージする。
-  home.activation.opencodexMuseSpark13Wire = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-    cfg="$HOME/.opencodex/config.json"
-    if [ -f "$cfg" ]; then
-      tmp="$(mktemp)"
-      if ${pkgs.jq}/bin/jq '
-        if .providers?["opencode-go"] then
-          .providers["opencode-go"].modelReasoningEfforts = ((.providers["opencode-go"].modelReasoningEfforts // {}) + {"muse-spark-1.3-contributor": ["minimal", "low", "medium", "high", "xhigh"]})
-          | .providers["opencode-go"].modelDefaultReasoningEfforts = ((.providers["opencode-go"].modelDefaultReasoningEfforts // {}) + {"muse-spark-1.3-contributor": "high"})
-        else . end
-      ' "$cfg" > "$tmp" 2>/dev/null; then
-        # Only touch the live config when the merge changes it,
-        # so repeated activations stay no-op.
-        if ! ${pkgs.diffutils}/bin/cmp -s "$cfg" "$tmp"; then
-          mv "$tmp" "$cfg"
-        else
-          rm -f "$tmp"
-        fi
-      else
-        rm -f "$tmp"
-      fi
-    fi
-  '';
-
   systemd.user.services.opencodex-proxy = {
     Unit = {
       Description = "OpenCodex Proxy Server";
