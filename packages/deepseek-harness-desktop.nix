@@ -21,6 +21,17 @@ let
       sed -i -E "s|resolveDshEntry\(\) \{|resolveDshEntry() { return '${dsh-unwrapped}/lib/node_modules/@deepseek-ai/dsh/lib/bin.js';|g" \
         $out/resources/app/src/dsh-service.js
 
+      # Preserve token query param in ready URL so authentication succeeds in dsh 0.2.x
+      sed -i 's|127\\\.0\\\.0\\\.1:\\\d+)\\b|127.0.0.1:\\d+[^\\r\\n\\s]*)|' \
+        $out/resources/app/src/dsh-service.js
+
+      # Do not override PATH with bundled legacy pnpm v10 (let DSH use system pnpm to match store version)
+      sed -i 's|\[bundledToolDirectory, environment\[pathKey\]\]\.filter(Boolean)\.join(separator)|environment[pathKey]|' \
+        $out/resources/app/src/dsh-service.js
+      sed -i 's|DSH_DESKTOP_PNPM_CLI: bundledPnpmEntry,|// DSH_DESKTOP_PNPM_CLI: bundledPnpmEntry,|' \
+        $out/resources/app/src/dsh-service.js
+      rm -rf $out/resources/app/assets/bin
+
       # In dsh 0.2.x, plugin market is built-in. Empty out legacy dshmarket patch to prevent version mismatch.
       echo "[]" > $out/resources/app/config/plugin-market.patch.yml
     '';
