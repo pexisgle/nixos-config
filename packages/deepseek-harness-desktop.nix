@@ -57,4 +57,3 @@ appimageTools.wrapAppImage {
     mainProgram = "deepseek-harness-desktop";
   };
 }
-
