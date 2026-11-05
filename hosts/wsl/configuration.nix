@@ -5,8 +5,8 @@
   wsl.enable = true;
   wsl.defaultUser = "pexisgle";
 
-  # 起動エラー (0xd0000034) 対策を恒久化
-  wsl.wslConf.fileServer.enabled = false;
+  # 9Pファイルサーバー (\\wsl.localhost\NixOS でのファイル共有) を有効化
+  wsl.wslConf.fileServer.enabled = true;
 
   # ユーザー定義
   users.users.pexisgle = {
@@ -60,7 +60,19 @@
   environment.systemPackages = with pkgs; [
     git
     mise
+    gh
   ];
+
+  # mise が取得する Node.js や workerd の Linux バイナリを実行する
+  programs.nix-ld = {
+    enable = true;
+    libraries = with pkgs; [ stdenv.cc.cc.lib zlib ];
+  };
+
+  # WSL の対話シェルで mise 管理のツールを自動的に有効化する
+  programs.bash.interactiveShellInit = ''
+    eval "$(mise activate bash)"
+  '';
 
   programs.direnv = {
     enable = true;

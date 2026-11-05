@@ -1,9 +1,10 @@
 { pkgs, ... }:
 
 {
-  # Runtime roles (all four are intentional for now):
+  # Runtime roles (all three are intentional for now):
   # devenv = per-project dev shells, mise = toolchain version pinning,
-  # bun = fast JS runtime for opencodex proxy, nodejs = LTS fallback.
+  # bun = fast JS runtime for opencodex proxy.
+  # node/pnpm come from mise global defaults instead of nixpkgs.
   # Consolidate only after checking which projects rely on mise vs devenv.
   home.packages = with pkgs; [
     # Terminal / session
@@ -24,7 +25,6 @@
     devenv
     mise
     bun
-    nodejs
 
     # Remote tooling helper (opencode rtk plugin dependency)
     rtk
