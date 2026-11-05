@@ -58,7 +58,8 @@
           user=__USER__
           ipsec-enabled=yes
           machine-auth-type=psk
-          password-flags=2
+          ipsec-psk-flags=0
+          password-flags=0
 
           [vpn-secrets]
           ipsec-psk=__PSK__

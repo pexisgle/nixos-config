@@ -88,15 +88,11 @@ nix build .#nixosConfigurations.pexisgle-desktop.config.system.build.toplevel .#
 nix flake check --no-build   # 評価チェック
 
 # フォーマット確認
-nix run --inputs-from . nixpkgs#nixfmt -- --check $(git ls-files '*.nix')
+nix fmt -- --check
 
 # フォーマット適用
-nix run --inputs-from . nixpkgs#nixfmt -- $(git ls-files '*.nix')
+nix fmt
 ```
-
-> [!WARNING]
-> `nix fmt` を引数なしで直接実行すると、`nixfmt` が標準入力待ちになりプロセスが停止（ハング）します。
-> フォーマットを適用する場合は、上記の `nix run --inputs-from . nixpkgs#nixfmt -- $(git ls-files '*.nix')` を使用してください。
 
 ## バイナリキャッシュ
 

@@ -1,4 +1,9 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 {
   # WSL の最小有効化設定
@@ -22,7 +27,10 @@
   # SSH サーバーの有効化
   services.openssh = {
     enable = true;
-    ports = [ 22 2222 ]; # 標準22番と念のための2222番
+    ports = [
+      22
+      2222
+    ]; # 標準22番と念のための2222番
     settings = {
       PasswordAuthentication = true;
       PermitRootLogin = "no";
@@ -52,7 +60,10 @@
   '';
 
   # Flakes と nix-command の有効化
-  nix.settings.experimental-features = [ "nix-command" "flakes" ];
+  nix.settings.experimental-features = [
+    "nix-command"
+    "flakes"
+  ];
 
   # ==========================================
   # 開発ツール (git, direnv, mise)

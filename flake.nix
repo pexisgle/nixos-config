@@ -102,6 +102,9 @@
         deepseek-harness = final.dsh;
         deepseek-harness-desktop = final.callPackage ./packages/deepseek-harness-desktop.nix { };
         dsh-desktop = final.deepseek-harness-desktop;
+        strongswan = prev.strongswan.overrideAttrs (old: {
+          configureFlags = old.configureFlags ++ [ "--enable-ikev1" ];
+        });
       };
 
       mkHost =
@@ -145,9 +148,36 @@
         };
     in
     {
-      # NOTE: `nixfmt` は引数なしで起動すると標準入力待ちになるため、`nix fmt` を直接実行するとハングします。
-      # フォーマット時は `nix run --inputs-from . nixpkgs#nixfmt -- $(git ls-files '*.nix')` を使用してください。
-      formatter.x86_64-linux = nixpkgs.legacyPackages.x86_64-linux.nixfmt;
+      formatter.x86_64-linux =
+        let
+          pkgs = nixpkgs.legacyPackages.x86_64-linux;
+        in
+        pkgs.writeShellApplication {
+          name = "nixfmt";
+          runtimeInputs = [
+            pkgs.nixfmt
+            pkgs.git
+            pkgs.findutils
+          ];
+          text = ''
+            has_files=0
+            for arg in "$@"; do
+              if [[ "$arg" != -* ]]; then
+                has_files=1
+                break
+              fi
+            done
+
+            if [ "$has_files" -eq 0 ]; then
+              mapfile -t files < <(git ls-files '*.nix' 2>/dev/null || find . -type f -name '*.nix')
+              if [ "''${#files[@]}" -gt 0 ]; then
+                exec nixfmt "$@" "''${files[@]}"
+              fi
+            else
+              exec nixfmt "$@"
+            fi
+          '';
+        };
 
       nixosConfigurations = {
         pexisgle-desktop = mkHost {
