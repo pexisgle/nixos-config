@@ -1,27 +1,21 @@
-# NixOS 側の共有モジュール入口。
-# どのファイルが NixOS 用かは、この import 一覧を唯一の真実とする。
 { ... }:
 
+# Shared NixOS module manifest: the single list to update.
 {
   imports = [
-    # system
-    ./system/atd.nix
     ./system/boot.nix
     ./system/nh.nix
+    ./system/nix-ld.nix
     ./system/nix.nix
     ./system/secrets.nix
     ./system/tmp.nix
     ./system/users.nix
-    # networking
     ./networking/network.nix
     ./networking/vpn.nix
-    # i18n
     ./i18n/input-method.nix
     ./i18n/locale.nix
-    # desktop environment (GUI)
     ./gui/fonts.nix
     ./gui/session.nix
-    # hardware
     ./hardware/amdgpu.nix
   ];
 }

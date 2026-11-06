@@ -5,14 +5,11 @@
 }:
 
 let
-  # hazkey-server の genDefaultConfig() と同じ既定プロファイル。Zenzai の
-  # バックエンドだけ GPU（llama.cpp の Vulkan デバイス名）を既定にする。
-  # デバイスが利用できない場合は hazkey-server が CPU へフォールバックする。
   defaultProfile = {
     profileName = "Default";
-    autoConvertMode = 3; # AUTO_CONVERT_FOR_MULTIPLE_CHARS
-    auxTextMode = 3; # AUX_TEXT_SHOW_WHEN_CURSOR_NOT_AT_END
-    suggestionListMode = 3; # SUGGESTION_LIST_SHOW_PREDICTIVE_RESULTS
+    autoConvertMode = 3;
+    auxTextMode = 3;
+    suggestionListMode = 3;
     numSuggestions = 3;
     useRichSuggestion = false;
     numCandidatesPerPage = 9;
@@ -68,9 +65,6 @@ let
   };
 in
 {
-  # Hazkey の Zenzai デバイスは ~/.config/hazkey/config.json で選ぶ（サーバー既定は
-  # "CPU"）。未作成時のみ既定プロファイル + Vulkan0 をシードして GPU を既定にし、
-  # 以後は hazkey-settings でのユーザー設定を尊重する。
   home.activation.hazkeyZenzaiVulkan = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
     cfg="$HOME/.config/hazkey/config.json"
     if [ ! -e "$cfg" ]; then

@@ -1,10 +1,8 @@
 {
   description = "Pexisgle's NixOS Flake Configuration";
 
-  # NOTE: flake nixConfig must stay a literal attrset (no let/import): Nix reads
-  # it without full evaluation. The same lists live in modules/system/caches.nix
-  # for the NixOS side (modules/system/nix.nix); keep both in sync and run
-  # ./scripts/check-caches.sh to verify. CI runs it on every update/cache run.
+  # Literal attrset on purpose: Nix reads nixConfig without evaluating the flake.
+  # Keep in sync with modules/system/caches.nix (scripts/check-caches.sh).
   nixConfig = {
     extra-substituters = [
       "https://pexisgle.cachix.org"
@@ -82,7 +80,6 @@
       ...
     }@inputs:
     let
-      # Shared by NixOS and Home Manager through specialArgs below.
       sopsPaths = {
         ageKeyFile = "/home/pexisgle/.config/sops/age/keys.txt";
       };

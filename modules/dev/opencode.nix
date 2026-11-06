@@ -3,17 +3,8 @@
 {
   programs.opencode = {
     enable = true;
-    # V2-native config. Custom integrations:
-    #   - rtk: local plugin, discovered from ~/.config/opencode/plugins (home.file below)
-    #   - computeruse: open-computer-use MCP server (mcp.servers)
-    #   - github: GitHub MCP server (mcp.servers)
-    # The V1 `plugin` / `provider` / top-level `mcp.github` entries are retired:
-    # openslimedit and the old rtk.ts do not run on the V2 plugin API.
     settings = {
-      # GitHub MCP still runs via npx: nixpkgs has no stable
-      # mcp-server-github attr to pin yet (upstream-first evaluated).
-      # Re-check on nixpkgs bumps; when available, replace command with
-      # "${pkgs.mcp-server-github}/bin/mcp-server-github".
+      # npx until nixpkgs pins these MCP servers.
       mcp.servers.github = {
         type = "local";
         command = [
@@ -34,9 +25,6 @@
       };
       mcp.servers.computeruse = {
         type = "local";
-        # open-computer-use is not in nixpkgs. It ships a static Linux binary
-        # behind a Node launcher; `npx` fetches the pinned version on first
-        # server start (impure network fetch, npm cache warms afterwards).
         command = [
           "${pkgs.nodejs}/bin/npx"
           "-y"

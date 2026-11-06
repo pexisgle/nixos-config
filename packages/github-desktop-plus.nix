@@ -1,6 +1,3 @@
-# Explicit args (no <nixpkgs> fallback): called via callPackage from flake overlay.
-# Upstream-first: this fork tracks pol-rivero/github-desktop-plus; re-check each
-# nixpkgs bump whether upstream github-desktop suffices before updating hashes.
 {
   lib,
   fetchFromGitHub,
@@ -14,7 +11,7 @@
 let
   version = "3.6.10.0";
 
-  # Updated by scripts/update-github-desktop-plus.sh (named hashes are its targets).
+  # Named hashes are the targets of scripts/update-github-desktop-plus.sh.
   srcHash = "sha256-BJ2NVDr+d6KIgBvv1W2cEqNu+J+j/cARUfF4typmdPw=";
   rootYarnHash = "sha256-WkCr5hIIddZbdZainuESVSP9wxug7T7X3t13yG9V3jo=";
   appYarnHash = "sha256-f36L9N73gBGPDZzYZxNuY8HuK+4Olg7HnuZMr24uw70=";
@@ -29,10 +26,8 @@ let
     hash = srcHash;
   };
 
-  # The fork's lockfiles may record @electron/* resolved URLs on Microsoft's
-  # 1ES feed, which prefetch-yarn-deps cannot fetch. Rewrite them to the public
-  # npm registry: tarball contents (and integrity hashes) are identical.
-  # Keep this sed in sync with scripts/update-github-desktop-plus.sh.
+  # The fork's lockfiles may point at Microsoft's 1ES feed, which fetchYarnDeps
+  # cannot fetch. Keep this sed in sync with the update script.
   patchedLocks = runCommand "github-desktop-plus-yarn-locks" { } ''
     mkdir -p $out/app
     cp -f ${customSrc}/yarn.lock $out/yarn.lock

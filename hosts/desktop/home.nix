@@ -1,9 +1,8 @@
-# Desktop-only Home Manager entrypoint.
-# Shared Home Manager settings are automatically applied via flake.nix sharedModules (modules/home.nix).
-{ ... }:
+{ pkgs, ... }:
 
 {
-  imports = [
-    ./home/gaming.nix
+  home.packages = with pkgs; [
+    lutris
+    mangohud
   ];
 }

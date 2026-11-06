@@ -16,14 +16,8 @@
     };
 
     Service = {
+      # A DNS flap at login makes the first model discovery stick; wait bounded.
       Type = "simple";
-      # The proxy's first provider-model discovery runs at startup and a
-      # failed lookup sticks (degraded catalog until restart). After
-      # `nixos-rebuild switch` or login, DNS can flap briefly, so wait for
-      # the provider hosts to resolve before starting. Bounded and always
-      # exits 0: normal starts proceed immediately, flaps ride out ≤30s,
-      # and boot/login never blocks on this. Uses node dns.lookup, the same
-      # resolver stack opencodex itself uses.
       ExecStartPre = "${pkgs.writeShellScript "opencodex-wait-dns" ''
         set -u
         NODE=${pkgs.nodejs}/bin/node
@@ -60,8 +54,6 @@
           ]
         }"
       ];
-      # Journal instead of an unbounded log file; inspect with
-      # journalctl --user -u opencodex-proxy.
       StandardOutput = "journal";
       StandardError = "journal";
       SyslogIdentifier = "opencodex-proxy";

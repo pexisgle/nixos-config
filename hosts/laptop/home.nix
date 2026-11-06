@@ -1,9 +1,1 @@
-# Laptop-only Home Manager entrypoint.
-# Shared Home Manager settings are automatically applied via flake.nix sharedModules (modules/home.nix).
-{ ... }:
-
-{
-  imports = [
-    ./home/display.nix
-  ];
-}
+{ ... }: { }

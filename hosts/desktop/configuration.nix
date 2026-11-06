@@ -13,7 +13,6 @@
 
   networking.hostName = "pexisgle-desktop";
 
-  # Desktop-only swapfile; the generated hardware config sets swapDevices = [].
   swapDevices = lib.mkForce [
     {
       device = "/swapfile";

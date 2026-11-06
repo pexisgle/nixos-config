@@ -13,25 +13,22 @@ hosts/
   desktop/                # Desktop 専用
     configuration.nix     #   NixOS エントリポイント
     hardware-configuration.nix
-    home.nix              #   Home Manager エントリポイント
-    nixos/                #   Desktop 専用 NixOS 設定（gpu.nix / gaming.nix / docker.nix 等）
-    home/                 #   Desktop 専用 HM 設定（gaming.nix 等）
+    home.nix              #   Home Manager エントリポイント（ホスト固有設定も直接記述）
+    nixos/                #   Desktop 専用 NixOS 設定（gpu.nix / gaming.nix / docker.nix）
   laptop/                 # Laptop 専用
-    configuration.nix     #   NixOS エントリポイント
+    configuration.nix     #   NixOS エントリポイント（ホスト固有設定も直接記述）
     hardware-configuration.nix
-    home.nix              #   Home Manager エントリポイント
-    nixos/                #   Laptop 専用 NixOS 設定（power.nix 等）
-    home/                 #   Laptop 専用 HM 設定（display.nix 等）
+    home.nix              #   Home Manager エントリポイント（ホスト固有設定も直接記述）
 modules/                  # 両ホスト共通
   nixos.nix               # ★ NixOS 側の入口マニフェスト（import 一覧）
   home.nix                # ★ Home Manager 側の入口マニフェスト + グローバル設定
-  system/                 # boot / nix / nh / caches / secrets / users / tmp / atd
+  system/                 # boot / nix / nix-ld / nh / caches / secrets / users / tmp
   networking/             # network（NM/Bluetooth/firewall） / vpn / ssh
   i18n/                   # locale / input-method（fcitx5 + hazkey） / hazkey（Zenzai GPU シード）
   gui/                    # デスクトップ環境: session / fonts（NixOS） + niri / dms / xdg（HM）
   hardware/amdgpu.nix
   dev/                    # shell / tools / vscode（HM） + opencode / opencodex（+ plugins）
-  apps/                   # browsers / communication / media（HM）
+  apps/                   # デスクトップアプリ（HM、packages.nix）
 packages/                 # 自作・拡張パッケージ（github-desktop-plus / deepseek-harness-desktop / dsh）
 scripts/                  # update.sh / update-github-desktop-plus.sh / check-caches.sh
 secrets/                  # sops 暗号文（.sops.yaml はルート据え置き）
@@ -45,9 +42,9 @@ secrets/                  # sops 暗号文（.sops.yaml はルート据え置き
 | 両ホスト共通の設定 | `modules/<領域>/`（例: VPN と SSH はどちらも `modules/networking/`） |
 | NixOS 用か Home Manager 用か | `modules/nixos.nix` / `modules/home.nix` の import 一覧で表現（唯一の真実） |
 | Desktop 専用（NixOS） | `hosts/desktop/nixos/<機能名>.nix`（`configuration.nix` で import） |
-| Desktop 専用（Home Manager） | `hosts/desktop/home/<機能名>.nix`（`home.nix` で import） |
-| Laptop 専用（NixOS） | `hosts/laptop/nixos/<機能名>.nix`（`configuration.nix` で import） |
-| Laptop 専用（Home Manager） | `hosts/laptop/home/<機能名>.nix`（`home.nix` で import） |
+| Desktop 専用（Home Manager） | `hosts/desktop/home.nix` に直接記述 |
+| Laptop 専用（NixOS） | `hosts/laptop/configuration.nix` に直接記述 |
+| Laptop 専用（Home Manager） | `hosts/laptop/home.nix` に直接記述 |
 | 自作パッケージ | `packages/` |
 | 秘密情報 | `secrets/` |
 

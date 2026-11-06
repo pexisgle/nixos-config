@@ -1,10 +1,6 @@
-# Binary cache definitions for the NixOS side (modules/system/nix.nix).
-#! Mirror of the literal lists in flake.nix nixConfig, which must stay literal
-# (Nix reads it without full evaluation). Update both files together and run
-# ./scripts/check-caches.sh to verify.
+# Mirror of the literal lists in flake.nix nixConfig; update both together
+# (scripts/check-caches.sh verifies).
 {
-  # Cachix / upstream caches managed by this repo (without cache.nixos.org).
-  # nixConfig extra-substituters are additive, so the official cache stays implicit there.
   extraSubstituters = [
     "https://pexisgle.cachix.org"
     "https://cache.numtide.com"
@@ -29,7 +25,6 @@
     "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="
   ];
 
-  # Official cache, only needed for the NixOS-side full substituter list.
   nixosSubstituter = "https://cache.nixos.org/";
   nixosTrustedPublicKey = "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY=";
 }

@@ -7,16 +7,10 @@
   boot.lanzaboote = {
     enable = true;
     pkiBundle = "/var/lib/sbctl";
-    # Boot menu entries kept; actual rollback depth is bounded by nh clean
-    # (--keep 5 --keep-since 3d in modules/system/nh.nix).
     configurationLimit = 5;
   };
 
-  # Track latest stable kernel for new AMD firmware. If out-of-tree modules
-  # (e.g. ZFS) break, pin to pkgs.linuxPackages here or per-host.
   boot.kernelPackages = pkgs.linuxPackages_latest;
-
-  boot.loader.timeout = 5;
 
   environment.systemPackages = [ pkgs.sbctl ];
 }

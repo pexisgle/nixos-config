@@ -1,5 +1,3 @@
-# sops paths: the age key location is defined in flake.nix and passed through
-# specialArgs (NixOS) / extraSpecialArgs (Home Manager).
 {
   inputs,
   sopsPaths,

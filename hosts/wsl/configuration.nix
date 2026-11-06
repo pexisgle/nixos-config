@@ -6,45 +6,38 @@
 }:
 
 {
-  # WSL の最小有効化設定
   wsl.enable = true;
   wsl.defaultUser = "pexisgle";
 
-  # 9Pファイルサーバー (\\wsl.localhost\NixOS でのファイル共有) を有効化
   wsl.wslConf.fileServer.enabled = true;
 
-  # ユーザー定義
   users.users.pexisgle = {
     isNormalUser = true;
     uid = 1000;
     extraGroups = [ "wheel" ];
-    # WindowsからのSSH公開鍵を登録
     openssh.authorizedKeys.keys = [
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJLj8DToaUoS+MZXdMj4mR3bphVk/1HEkUAge5u8ctIz"
     ];
   };
 
-  # SSH サーバーの有効化
   services.openssh = {
     enable = true;
     ports = [
       22
       2222
-    ]; # 標準22番と念のための2222番
+    ];
     settings = {
       PasswordAuthentication = true;
       PermitRootLogin = "no";
     };
   };
 
-  # 実機SSDのマウント設定
   fileSystems."/mnt/physical-nixos" = {
     device = "/dev/disk/by-uuid/a7cffbc2-4981-4da9-a86e-b04e8529464d";
     fsType = "ext4";
     options = [ "nofail" ];
   };
 
-  # 実機SSDのオンデマンド自動アタッチ (普通のwslコマンドやターミナル起動時に自動復旧)
   environment.shellInit = ''
     if ! /run/current-system/sw/bin/mountpoint -q /mnt/physical-nixos 2>/dev/null; then
       if [ -x /mnt/c/Windows/System32/schtasks.exe ]; then
@@ -59,28 +52,25 @@
     fi
   '';
 
-  # Flakes と nix-command の有効化
   nix.settings.experimental-features = [
     "nix-command"
     "flakes"
   ];
 
-  # ==========================================
-  # 開発ツール (git, direnv, mise)
-  # ==========================================
   environment.systemPackages = with pkgs; [
     git
     mise
     gh
   ];
 
-  # mise が取得する Node.js や workerd の Linux バイナリを実行する
   programs.nix-ld = {
     enable = true;
-    libraries = with pkgs; [ stdenv.cc.cc.lib zlib ];
+    libraries = with pkgs; [
+      stdenv.cc.cc.lib
+      zlib
+    ];
   };
 
-  # WSL の対話シェルで mise 管理のツールを自動的に有効化する
   programs.bash.interactiveShellInit = ''
     eval "$(mise activate bash)"
   '';
@@ -90,14 +80,8 @@
     nix-direnv.enable = true;
   };
 
-  # ==========================================
-  # 容量最小化・ディスク節約設定
-  # ==========================================
-
-  # 1. nix store の自動ハードリンク重複排除
   nix.settings.auto-optimise-store = true;
 
-  # 2. nh による自動ガベージコレクション
   programs.nh = {
     enable = true;
     clean = {
@@ -108,11 +92,10 @@
     flake = "/home/pexisgle/nixos-config";
   };
 
-  # 3. マニュアル・ドキュメント類の除外（容量削減）
   documentation.enable = false;
   documentation.man.enable = false;
   documentation.doc.enable = false;
   documentation.info.enable = false;
 
-  system.stateVersion = "26.05";
+  system.stateVersion = "26.11";
 }

@@ -19,8 +19,6 @@
     ];
   };
 
-  # Required so charon can start when launched by nm-l2tp-service
-  # (which runs "ipsec restart --conf <custom>" without STRONGSWAN_CONF)
   environment.etc."strongswan.conf".text = ''
     charon {
       plugins {

@@ -47,9 +47,9 @@ nix build .#nixosConfigurations.pexisgle-desktop.config.system.build.toplevel --
 |---|---|---|
 | 両ホスト共通の NixOS / HM 設定 | `modules/<領域>/` | `modules/nixos.nix` または `modules/home.nix` で import |
 | Desktop 専用（NixOS） | `hosts/desktop/nixos/<機能>.nix` | `hosts/desktop/configuration.nix` で import |
-| Desktop 専用（Home Manager） | `hosts/desktop/home/<機能>.nix` | `hosts/desktop/home.nix` で import |
-| Laptop 専用（NixOS） | `hosts/laptop/nixos/<機能>.nix` | `hosts/laptop/configuration.nix` で import |
-| Laptop 専用（Home Manager） | `hosts/laptop/home/<機能>.nix` | `hosts/laptop/home.nix` で import |
+| Desktop 専用（Home Manager） | `hosts/desktop/home.nix` | 直接記述 |
+| Laptop 専用（NixOS） | `hosts/laptop/configuration.nix` | 直接記述 |
+| Laptop 専用（Home Manager） | `hosts/laptop/home.nix` | 直接記述 |
 | パッケージ定義 | `packages/<pkg>.nix` | `flake.nix` の `customPackagesOverlay` で配線 |
 | 秘密情報 | `secrets/common.yaml` | sops + age で暗号化 |
 
