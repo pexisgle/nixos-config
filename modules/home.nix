@@ -30,9 +30,7 @@
   home.stateVersion = "26.11";
   home.packages = with pkgs; [
     kicad
-    godot
     unityhub
-    jan
     codex
     opencodex
     chatgpt
@@ -47,7 +45,6 @@
   sops = {
     age.keyFile = sopsPaths.ageKeyFile;
     defaultSopsFile = sopsFile;
-    secrets.github_token = { };
   };
 
   # Shims so non-interactive shells (opencode, VS Code tasks) resolve mise tools.

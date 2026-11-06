@@ -23,7 +23,6 @@
     vim
     wget
     git
-    nil
     pkg-config
     openssl.dev
   ];

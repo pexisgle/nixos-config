@@ -11,12 +11,10 @@
     nixfmt
 
     gh
-    delta
 
     devenv
     mise
     bun
-    wrangler
 
     rtk
 
@@ -30,7 +28,6 @@
     duf
     procs
     tealdeer
-    yazi
     ouch
     jless
     xh

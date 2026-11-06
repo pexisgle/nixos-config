@@ -1,28 +1,10 @@
-{ config, pkgs, ... }:
+{ pkgs, ... }:
 
 {
   programs.opencode = {
     enable = true;
     settings = {
-      # npx until nixpkgs pins these MCP servers.
-      mcp.servers.github = {
-        type = "local";
-        command = [
-          "${pkgs.writeShellScript "opencode-github-mcp" ''
-            set -eu
-            token_file="${config.sops.secrets.github_token.path}"
-            if [ ! -r "$token_file" ]; then
-              echo "opencode-github-mcp: sops secret not readable: $token_file" >&2
-              exit 1
-            fi
-            TOKEN="$(${pkgs.coreutils}/bin/cat "$token_file")"
-            export GITHUB_TOKEN="$TOKEN"
-            export GITHUB_PERSONAL_ACCESS_TOKEN="$TOKEN"
-            # NOTE: impure network fetch on first run; pinned by lockfile when present.
-            exec ${pkgs.nodejs}/bin/npx -y @modelcontextprotocol/server-github
-          ''}"
-        ];
-      };
+      # npx until nixpkgs pins this MCP server.
       mcp.servers.computeruse = {
         type = "local";
         command = [
