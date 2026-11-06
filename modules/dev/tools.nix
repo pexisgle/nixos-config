@@ -2,17 +2,14 @@
 
 {
   home.packages = with pkgs; [
-    gcr_4
     kitty
     tmux
-    xwayland-satellite
 
     nixd
     nixfmt
 
     gh
 
-    devenv
     mise
     bun
 
@@ -21,22 +18,9 @@
     ripgrep
     fd
     ast-grep
-    broot
-
-    sd
-    dust
-    duf
-    procs
-    tealdeer
-    ouch
-    jless
-    xh
     jq
 
-    tokei
-    hyperfine
     just
-    watchexec
 
     serena
 

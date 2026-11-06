@@ -15,12 +15,6 @@
       ];
       theme = "robbyrussell";
     };
-
-    initContent = ''
-      if command -v devenv >/dev/null 2>&1; then
-        eval "$(devenv hook zsh)"
-      fi
-    '';
   };
 
   programs.direnv = {
