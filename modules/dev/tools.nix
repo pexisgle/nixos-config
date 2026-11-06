@@ -38,6 +38,8 @@
     just
     watchexec
 
+    serena
+
     zed-editor-fhs
     opencode2
     opencode2-desktop

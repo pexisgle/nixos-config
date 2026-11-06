@@ -66,6 +66,10 @@
       url = "github:nix-community/NixOS-WSL/main";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    serena = {
+      url = "github:oraios/serena";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
@@ -99,6 +103,7 @@
         deepseek-harness = final.dsh;
         deepseek-harness-desktop = final.callPackage ./packages/deepseek-harness-desktop.nix { };
         dsh-desktop = final.deepseek-harness-desktop;
+        serena = inputs.serena.packages.${final.stdenv.hostPlatform.system}.serena;
         strongswan = prev.strongswan.overrideAttrs (old: {
           configureFlags = old.configureFlags ++ [ "--enable-ikev1" ];
         });
