@@ -16,6 +16,7 @@
     ./gui/dms.nix
     ./gui/niri.nix
     ./gui/xdg.nix
+    ./dev/agents.nix
     ./dev/opencode.nix
     ./dev/opencodex.nix
     ./dev/shell.nix

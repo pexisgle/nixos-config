@@ -27,7 +27,7 @@ modules/                  # 両ホスト共通
   i18n/                   # locale / input-method（fcitx5 + hazkey） / hazkey（Zenzai GPU シード）
   gui/                    # デスクトップ環境: session / fonts（NixOS） + niri / dms / xdg（HM）
   hardware/amdgpu.nix
-  dev/                    # shell / tools / vscode（HM） + opencode / opencodex（+ plugins）
+  dev/                    # shell / tools / vscode（HM） + agents / opencode / opencodex（+ plugins）
   apps/                   # デスクトップアプリ（HM、packages.nix）
 packages/                 # 自作・拡張パッケージ（github-desktop-plus / deepseek-harness-desktop / dsh）
 scripts/                  # update.sh / update-github-desktop-plus.sh / check-caches.sh

@@ -15,9 +15,14 @@
 
     rtk
 
+    # file-search skill が想定する検索ツール一式。
     ripgrep
     fd
     ast-grep
+    semgrep
+    ripgrep-all
+    tokei
+    scc
     jq
 
     just

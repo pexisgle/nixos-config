@@ -68,6 +68,7 @@
       url = "github:oraios/serena";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    skills-nix.url = "github:z1-0/skills-nix";
   };
 
   outputs =

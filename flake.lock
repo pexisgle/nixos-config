@@ -500,6 +500,7 @@
         "nixos-wsl": "nixos-wsl",
         "nixpkgs": "nixpkgs",
         "serena": "serena",
+        "skills-nix": "skills-nix",
         "sops-nix": "sops-nix"
       }
     },
@@ -545,6 +546,21 @@
       "original": {
         "owner": "oraios",
         "repo": "serena",
+        "type": "github"
+      }
+    },
+    "skills-nix": {
+      "locked": {
+        "lastModified": 1793541330,
+        "narHash": "sha256-YxFPHOV6Rcjg4a0SLvx34yimtC990pLokosbDazgxw0=",
+        "owner": "z1-0",
+        "repo": "skills-nix",
+        "rev": "944f2816760cb6baa552f58d3c988ac0ad147bef",
+        "type": "github"
+      },
+      "original": {
+        "owner": "z1-0",
+        "repo": "skills-nix",
         "type": "github"
       }
     },
