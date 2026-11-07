@@ -103,6 +103,24 @@
         deepseek-harness-desktop = final.callPackage ./packages/deepseek-harness-desktop.nix { };
         dsh-desktop = final.deepseek-harness-desktop;
         serena = inputs.serena.packages.${final.stdenv.hostPlatform.system}.serena;
+        # patchelf 0.19.2 aborts (shiftFile: `splitIndex == -1`) when one call
+        # rewrites both .interp and the 25 MB .dynstr of the semgrep wheel binary.
+        # Two single-purpose calls do the same job without the failing rewrite.
+        semgrep = prev.python3Packages.toPythonApplication (
+          prev.python3Packages.semgrep.override {
+            # semgrep 1.180 pins mcp==1.29.0; nixpkgs defaults to mcp 2.x, whose
+            # removal of FastMCP makes every semgrep invocation fail at import.
+            mcp = prev.python3Packages.mcp_1;
+            semgrep-core = prev.python3Packages.semgrep.passthru.semgrep-core.overrideAttrs (_: {
+              postFixup = ''
+                patchelf --set-rpath "$out/bin/libs:${
+                  prev.lib.makeLibraryPath [ prev.stdenv.cc.libc ]
+                }" $out/bin/semgrep-core
+                patchelf --set-interpreter "$(cat ${prev.stdenv.cc}/nix-support/dynamic-linker)" $out/bin/semgrep-core
+              '';
+            });
+          }
+        );
         strongswan = prev.strongswan.overrideAttrs (old: {
           configureFlags = old.configureFlags ++ [ "--enable-ikev1" ];
         });
