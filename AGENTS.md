@@ -34,7 +34,7 @@
 # flake 全体の評価チェック（パッケージビルドは行わないため高速）
 nix flake check --no-build
 
-# 各ホストのビルド確認
+# 各ホストのビルド確認（どうしても確認が必要な場合のみ）
 nix build .#nixosConfigurations.pexisgle-laptop.config.system.build.toplevel --no-link
 nix build .#nixosConfigurations.pexisgle-desktop.config.system.build.toplevel --no-link
 ```
