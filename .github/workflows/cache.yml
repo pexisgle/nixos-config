@@ -75,5 +75,6 @@ jobs:
         run: |
           nix build --no-link --print-build-logs \
             --option builders-use-substitutes true \
+            --cores 2 \
             .#nixosConfigurations.pexisgle-desktop.config.system.build.toplevel \
             .#nixosConfigurations.pexisgle-laptop.config.system.build.toplevel
