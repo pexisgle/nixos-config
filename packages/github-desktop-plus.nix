@@ -9,11 +9,11 @@
 }:
 
 let
-  version = "3.6.10.0";
+  version = "3.6.11.0";
 
   # Named hashes are the targets of scripts/update-github-desktop-plus.sh.
-  srcHash = "sha256-BJ2NVDr+d6KIgBvv1W2cEqNu+J+j/cARUfF4typmdPw=";
-  rootYarnHash = "sha256-WkCr5hIIddZbdZainuESVSP9wxug7T7X3t13yG9V3jo=";
+  srcHash = "sha256-XUNhUSkUqfyN2cuohg+P+2BOx9ooYMRWv/EWhmUCYdY=";
+  rootYarnHash = "sha256-XW9tCm8MDk2H60Q45ixBm9O+TJfvmlSxmZDj1l/ABJc=";
   appYarnHash = "sha256-f36L9N73gBGPDZzYZxNuY8HuK+4Olg7HnuZMr24uw70=";
 
   customSrc = fetchFromGitHub {
