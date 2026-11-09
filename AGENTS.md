@@ -31,8 +31,9 @@
 設定を変更した後は、構文エラーや型エラーがないかをチェックしてください。
 
 ```bash
-# flake 全体の評価チェック（パッケージビルドは行わないため高速）
-nix flake check --no-build
+# flake 全体の評価チェック
+# --no-build は IFD を無効化し skills-nix の評価が失敗するため付けない
+nix flake check
 
 # 各ホストのビルド確認（どうしても確認が必要な場合のみ）
 nix build .#nixosConfigurations.pexisgle-laptop.config.system.build.toplevel --no-link

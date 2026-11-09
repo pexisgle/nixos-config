@@ -92,7 +92,9 @@ jobs:
           # hardware-configuration.nix is generated output; keep it unformatted.
           nix run --inputs-from . nixpkgs#nixfmt -- --check $(git ls-files '*.nix' | grep -v hardware-configuration)
           echo "Evaluating flake..."
-          nix flake check --no-build
+          # --no-build puts Nix in read-only mode and disables IFD, which
+          # skills-nix needs (it discovers skills by reading fetched repos).
+          nix flake check
           echo "Checking flake/lib cache mirror..."
           ./scripts/check-caches.sh
 

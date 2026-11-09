@@ -82,7 +82,7 @@ sudo nixos-rebuild switch --flake .#pexisgle-laptop
 ```bash
 # ビルド・評価チェック
 nix build .#nixosConfigurations.pexisgle-desktop.config.system.build.toplevel .#nixosConfigurations.pexisgle-laptop.config.system.build.toplevel
-nix flake check --no-build   # 評価チェック
+nix flake check   # 評価チェック（skills-nix の IFD 解決のため --no-build は不可）
 
 # フォーマット確認
 nix fmt -- --check
