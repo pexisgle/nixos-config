@@ -106,14 +106,18 @@
         # nixpkgs' cargo setup hook exports AWS_LC_SYS_USE_SYSTEM=1 for every
         # cargo build, so codex 0.167.0's vendored aws-lc-sys needs the system
         # libs. Drop once nixos-unstable includes the upstream fix (16b46369).
-        codex = prev.codex.overrideAttrs (old: {
-          buildInputs = (old.buildInputs or [ ]) ++ [
-            prev.aws-lc
-            prev.oniguruma
-            prev.sqlite
-            prev.zstd
-          ];
-        });
+        codex =
+          if prev.lib.versionAtLeast prev.codex.version "0.167.0" then
+            prev.codex.overrideAttrs (old: {
+              buildInputs = (old.buildInputs or [ ]) ++ [
+                prev.aws-lc
+                prev.oniguruma
+                prev.sqlite
+                prev.zstd
+              ];
+            })
+          else
+            prev.codex;
         # patchelf 0.19.2 aborts (shiftFile: `splitIndex == -1`) when one call
         # rewrites both .interp and the 25 MB .dynstr of the semgrep wheel binary.
         # Two single-purpose calls do the same job without the failing rewrite.
