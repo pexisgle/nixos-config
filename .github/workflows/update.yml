@@ -121,11 +121,8 @@ jobs:
         if: steps.diff.outputs.changed == 'true' && inputs.dry_run != 'true'
         run: |
           echo "Building NixOS system configurations..."
-          # --cores 2 keeps codex's rustc parallelism inside the 16 GB runner;
-          # -j4 gets OOM-killed near the end of the codex build.
           nix build --no-link --print-build-logs \
             --option builders-use-substitutes true \
-            --cores 2 \
             .#nixosConfigurations.pexisgle-desktop.config.system.build.toplevel \
             .#nixosConfigurations.pexisgle-laptop.config.system.build.toplevel
 
