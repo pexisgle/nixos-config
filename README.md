@@ -25,7 +25,7 @@ modules/                  # 両ホスト共通
   system/                 # boot / nix / nix-ld / nh / caches / secrets / users / tmp
   networking/             # network（NM/Bluetooth/firewall） / vpn / ssh
   i18n/                   # locale / input-method（fcitx5 + hazkey） / hazkey（Zenzai GPU シード）
-  gui/                    # デスクトップ環境: session / fonts（NixOS） + niri / dms / xdg（HM）
+  gui/                    # デスクトップ環境: session / fonts（NixOS） + niri / dms / noctalia / umbriel / xdg（HM）
   hardware/amdgpu.nix
   dev/                    # shell / tools / vscode（HM） + agents / opencode / opencodex（+ plugins）
   apps/                   # デスクトップアプリ（HM、packages.nix）
@@ -90,6 +90,32 @@ nix fmt -- --check
 # フォーマット適用
 nix fmt
 ```
+
+## デスクトップセッション
+
+SDDM のログイン画面から3つを選べます。既定は Plasma です。
+
+| セッション | コンポジタ | シェル | 設定 |
+|---|---|---|---|
+| Plasma | KWin | Plasma | — |
+| Niri | niri | DMS | `modules/gui/niri.nix` / `modules/gui/dms.nix` |
+| Umbriel | Umbriel | Noctalia | `modules/gui/umbriel.nix` / `modules/gui/noctalia.nix` |
+
+Umbriel と Noctalia は nixpkgs 由来なので、`nix flake update` で他パッケージと一緒に更新されます。既定セッションを Umbriel にする場合は `modules/gui/session.nix` の `services.displayManager.defaultSession` を `"umbriel"` に変えてください。
+
+### Umbriel の設定
+
+`~/.config/umbriel/config.toml` は `modules/gui/umbriel.nix` が生成します。同梱の `share/umbriel/config.toml` を `[include]` で読み、差分だけを上書きする形です（Umbriel に組み込みのキーバインドは無く、この同梱ファイルが既定バインドの唯一の出所のため）。
+
+生成時に `umbriel config validate` が走るので、設定ミスはビルド失敗になります。手元で確認する場合:
+
+```bash
+umbriel config validate
+umbriel config schema          # 使えるキーの一覧
+umbriel config schema --json   # 型・範囲・既定値まで
+```
+
+Noctalia の設定は `modules/gui/noctalia.nix` が `~/.config/noctalia/config.toml` に書きます。こちらも Home Manager モジュールの `checkConfig` がビルド時に検証します。
 
 ## バイナリキャッシュ
 
