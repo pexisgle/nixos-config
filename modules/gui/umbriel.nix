@@ -38,13 +38,16 @@ let
   };
 
   # Catch config errors at build time instead of as a banner after login.
-  validated = pkgs.runCommand "umbriel-config.toml" {
-    nativeBuildInputs = [ pkgs.umbriel ];
-    configFile = raw;
-  } ''
-    umbriel config validate -c "$configFile"
-    cp "$configFile" $out
-  '';
+  validated =
+    pkgs.runCommand "umbriel-config.toml"
+      {
+        nativeBuildInputs = [ pkgs.umbriel ];
+        configFile = raw;
+      }
+      ''
+        umbriel config validate -c "$configFile"
+        cp "$configFile" $out
+      '';
 in
 {
   xdg.configFile."umbriel/config.toml".source = validated;
