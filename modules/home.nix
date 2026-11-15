@@ -15,6 +15,8 @@
     ./apps/packages.nix
     ./gui/dms.nix
     ./gui/niri.nix
+    ./gui/noctalia.nix
+    ./gui/umbriel.nix
     ./gui/xdg.nix
     ./dev/agents.nix
     ./dev/opencode.nix
