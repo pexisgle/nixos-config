@@ -8,6 +8,17 @@
         mode = "dark";
         source = "builtin";
         builtin = "Noctalia";
+        # Built-in templates render the palette into GTK and Qt config.
+        # Noctalia writes the GNOME color-scheme preference only while a
+        # template set is applied, so apps stay light without these.
+        templates = {
+          enable_builtin_templates = true;
+          builtin_ids = [
+            "gtk3"
+            "gtk4"
+            "qt"
+          ];
+        };
       };
       shell = {
         font_family = "Noto Sans CJK JP";
