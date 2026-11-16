@@ -14,6 +14,22 @@ let
 
     input.keyboard.layout = "jp";
 
+    # Floating windows moved by hand, like a conventional desktop, instead of
+    # the scrolling tile layout Umbriel defaults to. Drop zones stay off so a
+    # drag never tiles the window by surprise.
+    layout = {
+      mode = "stacking";
+      stacking.drop_zones = false;
+    };
+
+    # Server-side title bars with minimize/maximize/close. "on" honours apps
+    # that draw their own header bar, so they do not get a second one.
+    appearance.title_bar = {
+      mode = "on";
+      height = 32;
+      button_glyph = "always";
+    };
+
     environment = {
       ELECTRON_OZONE_PLATFORM_HINT = "auto";
       SDL_VIDEODRIVER = "wayland";
