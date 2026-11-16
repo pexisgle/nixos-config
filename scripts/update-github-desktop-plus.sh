@@ -40,6 +40,27 @@ log "Updating github-desktop-plus to $LATEST_VERSION..."
 TMP_DIR=$(mktemp -d)
 trap 'rm -rf "$TMP_DIR"' EXIT
 
+log "Cloning repository for yarn lock hash calculation..."
+git clone --depth 1 --branch "$LATEST_TAG" https://github.com/pol-rivero/github-desktop-plus.git "$TMP_DIR/repo"
+
+# 3.6.12.0 moved the root, app, and vendor packages from yarn to npm, so the
+# lockfiles hashed below no longer exist. packages/github-desktop-plus.nix still
+# builds from yarn: hold the pinned version and report it instead of failing
+# every scheduled run.
+if [[ ! -f "$TMP_DIR/repo/yarn.lock" || ! -f "$TMP_DIR/repo/app/yarn.lock" ]]; then
+  note="github-desktop-plus $LATEST_VERSION ships no yarn.lock (the fork moved to npm); keeping $CURRENT_VERSION. Following this release needs an npm port of packages/github-desktop-plus.nix."
+  warn "$note"
+  printf '::warning title=github-desktop-plus held at %s::%s\n' "$CURRENT_VERSION" "$note"
+  if [[ -n "${GITHUB_STEP_SUMMARY:-}" ]]; then
+    {
+      echo "### github-desktop-plus held at $CURRENT_VERSION"
+      echo
+      echo "$note"
+    } >> "$GITHUB_STEP_SUMMARY"
+  fi
+  exit 0
+fi
+
 log "Prefetching git repository..."
 PREFETCH_JSON=$(nix shell --inputs-from . nixpkgs#nix-prefetch-git --command nix-prefetch-git \
   --url https://github.com/pol-rivero/github-desktop-plus.git \
@@ -47,9 +68,6 @@ PREFETCH_JSON=$(nix shell --inputs-from . nixpkgs#nix-prefetch-git --command nix
   --fetch-submodules)
 SRC_HASH=$(echo "$PREFETCH_JSON" | jq -r .hash)
 log "Git source hash: $SRC_HASH"
-
-log "Cloning repository for yarn lock hash calculation..."
-git clone --depth 1 --branch "$LATEST_TAG" https://github.com/pol-rivero/github-desktop-plus.git "$TMP_DIR/repo"
 
 # The fork's lockfiles may pin @electron/* tarballs to Microsoft's 1ES feed,
 # which prefetch-yarn-deps cannot fetch. Rewrite those URLs to the public
