@@ -14,10 +14,6 @@
     "amdgpu.dcdebugmask=0x400"
   ];
 
-  environment.sessionVariables = {
-    KWIN_DRM_NO_AMS = "1";
-  };
-
   environment.systemPackages = with pkgs; [
     vulkan-loader
     vulkan-headers

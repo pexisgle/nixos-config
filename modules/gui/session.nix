@@ -1,7 +1,6 @@
 { pkgs, ... }:
 
 {
-  services.desktopManager.plasma6.enable = true;
   services.displayManager.sddm = {
     enable = true;
     wayland.enable = true;
@@ -11,8 +10,8 @@
       };
     };
   };
-  # Plasma is the default session; Niri and Umbriel are selectable at the login screen.
-  services.displayManager.defaultSession = "plasma";
+  # Umbriel is the default session; Niri stays selectable at the login screen.
+  services.displayManager.defaultSession = "umbriel";
   programs.niri.enable = true;
   programs.umbriel.enable = true;
   services.gnome.gnome-keyring.enable = true;
@@ -27,8 +26,19 @@
 
   xdg.portal = {
     enable = true;
-    extraPortals = [ pkgs.kdePackages.xdg-desktop-portal-kde ];
-    config.common.default = "kde";
+    config.common.default = "gtk";
+
+    # GTK and Electron apps read the appearance from the Settings interface to
+    # decide dark mode. Route it to the GTK backend, which reads the GNOME
+    # color-scheme preference, so applications follow the dark shell.
+    config.umbriel = {
+      default = [
+        "umbriel"
+        "gtk"
+      ];
+      "org.freedesktop.impl.portal.Settings" = "gtk";
+      "org.freedesktop.impl.portal.Secret" = "gnome-keyring";
+    };
   };
 
   environment.systemPackages = with pkgs; [
