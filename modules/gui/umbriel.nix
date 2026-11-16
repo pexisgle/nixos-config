@@ -84,16 +84,21 @@ let
     general = {
       mod_key = "Super";
       autostart = [ "vesktop" ];
+      # Raise and focus the window when an application asks for activation, so
+      # a launched app never opens behind the current one.
+      focus_on_activate = true;
     };
 
     input.keyboard.layout = "jp";
 
     # Floating windows moved by hand, like a conventional desktop, instead of
     # the scrolling tile layout Umbriel defaults to. Drop zones stay off so a
-    # drag never tiles the window by surprise.
+    # drag never tiles the window by surprise. A window's own maximize button
+    # fills the usable area, without gaps or borders.
     layout = {
       mode = "stacking";
       stacking.drop_zones = false;
+      client_maximize = "edges";
     };
 
     # Server-side title bars with minimize/maximize/close. "on" honours apps
@@ -119,15 +124,41 @@ let
         repeat = false;
       };
 
+      # Moving a window between outputs replaces the tiling column moves, which
+      # do nothing useful with floating windows.
+      "Mod+Shift+Left" = "window-move-to-output-left";
+      "Mod+Shift+Right" = "window-move-to-output-right";
+
       "Mod+S" = "spawn noctalia msg panel-toggle launcher";
       "Mod+A" = "spawn noctalia msg panel-toggle control-center";
       "Mod+V" = "spawn noctalia msg panel-toggle clipboard";
+      "Mod+E" = {
+        action = "spawn dolphin";
+        repeat = false;
+      };
       "Mod+I" = {
         action = "spawn noctalia msg settings-toggle";
         repeat = false;
       };
+      "Mod+L" = {
+        action = "spawn noctalia msg session lock";
+        repeat = false;
+      };
+      "Mod+Tab" = {
+        action = "overview-toggle";
+        repeat = false;
+      };
+
+      "Print" = {
+        action = "spawn noctalia msg screenshot-fullscreen --copy-to-clipboard";
+        repeat = false;
+      };
       "Mod+Shift+S" = {
         action = "spawn noctalia msg screenshot-region";
+        repeat = false;
+      };
+      "Alt+F4" = {
+        action = "window-close";
         repeat = false;
       };
 
