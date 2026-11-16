@@ -55,11 +55,6 @@
           "session"
         ];
       };
-      # The pinned list shares its order with the Mod+<n> keybinds, so slot N is
-      # the Nth icon on the bar. Entries without a desktop id cannot be pinned.
-      widget.taskbar.pinned = map (slot: slot.desktop) (
-        builtins.filter (slot: slot.desktop != null) (import ./app-slots.nix)
-      );
     };
   };
 }
