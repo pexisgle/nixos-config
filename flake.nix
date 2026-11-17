@@ -97,11 +97,6 @@
           chatgpt = inputs.llm-agents.packages.${final.stdenv.hostPlatform.system}.chatgpt.override {
             commandLineArgs = "--ozone-platform=wayland --enable-wayland-ime";
           };
-          command-code = inputs.llm-agents.packages.${final.stdenv.hostPlatform.system}.command-code;
-          mistral-vibe = inputs.llm-agents.packages.${final.stdenv.hostPlatform.system}.mistral-vibe;
-          opencode2 = inputs.llm-agents.packages.${final.stdenv.hostPlatform.system}.opencode2;
-          opencode2-desktop =
-            inputs.llm-agents.packages.${final.stdenv.hostPlatform.system}.opencode2-desktop;
           # Electron が system の glib/gobject を先に読み込み、sharp の prebuilt
           # libvips が内蔵する glib/gobject と衝突して画像デコードで SIGSEGV する。
           # sharp のネイティブアドオンだけ nixpkgs の libvips でビルドし直し、

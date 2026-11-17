@@ -1,6 +1,6 @@
 # AGENTS.md
 
-このファイルは、本リポジトリ（`nixos-config`）で作業を行う AI エージェント（Antigravity, OpenCode, Claude Code 等）向けの作業ガイドラインです。
+このファイルは、本リポジトリ（`nixos-config`）で作業を行う AI エージェント（Antigravity, Claude Code, DSH 等）向けの作業ガイドラインです。
 
 ---
 

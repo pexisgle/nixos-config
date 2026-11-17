@@ -20,10 +20,8 @@
     ./gui/umbriel.nix
     ./gui/xdg.nix
     ./dev/agents.nix
-    ./dev/opencode.nix
     ./dev/shell.nix
     ./dev/tools.nix
-    ./dev/vscode.nix
     ./i18n/hazkey.nix
     ./networking/ssh.nix
   ];
@@ -49,7 +47,7 @@
     defaultSopsFile = sopsFile;
   };
 
-  # Shims so non-interactive shells (opencode, VS Code tasks) resolve mise tools.
+  # Shims so non-interactive shells (agent sessions, editor tasks) resolve mise tools.
   home.sessionPath = [
     "$HOME/.local/share/mise/shims"
   ];

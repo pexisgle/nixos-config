@@ -37,14 +37,10 @@
     serena
 
     zed-editor-fhs
-    opencode2
-    opencode2-desktop
     github-desktop-plus
     antigravity
     antigravity-cli
-    command-code
     dsh
     deepseek-harness-desktop
-    mistral-vibe
   ];
 }
