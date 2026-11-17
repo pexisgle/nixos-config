@@ -187,7 +187,7 @@ let
       "Mod+A" = "spawn noctalia msg panel-toggle control-center";
       "Mod+V" = "spawn noctalia msg panel-toggle clipboard";
       "Mod+E" = {
-        action = "spawn dolphin";
+        action = "spawn nautilus";
         repeat = false;
       };
       "Mod+I" = {
