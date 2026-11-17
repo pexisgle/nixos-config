@@ -142,6 +142,24 @@ let
       button_glyph = "always";
     };
 
+    # Keep the browser's picture-in-picture window above other windows. Firefox
+    # titles it in the UI language, so the packaged rule for the English title
+    # does not match a localized one; match both and open it pinned. A pinned
+    # window floats above the workspace and takes no focus, which is what the
+    # always-on-top player should do.
+    window_rule = [
+      {
+        match.title = "^(Picture-in-Picture|Picture in picture|ピクチャーインピクチャー)$";
+        default_floating = true;
+        default_pinned = true;
+        default_position = {
+          x = 20;
+          y = 20;
+          anchor = "bottom_right";
+        };
+      }
+    ];
+
     # Electron reads the GTK theme at startup. Set it for the whole session so
     # apps come up dark even before the desktop portal reports the preference.
     environment = {
