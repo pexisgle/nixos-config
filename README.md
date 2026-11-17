@@ -93,15 +93,14 @@ nix fmt
 
 ## デスクトップセッション
 
-SDDM のログイン画面から3つを選べます。既定は Plasma です。
+SDDM のログイン画面から2つを選べます。既定は Umbriel です。
 
 | セッション | コンポジタ | シェル | 設定 |
 |---|---|---|---|
-| Plasma | KWin | Plasma | — |
 | Niri | niri | DMS | `modules/gui/niri.nix` / `modules/gui/dms.nix` |
 | Umbriel | Umbriel | Noctalia | `modules/gui/umbriel.nix` / `modules/gui/noctalia.nix` |
 
-Umbriel と Noctalia は nixpkgs 由来なので、`nix flake update` で他パッケージと一緒に更新されます。既定セッションを Umbriel にする場合は `modules/gui/session.nix` の `services.displayManager.defaultSession` を `"umbriel"` に変えてください。
+Umbriel と Noctalia は nixpkgs 由来なので、`nix flake update` で他パッケージと一緒に更新されます。
 
 ### Umbriel の設定
 
