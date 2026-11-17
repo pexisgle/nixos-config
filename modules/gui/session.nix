@@ -41,6 +41,11 @@
     };
   };
 
+  # Nautilus resolves Trash, mounted media, and MTP devices through gvfs over
+  # D-Bus, and gvfs lists drives through udisks2.
+  services.gvfs.enable = true;
+  services.udisks2.enable = true;
+
   environment.systemPackages = with pkgs; [
     dbus
     pavucontrol
