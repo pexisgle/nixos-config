@@ -3,7 +3,7 @@
 {
   imports = [ inputs.skills-nix.homeModules.default ];
 
-  # ユーザーグローバルなエージェント指示（opencode / DSH などが参照）。
+  # ユーザーグローバルなエージェント指示（DSH などが参照）。
   home.file.".agents/AGENTS.md".source = ./agents/AGENTS.md;
 
   skills = {

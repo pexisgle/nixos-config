@@ -7,10 +7,8 @@
 
     vesktop
     slack
-    notion-app-enhanced
 
     vlc
-    gimp
     onlyoffice-desktopeditors
 
     nautilus
