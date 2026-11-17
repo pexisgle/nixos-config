@@ -27,7 +27,7 @@ modules/                  # 両ホスト共通
   i18n/                   # locale / input-method（fcitx5 + hazkey） / hazkey（Zenzai GPU シード）
   gui/                    # デスクトップ環境: session / fonts（NixOS） + niri / dms / noctalia / umbriel / xdg（HM）
   hardware/amdgpu.nix
-  dev/                    # shell / tools / vscode（HM） + agents / opencode / opencodex（+ plugins）
+  dev/                    # shell / tools / vscode（HM） + agents / opencode（+ plugins）
   apps/                   # デスクトップアプリ（HM、packages.nix）
 packages/                 # 自作・拡張パッケージ（github-desktop-plus / deepseek-harness-desktop / dsh）
 scripts/                  # update.sh / update-github-desktop-plus.sh / check-caches.sh
@@ -139,7 +139,7 @@ nix run nixpkgs#cachix -- use pexisgle
 
 ### Numtide キャッシュ
 
-`numtide/llm-agents.nix` 由来のパッケージ（`opencodex` / `chatgpt` / `opencode2` / `opencode2-desktop` / `command-code` / `dsh`）は `https://cache.numtide.com` から取得します。
+`numtide/llm-agents.nix` 由来のパッケージ（`chatgpt` / `opencode2` / `opencode2-desktop` / `command-code` / `dsh`）は `https://cache.numtide.com` から取得します。
 
 ### 上流キャッシュ
 
@@ -161,7 +161,7 @@ nix flake update
 
 Antigravity（Hub / CLI）は [Hy4ri/antigravity-flake](https://github.com/Hy4ri/antigravity-flake) Flake および nixpkgs から提供されているため、`nix flake update` で同時に最新版に更新されます。
 
-`opencodex` / `chatgpt` / `opencode2` / `opencode2-desktop` / `command-code` は [numtide/llm-agents.nix](https://github.com/numtide/llm-agents.nix) から取得しており、同様に `nix flake update`（または `nix flake update llm-agents`）で更新されます。
+`chatgpt` / `opencode2` / `opencode2-desktop` / `command-code` は [numtide/llm-agents.nix](https://github.com/numtide/llm-agents.nix) から取得しており、同様に `nix flake update`（または `nix flake update llm-agents`）で更新されます。
 
 PRがマージされた後、ホスト側で `nixos-rebuild switch --flake .#pexisgle-desktop` (または laptop) を実行して反映してください。
 

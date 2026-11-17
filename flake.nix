@@ -93,7 +93,6 @@
         in
         {
           github-desktop-plus = final.callPackage ./packages/github-desktop-plus.nix { };
-          opencodex = inputs.llm-agents.packages.${final.stdenv.hostPlatform.system}.opencodex;
           antigravity = inputs.antigravity-flake.packages.${final.stdenv.hostPlatform.system}.antigravity;
           chatgpt = inputs.llm-agents.packages.${final.stdenv.hostPlatform.system}.chatgpt.override {
             commandLineArgs = "--ozone-platform=wayland --enable-wayland-ime";

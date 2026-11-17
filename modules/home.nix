@@ -21,7 +21,6 @@
     ./gui/xdg.nix
     ./dev/agents.nix
     ./dev/opencode.nix
-    ./dev/opencodex.nix
     ./dev/shell.nix
     ./dev/tools.nix
     ./dev/vscode.nix
@@ -36,7 +35,6 @@
     kicad
     unityhub
     codex
-    opencodex
     chatgpt
   ];
 

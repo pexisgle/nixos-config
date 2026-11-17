@@ -8,7 +8,6 @@
     ./system/nix-ld.nix
     ./system/nix.nix
     ./system/secrets.nix
-    ./system/tmp.nix
     ./system/users.nix
     ./networking/network.nix
     ./networking/vpn.nix
