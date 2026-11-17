@@ -30,17 +30,9 @@
   home.homeDirectory = "/home/pexisgle";
   home.stateVersion = "26.11";
   home.packages = with pkgs; [
-    kicad
-    unityhub
     codex
     chatgpt
   ];
-
-  home.sessionVariables = {
-    KICAD10_SYMBOL_DIR = "${pkgs.kicad.libraries.symbols}/share/kicad/symbols";
-    KICAD10_FOOTPRINT_DIR = "${pkgs.kicad.libraries.footprints}/share/kicad/footprints";
-    KICAD10_TEMPLATE_DIR = "${pkgs.kicad.libraries.symbols}/share/kicad/template";
-  };
 
   sops = {
     age.keyFile = sopsPaths.ageKeyFile;
