@@ -20,6 +20,14 @@
   xdg.mimeApps = {
     enable = true;
     defaultApplications = {
+      # Home Manager owns mimeapps.list as a read-only store symlink, so
+      # xdg-settings cannot set the browser; declare it here instead.
+      "text/html" = "floorp.desktop";
+      "application/xhtml+xml" = "floorp.desktop";
+      "text/xml" = "floorp.desktop";
+      "x-scheme-handler/http" = "floorp.desktop";
+      "x-scheme-handler/https" = "floorp.desktop";
+
       "inode/directory" = "org.gnome.Nautilus.desktop";
 
       "image/png" = "org.gnome.Loupe.desktop";
