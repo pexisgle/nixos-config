@@ -1,6 +1,5 @@
 {
   pkgs,
-  inputs,
   sopsFile,
   sopsPaths,
   ...
@@ -9,12 +8,7 @@
 # Shared Home Manager module manifest: the single list to update.
 {
   imports = [
-    inputs.niri.homeModules.niri
-    inputs.dms.homeModules.dank-material-shell
-    inputs.dms.homeModules.niri
     ./apps/packages.nix
-    ./gui/dms.nix
-    ./gui/niri.nix
     ./gui/noctalia.nix
     ./gui/theme.nix
     ./gui/umbriel.nix

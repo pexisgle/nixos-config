@@ -25,7 +25,7 @@ modules/                  # 両ホスト共通
   system/                 # boot / nix / nix-ld / nh / caches / secrets / users / tmp
   networking/             # network（NM/Bluetooth/firewall） / vpn / ssh
   i18n/                   # locale / input-method（fcitx5 + hazkey） / hazkey（Zenzai GPU シード）
-  gui/                    # デスクトップ環境: session / fonts（NixOS） + niri / dms / noctalia / umbriel / xdg（HM）
+  gui/                    # デスクトップ環境: session / fonts（NixOS） + noctalia / umbriel / xdg（HM）
   hardware/amdgpu.nix
   dev/                    # shell / tools / agents（HM）
   apps/                   # デスクトップアプリ（HM、packages.nix）
@@ -93,14 +93,9 @@ nix fmt
 
 ## デスクトップセッション
 
-SDDM のログイン画面から2つを選べます。既定は Umbriel です。
+SDDM のログイン画面には Astronaut の Purple Leaves テーマを使っています。時計と日本語の日付の下にログイン欄があります。テーマと配色は `modules/gui/session.nix` で設定します。
 
-| セッション | コンポジタ | シェル | 設定 |
-|---|---|---|---|
-| Niri | niri | DMS | `modules/gui/niri.nix` / `modules/gui/dms.nix` |
-| Umbriel | Umbriel | Noctalia | `modules/gui/umbriel.nix` / `modules/gui/noctalia.nix` |
-
-Umbriel と Noctalia は nixpkgs 由来なので、`nix flake update` で他パッケージと一緒に更新されます。
+デスクトップは Umbriel と Noctalia で構成しています。どちらも nixpkgs 由来なので、`nix flake update` で他のパッケージと一緒に更新されます。
 
 ### Umbriel の設定
 
@@ -142,7 +137,7 @@ nix run nixpkgs#cachix -- use pexisgle
 
 ### 上流キャッシュ
 
-Numtide / niri / lanzaboote / quickshell などの上流キャッシュは `flake.nix` の `nixConfig` と `modules/system/nix.nix` の両方に設定されています。CI（GitHub Actions）の Nix インストール時にも同一のリストが初期設定され、評価・ビルドの全段階で外部キャッシュを活用します。
+Numtide や Lanzaboote などの上流キャッシュは `flake.nix` の `nixConfig` と `modules/system/caches.nix` の両方に設定されています。CI（GitHub Actions）の Nix インストール時にも同一のリストが初期設定され、評価・ビルドの全段階で外部キャッシュを活用します。
 
 ## 更新
 

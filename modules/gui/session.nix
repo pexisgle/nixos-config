@@ -1,20 +1,34 @@
 { pkgs, ... }:
 
+let
+  loginTheme = pkgs.sddm-astronaut.override {
+    embeddedTheme = "purple_leaves";
+    themeConfig = {
+      Font = "Noto Sans CJK JP";
+      Locale = "ja_JP";
+      DateFormat = "M月d日 dddd";
+      DateTextColor = "#e2e8fa";
+      WarningColor = "#ffb4c2";
+      BlurMax = "48";
+      DimBackground = "0.25";
+      DimBackgroundColor = "#12101e";
+    };
+  };
+in
 {
   services.displayManager.sddm = {
     enable = true;
+    package = pkgs.kdePackages.sddm;
     wayland.enable = true;
-    settings = {
-      General = {
-        EnableHiDPI = true;
-      };
-    };
+    enableHidpi = true;
+    theme = "${loginTheme}/share/sddm/themes/sddm-astronaut-theme";
+    extraPackages = [ loginTheme ];
   };
-  # Umbriel is the default session; Niri stays selectable at the login screen.
   services.displayManager.defaultSession = "umbriel";
-  programs.niri.enable = true;
   programs.umbriel.enable = true;
   services.gnome.gnome-keyring.enable = true;
+  services.upower.enable = true;
+  services.power-profiles-daemon.enable = true;
 
   # The shell runs as a systemd user service so it starts after Umbriel reports
   # readiness, and blocks XDG autostart apps until its tray host is up.
