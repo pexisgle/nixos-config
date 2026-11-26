@@ -1,0 +1,111 @@
+--- a/src/cli/schema_msg.h
++++ b/src/cli/schema_msg.h
+@@ -512,6 +512,13 @@
+     };
+     inline constexpr Command desktopWidgetsToggleEdit{
+         "desktop-widgets-toggle-edit", "Toggle desktop widgets edit mode", {}, {}, {}, {}, {}, false
++    };
++    inline constexpr std::array dockActivatePositionals{
++        Positional{"slot", "One-based position among dock apps", {}, true, false, false},
++    };
++    inline constexpr Command dockActivate{
++        "dock-activate", "Activate or launch an app by its dock position", {}, {}, {}, dockActivatePositionals,
++        {}, false
+     };
+     inline constexpr Command dockHide{"dock-hide", "Hide the dock (persists override)", {}, {}, {}, {}, {}, false};
+     inline constexpr Command dockReload{"dock-reload", "Reload dock configuration", {}, {}, {}, {}, {}, false};
+@@ -966,6 +973,7 @@
+       msg::desktopWidgetsShow,
+       msg::desktopWidgetsToggle,
+       msg::desktopWidgetsToggleEdit,
++      msg::dockActivate,
+       msg::dockHide,
+       msg::dockReload,
+       msg::dockShow,
+--- a/src/shell/dock/dock.h
++++ b/src/shell/dock/dock.h
+@@ -68,7 +68,9 @@
+   void updateVisuals(shell::dock::DockInstance& instance);
+   void updateHoverZoomPointer(shell::dock::DockInstance& instance, float sceneX, float sceneY);
+   void clearHoverZoomPointer(shell::dock::DockInstance& instance);
+-  void activateOrLaunchItem(shell::dock::DockInstance& instance, const shell::dock::DockItemAction& action);
++  void activateOrLaunchItem(
++      shell::dock::DockInstance& instance, const shell::dock::DockItemAction& action, bool minimizeActive = true
++  );
+   void tryFulfillPendingLaunchFocus();
+   void openItemMenu(shell::dock::DockInstance& instance, const shell::dock::DockItemAction& action);
+   void closeItemMenu();
+--- a/src/shell/dock/dock.cpp
++++ b/src/shell/dock/dock.cpp
+@@ -27,6 +27,7 @@
+ #include <algorithm>
+ #include <cassert>
+ #include <cerrno>
++#include <charconv>
+ #include <chrono>
+ #include <format>
+ #include <optional>
+@@ -1117,7 +1118,9 @@
+   m_platform->activateToplevelInfo(*window);
+ }
+ 
+-void Dock::activateOrLaunchItem(shell::dock::DockInstance& instance, const shell::dock::DockItemAction& action) {
++void Dock::activateOrLaunchItem(
++    shell::dock::DockInstance& instance, const shell::dock::DockItemAction& action, bool minimizeActive
++) {
+   assertDockInitialized(m_platform, m_config, m_renderContext);
+ 
+   pruneCachedToplevelHandles();
+@@ -1141,7 +1144,11 @@
+   }
+ 
+   if (windows.size() == 1) {
+-    m_platform->activateOrMinimizeToplevelInfo(windows[0]);
++    if (minimizeActive) {
++      m_platform->activateOrMinimizeToplevelInfo(windows[0]);
++    } else {
++      m_platform->activateToplevelInfo(windows[0]);
++    }
+     return;
+   }
+ 
+@@ -1258,6 +1265,39 @@
+ }
+ 
+ void Dock::registerIpc(IpcService& ipc) {
++  ipc.bind(noctalia::cli::msg::dockActivate, [this](const std::string& args) -> std::string {
++    std::size_t slot = 0;
++    const auto* end = args.data() + args.size();
++    const auto [ptr, error] = std::from_chars(args.data(), end, slot);
++    if (error != std::errc{} || ptr != end || slot == 0) {
++      return "error: dock-activate requires a positive slot number\n";
++    }
++    if (m_instances.empty()) {
++      return "unavailable\n";
++    }
++
++    const auto* output = m_platform->preferredInteractiveOutput();
++    const auto match = std::ranges::find_if(m_instances, [output](const auto& instance) {
++      return instance->output == output;
++    });
++    auto& instance = **(match == m_instances.end() ? m_instances.begin() : match);
++    if (slot <= instance.snapshot.items.size()) {
++      const auto& item = instance.snapshot.items[slot - 1];
++      activateOrLaunchItem(
++          instance,
++          {
++              .entry = item.entry,
++              .idLower = item.idLower,
++              .startupWmClassLower = item.startupWmClassLower,
++              .windowLookupIdLower = item.windowLookupIdLower,
++              .windowLookupWmClassLower = item.windowLookupWmClassLower,
++          },
++          false
++      );
++    }
++    return "ok\n";
++  });
++
+   ipc.bind(noctalia::cli::msg::dockShow, [this](const std::string&) -> std::string {
+     if (m_config) {
+       m_config->setDockEnabled(true);

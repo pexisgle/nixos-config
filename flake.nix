@@ -125,6 +125,9 @@
           deepseek-harness = final.dsh;
           deepseek-harness-desktop = final.callPackage ./packages/deepseek-harness-desktop.nix { };
           dsh-desktop = final.deepseek-harness-desktop;
+          noctalia = prev.noctalia.overrideAttrs (old: {
+            patches = (old.patches or [ ]) ++ [ ./packages/noctalia-dock-activate.patch ];
+          });
           serena = inputs.serena.packages.${final.stdenv.hostPlatform.system}.serena;
           strongswan = prev.strongswan.overrideAttrs (old: {
             configureFlags = old.configureFlags ++ [ "--enable-ikev1" ];

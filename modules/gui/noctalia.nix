@@ -30,6 +30,7 @@
         # typing after opening the Start menu.
         umbriel_overview_type_to_launch_enabled = true;
         umbriel_overview_close_on_launch_enabled = true;
+        window_switcher.mru = true;
       };
       # Windows-like taskbar along the bottom edge: launcher on the left, one
       # icon per open window. Clicking an icon focuses or minimizes the window.

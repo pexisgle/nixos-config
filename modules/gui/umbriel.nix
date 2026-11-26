@@ -5,10 +5,8 @@
 }:
 
 let
-  # Focus the Nth icon on the dock or the bar, following the order the shell
-  # shows: pinned apps first, then one entry per running app. The shell owns
-  # that order and the GUI can change it, so it is read at run time instead of
-  # being restated here.
+  # Let Noctalia activate the displayed dock slot. Fall back to the taskbar
+  # shortcut when Noctalia has no dock instance.
   slotScript = pkgs.writeShellApplication {
     name = "umbriel-slot";
     runtimeInputs = [
@@ -25,14 +23,13 @@ let
         exit 2
       fi
 
-      # Both surfaces can be on screen; follow the dock when it is enabled.
-      pin_path=widget.taskbar.pinned
-      if [ "$(noctalia msg config-get dock.enabled 2>/dev/null | tr -d '[:space:]')" = "true" ]; then
-        pin_path=dock.pinned
+      dock_status=$(noctalia msg dock-activate "$1")
+      if [ "$dock_status" != "unavailable" ]; then
+        exit 0
       fi
 
       mapfile -t ordered < <(
-        noctalia msg config-get "$pin_path" 2>/dev/null \
+        noctalia msg config-get widget.taskbar.pinned 2>/dev/null \
           | tr -d "[]'" \
           | tr ',' '\n' \
           | sed 's/^[[:space:]]*//; s/[[:space:]]*$//; s/\.desktop$//' \
