@@ -1,6 +1,21 @@
 { pkgs, ... }:
 
 {
+  # Agy Powertools attaches over CDP, and its installer only patches
+  # /usr/share/applications/antigravity.desktop, which NixOS does not have.
+  # Ship an already-flagged launcher where both powertools and the desktop
+  # look first, so the flag is present and powertools never rewrites this file.
+  home.file.".local/share/applications/antigravity.desktop".text = ''
+    [Desktop Entry]
+    Name=Antigravity
+    Exec=${pkgs.antigravity}/bin/antigravity --remote-debugging-port=0 %u
+    Icon=antigravity
+    Type=Application
+    Categories=Development;
+    Comment=Google Antigravity Desktop Hub
+    MimeType=x-scheme-handler/antigravity;
+  '';
+
   home.packages = with pkgs; [
     kitty
     tmux
