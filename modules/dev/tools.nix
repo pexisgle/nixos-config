@@ -24,6 +24,7 @@
     nixfmt
 
     gh
+    google-cloud-sdk
 
     mise
     bun
