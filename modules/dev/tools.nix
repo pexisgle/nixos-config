@@ -16,6 +16,18 @@
     MimeType=x-scheme-handler/antigravity;
   '';
 
+  # A second launcher that authenticates through the local gcloud ADC instead
+  # of the interactive Google login. Antigravity reads these variables itself.
+  xdg.desktopEntries.antigravity-adc = {
+    name = "Antigravity (ADC)";
+    comment = "Google Antigravity with GCP ADC";
+    exec = "env AGY_ADC_AUTH=true GOOGLE_CLOUD_QUOTA_PROJECT=pexisgle GOOGLE_CLOUD_LOCATION=global ${pkgs.antigravity}/bin/antigravity %U";
+    icon = "antigravity";
+    terminal = false;
+    type = "Application";
+    categories = [ "Development" ];
+  };
+
   home.packages = with pkgs; [
     kitty
     tmux
