@@ -36,6 +36,8 @@ in
     enable = true;
     systemd.enable = true;
     systemd.target = "umbriel-session.target";
+    # Enable services for the network, Bluetooth, and power widgets.
+    recommendedServices.enable = true;
   };
 
   xdg.portal = {
@@ -59,6 +61,10 @@ in
   # D-Bus, and gvfs lists drives through udisks2.
   services.gvfs.enable = true;
   services.udisks2.enable = true;
+
+  # The shell reads the session user's avatar over this D-Bus interface and
+  # logs "accounts service disabled" without it.
+  services.accounts-daemon.enable = true;
 
   environment.systemPackages = with pkgs; [
     dbus
