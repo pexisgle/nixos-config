@@ -40,6 +40,7 @@
     github-desktop-plus
     antigravity
     antigravity-cli
+    agy-switch
     dsh
     deepseek-harness-desktop
   ];
